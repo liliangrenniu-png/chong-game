@@ -3,323 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>灵境猫语：森之精灵</title>
+    <title>喵呜的白日梦：百变乐园</title>
     <style>
-        /* --- 1. 场景设置 (真实唯美风) --- */
-        :root { --theme-color: #a55eea; }
+        /* --- 1. 全局设置：柔和、可爱 --- */
+        :root {
+            --theme-pink: #FFCDEA;
+            --theme-yellow: #FFF5BA;
+            --theme-blue: #A2D2FF;
+        }
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-            background-color: #1a1a2e; font-family: "Microsoft YaHei", sans-serif;
-            user-select: none; cursor: url('https://cdn-icons-png.flaticon.com/32/7604/7604035.png'), auto; /* 魔法光标 */
+            font-family: "幼圆", "Rounded Mplus 1c", cursive;
+            background-color: var(--theme-pink);
+            user-select: none; cursor: url('https://cdn-icons-png.flaticon.com/32/7459/7459939.png'), auto; /* 肉垫光标 */
         }
 
-        /* 真实感背景图 */
-        #stage-bg {
+        /* 激光笔模式光标 */
+        body.laser-mode { cursor: none; }
+        #laser-dot {
+            position: absolute; width: 15px; height: 15px; background: red; border-radius: 50%;
+            box-shadow: 0 0 10px red, 0 0 20px #ff5555; pointer-events: none; z-index: 100; display: none;
+            transform: translate(-50%, -50%); mix-blend-mode: screen;
+        }
+
+        /* --- 2. 多背景切换系统 --- */
+        #bg-layer {
             position: absolute; width: 100%; height: 100%;
-            /* 使用一张唯美的魔法森林实景照片 */
-            background: url('https://images.unsplash.com/photo-1503919483171-9a0467145177?q=80&w=1920&auto=format&fit=crop') no-repeat center center;
-            background-size: cover;
-            filter: brightness(0.8) contrast(1.1); /* 微调色调使其更有魔幻感 */
-            transition: filter 0.5s;
+            background-size: cover; background-position: center;
+            transition: background-image 0.6s ease-in-out, filter 0.6s;
+        }
+        /* 柔光氛围层 */
+        .overlay {
+            position: absolute; width: 100%; height: 100%; pointer-events: none;
+            background: radial-gradient(circle at center, transparent 50%, rgba(255, 245, 230, 0.4) 100%);
+            mix-blend-mode: overlay;
         }
 
-        /* 真实感光尘粒子 */
-        .dust-particle {
-            position: absolute; background: radial-gradient(circle, #fff, transparent 60%);
-            border-radius: 50%; opacity: 0.6; pointer-events: none;
-            animation: floatUp linear infinite;
-        }
-        @keyframes floatUp { from { transform: translateY(100vh); opacity: 0; } 50% { opacity: 0.8; } to { transform: translateY(-10vh); opacity: 0; } }
-
-        /* --- 2. 主角：精灵猫 (核心设计) --- */
+        /* --- 3. 主角：超动态小奶猫 --- */
         #cat-container {
-            position: absolute; left: 50%; top: 50%;
+            position: absolute; left: 50%; top: 55%;
             width: 220px; height: 220px;
-            transform: translate(-50%, -50%);
-            z-index: 20; cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translate(-50%, -50%); z-index: 20;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 平滑移动 */
         }
 
-        /* 翅膀层 */
-        .wings {
-            position: absolute; top: 20%; left: -20%; width: 140%; height: 60%;
-            display: flex; justify-content: space-between; z-index: -1;
-            filter: drop-shadow(0 0 10px var(--theme-color)); opacity: 0.8; mix-blend-mode: screen;
+        /* 猫咪本体容器 (负责呼吸和摇头) */
+        .cat-body-wrap {
+            width: 100%; height: 100%; position: relative;
+            animation: breathe 3s ease-in-out infinite; /* 呼吸 */
+            transform-origin: bottom center;
+            transition: transform 0.2s; /* 摇头过渡 */
         }
-        .wing {
-            width: 70px; height: 100px; background: url('https://cdn-icons-png.flaticon.com/512/9373/9373775.png') no-repeat center/contain;
-        }
-        .wing.left { animation: flapL 0.2s infinite alternate; transform-origin: right center; }
-        .wing.right { animation: flapR 0.2s infinite alternate; transform-origin: left center; transform: scaleX(-1); }
-        @keyframes flapL { from { transform: rotate(10deg); } to { transform: rotate(-15deg); } }
-        @keyframes flapR { from { transform: scaleX(-1) rotate(10deg); } to { transform: scaleX(-1) rotate(-15deg); } }
 
-        /* 猫咪本体层 */
+        /* 猫咪图片 */
         #cat-img {
             width: 100%; height: 100%; object-fit: contain;
-            /* 悬浮动画 + 魔法光晕 */
-            animation: hover 2.5s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px var(--theme-color)) brightness(1.1);
-            transition: filter 0.3s, transform 0.3s;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+            /* 眨眼动画 (通过CSS滤镜模拟，简化实现) */
+            animation: blink 4s infinite;
         }
-        @keyframes hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* --- 生病状态样式 --- */
-        #cat-container.sick #cat-img {
-            filter: grayscale(0.5) sepia(0.8) hue-rotate(90deg) drop-shadow(0 0 5px green) !important; /* 变绿 */
-            animation: shiver 0.2s infinite !important; /* 发抖 */
+        /* 动态动画定义 */
+        @keyframes breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.03); } }
+        @keyframes blink { 0%, 48%, 52%, 100% { filter: brightness(1) drop-shadow(0 10px 20px rgba(0,0,0,0.15)); } 50% { filter: brightness(0.8) drop-shadow(0 10px 20px rgba(0,0,0,0.15)); transform: scaleY(0.98); } }
+        /* 面向左侧 */
+        .face-left { transform: scaleX(-1); }
+        /* 扑咬动作 */
+        .pouncing .cat-body-wrap { animation: pounceAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        @keyframes pounceAnim { 0% { transform: scale(1); } 40% { transform: scale(1.2, 0.8) translateY(20px); } 80% { transform: scale(0.9, 1.1) translateY(-30px); } 100% { transform: scale(1); } }
+
+        /* --- 4. 丰富的 UI --- */
+        /* 顶部栏 */
+        .top-bar {
+            position: absolute; top: 20px; width: 90%; left: 5%; display: flex; justify-content: space-between; z-index: 100;
         }
-        #cat-container.sick .wings { filter: grayscale(1); opacity: 0.5; animation: none; }
-        @keyframes shiver { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
+        .coin-pill {
+            background: #FFF; padding: 8px 20px; border-radius: 30px;
+            box-shadow: 0 5px 0 var(--theme-yellow); color: #F7B731; font-weight: bold; font-size: 20px;
+            border: 3px solid var(--theme-yellow); display: flex; align-items: center;
+        }
         
-        /* 生病图标 */
-        #sick-icon {
-            position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
-            font-size: 40px; display: none; animation: pulse 1s infinite;
+        /* 顶部功能按钮 */
+        .top-btn {
+            background: #FFF; padding: 10px 15px; border-radius: 20px;
+            box-shadow: 0 5px 0 #eee; border: 3px solid #fff;
+            cursor: pointer; font-weight: bold; color: #666; transition: 0.1s;
+            display: flex; align-items: center; gap: 5px;
         }
-        #cat-container.sick #sick-icon { display: block; }
+        .top-btn:active { transform: translateY(5px); box-shadow: none; }
+        #gacha-btn.disabled { filter: grayscale(1); opacity: 0.7; cursor: not-allowed; }
 
-        /* --- 3. UI与交互 --- */
-        /* 顶部金币栏 */
-        #top-bar {
-            position: absolute; top: 20px; left: 20px; z-index: 100;
-            background: rgba(0,0,0,0.6); color: #ffd700;
-            padding: 10px 20px; border-radius: 30px; font-size: 20px; font-weight: bold;
-            border: 2px solid #ffd700; backdrop-filter: blur(5px);
-            display: flex; align-items: center; gap: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        /* 底部按钮栏 */
+        /* 底部超多按键栏 */
         #dock {
-            position: absolute; bottom: 30px; width: 100%;
-            display: flex; justify-content: center; gap: 15px; z-index: 100;
+            position: absolute; bottom: 25px; width: 100%;
+            display: flex; justify-content: center; gap: 12px; z-index: 100;
         }
         .dock-btn {
-            width: 70px; height: 85px;
-            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
-            border-radius: 20px; border: 2px solid rgba(255,255,255,0.3);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; cursor: pointer; transition: 0.2s; position: relative;
+            width: 65px; height: 65px; border-radius: 22px; background: #fff;
+            display: flex; font-size: 30px; align-items: center; justify-content: center;
+            box-shadow: 0 6px 0 var(--theme-pink), 0 10px 15px rgba(0,0,0,0.1);
+            cursor: pointer; transition: 0.1s; border: 3px solid var(--theme-pink); position: relative;
         }
-        .dock-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-5px); }
-        .dock-btn:active { transform: scale(0.95); }
-        .btn-icon { font-size: 32px; margin-bottom: 5px; filter: drop-shadow(0 0 5px currentColor); }
-        .btn-label { font-size: 12px; }
-        
-        /* 禁用状态的按钮 */
-        .dock-btn.disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
-        
-        /* 召唤按钮特别样式 */
-        #summon-btn { border-color: #ffd700; color: #ffd700; }
-        #summon-btn .btn-label { color: #ffd700; }
-        
-        /* 特效提示 */
-        .pop-fx {
-            position: absolute; font-weight: bold; color: white; font-size: 24px;
-            pointer-events: none; animation: floatUpFx 1s forwards; z-index: 200;
-            text-shadow: 0 0 5px var(--theme-color);
-        }
-        @keyframes floatUpFx { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 100% { transform: translateY(-80px) scale(1.2); opacity: 0; } }
+        .dock-btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--theme-pink); }
+        .dock-btn.active-laser { background: #ffadad; border-color: red; box-shadow: 0 6px 0 #c0392b; }
 
-        /* 切换猫咪时的魔法爆发 */
-        .magic-burst {
-            position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%) scale(0);
-            width: 300px; height: 300px; background: radial-gradient(circle, var(--theme-color), transparent 70%);
-            opacity: 0; pointer-events: none; z-index: 15;
+        /* 互动道具浮现 */
+        .toy-pop {
+            position: absolute; font-size: 50px; z-index: 15; pointer-events: none;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .magic-burst.active { animation: burstAnim 0.6s ease-out; }
-        @keyframes burstAnim { 0% { transform: translate(-50%,-50%) scale(0); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(2); opacity: 0; } }
+        @keyframes popIn { from { transform: translate(-50%, -50%) scale(0); } to { transform: translate(-50%, -50%) scale(1); } }
+
+        /* 特效文字 */
+        .pop-text {
+            position: absolute; font-weight: bold; color: #fff; font-size: 24px;
+            pointer-events: none; animation: floatUp 1s forwards; z-index: 200;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 100% { transform: translateY(-80px) scale(1.2); opacity: 0; } }
 
     </style>
 </head>
 <body>
 
-    <div id="stage-bg"></div>
-    <div id="dust-layer"></div>
+    <div id="bg-layer"></div>
+    <div class="overlay"></div>
+    <div id="laser-dot"></div>
 
-    <div id="top-bar">
-        <span style="font-size: 24px;">💰</span> <span id="coin-count">0</span>
-    </div>
-
-    <div id="cat-container">
-        <div id="sick-icon">☠️</div>
-        <div class="wings">
-            <div class="wing left"></div>
-            <div class="wing right"></div>
+    <div class="top-bar">
+        <div class="coin-pill">💰 <span id="coin-count">0</span></div>
+        <div style="display: flex; gap: 10px;">
+            <div class="top-btn" onclick="switchBG()" style="background: var(--theme-blue);">🎨 换场景</div>
+            <div class="top-btn disabled" id="gacha-btn" onclick="gachaCat()" style="background: var(--theme-pink); color: white;">🎁 10金币换猫</div>
         </div>
-        <img id="cat-img" src="" alt="Fairy Cat">
     </div>
-    
-    <div class="magic-burst" id="burst-fx"></div>
+
+    <div id="cat-container" onclick="petCat(event)">
+        <div class="cat-body-wrap" id="cat-wrap">
+            <img id="cat-img" src="" alt="Cute Cat">
+        </div>
+    </div>
 
     <div id="dock">
-        <div class="dock-btn" id="btn-feed" style="color: #ff9f43;" onclick="interact('feed')">
-            <div class="btn-icon">🐟</div><div class="btn-label">喂食</div>
-        </div>
-        <div class="dock-btn" id="btn-play" style="color: #ff6b81;" onclick="interact('play')">
-            <div class="btn-icon">🧶</div><div class="btn-label">玩耍</div>
-        </div>
-        <div class="dock-btn" id="btn-heal" style="color: #2ecc71;" onclick="healCat()">
-            <div class="btn-icon">🧪</div><div class="btn-label">治疗</div>
-        </div>
-        <div class="dock-btn disabled" id="summon-btn" onclick="summonNewCat()">
-            <div class="btn-icon">✨</div><div class="btn-label">10金换猫</div>
-        </div>
+        <div class="dock-btn" id="laser-dock-btn" onclick="toggleLaser()">🔴</div>
+        <div class="dock-btn" onclick="interact('🐟', 'yummy')">🐟</div>
+        <div class="dock-btn" onclick="interact('🧶', 'play')">🧶</div>
+        <div class="dock-btn" onclick="interact('🧸', 'hug')">🧸</div>
+        <div class="dock-btn" style="font-size: 36px;" onclick="interact('🛁', 'bath')">🛁</div>
     </div>
 
 <script>
     let coins = 0;
-    let isSick = false;
-    const root = document.documentElement;
-    
-    // 精灵猫数据 (使用真实的猫咪照片素材)
-    const catData = [
-        { src: 'https://i.pinimg.com/originals/11/82/65/1182653f2bc4ce423d6107cb26b628dc.png', theme: '#a55eea' }, // 魔法紫猫
-        { src: 'https://png.pngtree.com/png-clipart/20230513/ourmid/pngtree-cute-orange-cat-lying-down-cartoon-element-png-image_7094916.png', theme: '#ff7675' }, // 火焰橘猫
-        { src: 'https://png.pngtree.com/png-clipart/20231020/original/pngtree-cute-white-cat-lying-png-image_13369634.png', theme: '#74b9ff' }, // 冰霜白猫
-        { src: 'https://png.pngtree.com/png-clipart/20230427/original/pngtree-cute-black-cat-cartoon-png-image_9114669.png', theme: '#55efc4' }  // 森之黑猫
-    ];
-    let currentCatIdx = 0;
-
+    let isLaserMode = false;
+    let isBusy = false;
     const catContainer = document.getElementById('cat-container');
+    const catWrap = document.getElementById('cat-wrap');
     const catImg = document.getElementById('cat-img');
+    const bgLayer = document.getElementById('bg-layer');
     const coinLabel = document.getElementById('coin-count');
-    const summonBtn = document.getElementById('summon-btn');
-    const burstFx = document.getElementById('burst-fx');
-    
-    const btnFeed = document.getElementById('btn-feed');
-    const btnPlay = document.getElementById('btn-play');
-    const btnHeal = document.getElementById('btn-heal');
+    const gachaBtn = document.getElementById('gacha-btn');
+    const laserDot = document.getElementById('laser-dot');
 
-    // 初始化
+    // --- 1. 素材库 (保证可爱和多样) ---
+    const cats = [
+        'https://cdn-icons-png.flaticon.com/512/10309/10309451.png', // 橘白
+        'https://cdn-icons-png.flaticon.com/512/10309/10309452.png', // 三花
+        'https://cdn-icons-png.flaticon.com/512/10309/10309332.png', // 灰白
+        'https://cdn-icons-png.flaticon.com/512/10309/10309368.png', // 奶牛
+        'https://cdn-icons-png.flaticon.com/512/10309/10309399.png'  // 纯白
+    ];
+    let catIdx = 0;
+
+    const bgs = [
+        'https://img.freepik.com/free-vector/hand-drawn-kawaii-room-interior_23-2150654503.jpg', // 阳光房间
+        'https://img.freepik.com/free-vector/hand-drawn-kawaii-sky-background_23-2150633476.jpg', // 云朵城堡
+        'https://img.freepik.com/free-vector/hand-drawn-kawaii-garden-background_23-2150633480.jpg', // 秘密花园
+        'https://img.freepik.com/free-vector/hand-drawn-cozy-winter-background_23-2150658229.jpg' // 暖暖被窝
+    ];
+    let bgIdx = 0;
+
+    // --- 初始化 ---
     function init() {
-        loadCat();
-        generateDust();
+        catImg.src = cats[catIdx];
+        bgLayer.style.backgroundImage = `url('${bgs[bgIdx]}')`;
         updateUI();
-        // 启动生病随机计时器
-        setTimeout(randomSickness, 5000 + Math.random() * 10000);
     }
 
-    function loadCat() {
-        const data = catData[currentCatIdx];
-        catImg.src = data.src;
-        root.style.setProperty('--theme-color', data.theme);
-    }
-
-    function updateUI() {
-        coinLabel.innerText = coins;
-        // 更新召唤按钮状态
-        if (coins >= 10) summonBtn.classList.remove('disabled');
-        else summonBtn.classList.add('disabled');
-        
-        // 更新交互按钮状态 (生病时禁用喂食和玩耍)
-        if (isSick) {
-            btnFeed.classList.add('disabled');
-            btnPlay.classList.add('disabled');
-            btnHeal.classList.remove('disabled');
-            catContainer.classList.add('sick');
-        } else {
-            btnFeed.classList.remove('disabled');
-            btnPlay.classList.remove('disabled');
-            btnHeal.classList.add('disabled');
-            catContainer.classList.remove('sick');
+    // --- 核心：动态感 (头部跟随鼠标) ---
+    document.addEventListener('mousemove', (e) => {
+        if (isLaserMode) {
+            laserDot.style.left = e.clientX + 'px';
+            laserDot.style.top = e.clientY + 'px';
+            if (!isBusy) chase(e.clientX, e.clientY); // 激光模式下追逐
         }
-    }
 
-    // --- 核心玩法1: 互动 (喂食/玩耍) ---
-    function interact(type) {
-        if (isSick) {
-            spawnPopText('😿 生病了不想动...', window.innerWidth/2, window.innerHeight/2);
-            return;
+        // 简单的头部跟随效果 (通过轻微旋转身体模拟)
+        if (!isBusy) {
+            const rect = catContainer.getBoundingClientRect();
+            const catX = rect.left + rect.width / 2;
+            // 计算鼠标相对于猫咪的水平位置，产生 -15deg 到 15deg 的旋转
+            let rotate = (e.clientX - catX) / window.innerWidth * 30;
+            rotate = Math.max(-15, Math.min(15, rotate)); // 限制角度
+            catWrap.style.transform = `rotate(${rotate}deg)`;
+            
+            // 面向判断
+            if (e.clientX < catX) catContainer.classList.add('face-left');
+            else catContainer.classList.remove('face-left');
         }
-        
-        coins += 5;
-        updateUI();
-        
-        if (type === 'feed') {
-            spawnPopText('🐟 好吃! +5金币', window.innerWidth/2, window.innerHeight/2 - 50);
-            // 吃东西动画
-            catImg.style.transform = 'scale(1.1) rotate(5deg)';
-            setTimeout(() => catImg.style.transform = '', 300);
-        } else {
-            spawnPopText('🧶 好玩! +5金币', window.innerWidth/2, window.innerHeight/2 - 50);
-            // 玩耍动画
-            catImg.style.transform = 'translateX(-20px)';
-            setTimeout(() => catImg.style.transform = 'translateX(20px)', 150);
-            setTimeout(() => catImg.style.transform = '', 300);
-        }
-    }
+    });
 
-    // --- 核心玩法2: 生病与治疗 ---
-    function randomSickness() {
-        if (!isSick && Math.random() > 0.3) { // 70%概率生病
-            makeSick();
-        }
-        // 下次生病检查
-        setTimeout(randomSickness, 10000 + Math.random() * 15000);
-    }
-
-    function makeSick() {
-        isSick = true;
-        updateUI();
-        spawnPopText('☠️ 糟糕! 猫咪生病了!', window.innerWidth/2, window.innerHeight/2);
-        document.getElementById('stage-bg').style.filter = 'brightness(0.6) grayscale(0.5)'; // 背景变暗
-    }
-
-    function healCat() {
-        if (!isSick) return;
-        isSick = false;
-        coins += 10; // 治疗奖励
-        updateUI();
-        spawnPopText('✨ 痊愈了! 奖励10金币', window.innerWidth/2, window.innerHeight/2);
-        document.getElementById('stage-bg').style.filter = ''; // 背景恢复
-        
-        // 痊愈特效
-        catImg.style.filter = 'brightness(2) drop-shadow(0 0 20px gold)';
-        setTimeout(() => catImg.style.filter = '', 500);
-    }
-
-    // --- 核心玩法3: 10金币换猫 ---
-    function summonNewCat() {
-        if (coins < 10 || isSick) return; // 生病时不能换猫
-        coins -= 10;
-        
-        // 魔法爆发特效
-        burstFx.classList.remove('active');
-        void burstFx.offsetWidth;
-        burstFx.classList.add('active');
-
-        // 随机切换新猫
-        let newIdx;
-        do { newIdx = Math.floor(Math.random() * catData.length); } while (newIdx === currentCatIdx);
-        currentCatIdx = newIdx;
-        
-        catImg.style.transform = 'scale(0)';
+    // --- 玩法1：切换背景 ---
+    function switchBG() {
+        bgIdx = (bgIdx + 1) % bgs.length;
+        bgLayer.style.filter = 'blur(10px) brightness(1.2)'; // 切换时的模糊特效
         setTimeout(() => {
-            loadCat();
-            catImg.style.transform = 'scale(1)';
-            updateUI();
-            spawnPopText('✨ 新的精灵猫降临!', window.innerWidth/2, window.innerHeight/2 + 80);
+            bgLayer.style.backgroundImage = `url('${bgs[bgIdx]}')`;
+            bgLayer.style.filter = '';
+            spawnPopText('🎨 场景切换!', window.innerWidth/2, window.innerHeight/2);
         }, 300);
     }
 
-    // 工具: 漂浮文字特效
-    function spawnPopText(text, x, y) {
-        const p = document.createElement('div'); p.className = 'pop-fx'; p.innerText = text;
-        p.style.left = x + 'px'; p.style.top = y + 'px';
-        document.body.appendChild(p); setTimeout(() => p.remove(), 1000);
+    // --- 玩法2：10金币抽猫 ---
+    function gachaCat() {
+        if (coins < 10) return;
+        coins -= 10; updateUI();
+        
+        let newIdx;
+        do { newIdx = Math.floor(Math.random() * cats.length); } while (newIdx === catIdx);
+        catIdx = newIdx;
+
+        catContainer.style.transform = 'translate(-50%, -50%) scale(0)'; // 缩小消失
+        setTimeout(() => {
+            catImg.src = cats[catIdx];
+            catContainer.style.transform = 'translate(-50%, -50%) scale(1)'; // 放大出现
+            spawnPopText('✨ 新猫咪驾到!', window.innerWidth/2, window.innerHeight/2 + 100);
+        }, 300);
     }
 
-    // 工具: 生成真实感光尘
-    function generateDust() {
-        for(let i=0; i<30; i++) {
-            let d = document.createElement('div'); d.className = 'dust-particle';
-            d.style.left = Math.random()*100+'vw';
-            d.style.width = d.style.height = Math.random()*5+2+'px';
-            d.style.animationDelay = Math.random()*-10+'s';
-            d.style.animationDuration = 10+Math.random()*10+'s';
-            document.body.appendChild(d);
-        }
+    // --- 玩法3：激光笔模式 (最好玩!) ---
+    function toggleLaser() {
+        isLaserMode = !isLaserMode;
+        document.body.classList.toggle('laser-mode', isLaserMode);
+        laserDot.style.display = isLaserMode ? 'block' : 'none';
+        document.getElementById('laser-dock-btn').classList.toggle('active-laser', isLaserMode);
+        // 激光模式下移动更快
+        catContainer.style.transitionDuration = isLaserMode ? '0.15s' : '0.3s';
+        if (!isLaserMode) resetCatPos();
+    }
+
+    // --- 玩法4：底部玩具互动 ---
+    function interact(toy, actionType) {
+        if (isBusy || isLaserMode) return;
+        isBusy = true;
+        coins += 5; updateUI();
+
+        // 1. 生成玩具
+        const toyEl = document.createElement('div');
+        toyEl.className = 'toy-pop'; toyEl.innerText = toy;
+        // 在猫咪前方生成
+        const rect = catContainer.getBoundingClientRect();
+        const targetX = rect.left + rect.width/2 + (Math.random()-0.5)*100;
+        const targetY = rect.top + rect.height/2 + 50;
+        toyEl.style.left = targetX + 'px'; toyEl.style.top = targetY + 'px';
+        document.body.appendChild(toyEl);
+
+        // 2. 猫咪移动过去
+        catContainer.style.left = targetX + 'px';
+        catContainer.style.top = targetY - 40 + 'px';
+
+        // 3. 执行动作动画
+        setTimeout(() => {
+            catContainer.classList.add('pouncing'); // 通用扑咬动作
+            let msg = toy === '🐟' ? '😋 吧唧吧唧!' : (toy === '🛁' ? '🫧 好舒服!' : '💖 好玩!');
+            spawnPopText(msg, targetX, targetY - 80);
+            
+            setTimeout(() => {
+                catContainer.classList.remove('pouncing');
+                toyEl.remove();
+                isBusy = false;
+                resetCatPos(); // 回到中心
+            }, 1000);
+        }, 300);
+    }
+    
+    // 普通抚摸
+    function petCat(e) {
+        if (isBusy || isLaserMode) return;
+        coins++; updateUI();
+        spawnPopText('❤️', e.clientX, e.clientY - 50);
+        // Q弹反馈
+        catWrap.style.transform = 'scale(1.1, 0.9)';
+        setTimeout(() => catWrap.style.transform = '', 200);
+    }
+
+    // 辅助函数
+    function chase(x, y) {
+        catContainer.style.left = x + 'px';
+        catContainer.style.top = y + 'px';
+    }
+    function resetCatPos() {
+        catContainer.style.left = '50%';
+        catContainer.style.top = '55%';
+        catWrap.style.transform = '';
+    }
+    function updateUI() {
+        coinLabel.innerText = coins;
+        gachaBtn.classList.toggle('disabled', coins < 10);
+    }
+    function spawnPopText(text, x, y) {
+        const p = document.createElement('div'); p.className = 'pop-text'; p.innerText = text;
+        p.style.left = x + 'px'; p.style.top = y + 'px';
+        document.body.appendChild(p); setTimeout(() => p.remove(), 1000);
     }
 
     init();
