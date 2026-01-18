@@ -3,284 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>绘梦猫灵：马卡龙之吻</title>
+    <title>马卡龙喵灵：抚摸与呼噜</title>
     <style>
-        /* --- 🍭 马卡龙甜点色盘定义 --- */
+        /* --- 1. 马卡龙色系定义 --- */
         :root {
-            --macaron-pink: #ffcce0;
-            --macaron-blue: #cce5ff;
-            --macaron-yellow: #fff5cc;
-            --macaron-mint: #d9ffe6;
-            --macaron-purple: #e6ccff;
-            --text-color: #8c7a8b; /* 柔和的深灰紫色，代替纯黑 */
-            --ui-font: "Comic Sans MS", "幼圆", "Microsoft YaHei", cursive, sans-serif; /* 选择圆润可爱的字体 */
+            --bg-1: #ffdde1; /* 樱花粉 */
+            --bg-2: #ee9ca7; /* 蜜桃粉 */
+            --bg-3: #a7bfe8; /* 婴儿蓝 */
+            --bg-4: #6190e8; /* 天空蓝 */
+            --bubble: #fff5e6; /* 奶油白 */
         }
 
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: var(--macaron-pink); font-family: var(--ui-font); user-select: none; color: var(--text-color); }
-
-        #stage { width: 100%; height: 100%; position: relative; overflow: hidden; }
-        
-        /* --- 🍰 氛围层：糖霜与柔光 --- */
-        /* 给整个画面加一层柔焦奶油滤镜 */
-        .creamy-overlay {
-            position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 30;
-            background: radial-gradient(circle at center, transparent 30%, rgba(255, 245, 204, 0.4) 100%);
-            mix-blend-mode: overlay;
-            filter: blur(10px);
-        }
-        /* 漂浮的糖果粒子 */
-        .candy-dust {
-            position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 25;
-            background-image: url('https://cdn.pixabay.com/photo/2018/04/18/17/43/bokeh-3331178_1280.jpg'); /* 柔和的彩色光斑 */
-            background-size: cover; opacity: 0.3; mix-blend-mode: screen;
-            animation: slow-drift 50s linear infinite alternate;
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+            font-family: "Mady Madi", "幼圆", cursive; /* 圆润字体 */
+            cursor: url('https://cdn-icons-png.flaticon.com/32/10522/10522079.png'), auto; /* 替换为猫爪光标 */
+            user-select: none;
         }
 
-        /* --- 🖼️ 场景容器 (保持视差结构) --- */
-        .scene-container { 
-            width: 300%; height: 100%; display: flex; position: absolute; top: 0; left: 0; 
-            transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* 更Q弹的切换曲线 */
-        }
-        .scene { position: relative; width: 33.333%; height: 100%; overflow: hidden; }
-
-        /* 手绘背景层 - 统一处理为柔和的水彩感 */
-        .bg-layer { 
-            position: absolute; width: 110%; height: 110%; left: -5%; top: -5%; 
-            background-size: cover; background-position: center; 
-            transition: transform 1.2s ease-out;
-            /* 核心：通过滤镜将照片转为马卡龙手绘色调 */
-            filter: brightness(1.2) contrast(0.8) saturate(1.2) hue-rotate(0deg) blur(2px);
+        /* --- 2. 动态马卡龙背景 (CSS Animation) --- */
+        #dynamic-bg {
+            position: absolute; width: 200%; height: 200%;
+            background: linear-gradient(300deg, var(--bg-1), var(--bg-3), var(--bg-2), var(--bg-4));
+            background-size: 180% 180%;
+            animation: gradient-flow 15s ease infinite;
+            z-index: 0;
+            left: -50%; top: -50%;
         }
 
-        /* 场景1：樱花奶油屋 (粉色调) */
-        .s0 .bg-layer { background-image: url('https://images.unsplash.com/photo-1528459199957-0ff28496a7f6?auto=format&fit=crop&w=1920&q=80'); filter: brightness(1.2) saturate(0.8) sepia(0.2) hue-rotate(320deg) blur(3px); }
-        
-        /* 场景2：薄荷糖森林 (绿蓝调) */
-        .s1 .bg-layer { background-image: url('https://images.unsplash.com/photo-1518144591331-17a5dd71c477?auto=format&fit=crop&w=1920&q=80'); filter: brightness(1.1) saturate(1.1) hue-rotate(160deg) blur(3px); }
-        
-        /* 场景3：香芋云朵梦境 (紫调) */
-        .s2 .bg-layer { background-image: url('https://images.unsplash.com/photo-1536599018102-9f803c140fc1?auto=format&fit=crop&w=1920&q=80'); filter: brightness(1.3) saturate(0.9) hue-rotate(220deg) blur(4px); }
-
-        /* --- 🐱 主角：Q弹手绘小煤球 --- */
-        .cute-cat-unit {
-            position: absolute; width: 160px; height: 160px; cursor: url('https://cdn-icons-png.flaticon.com/32/2567/2567820.png'), auto; /* 鼠标变成小爪子 */ z-index: 50;
-            
-            /* --- 核心升级：更换为超可爱的手绘素材 --- */
-            /* 这里使用一个更Q版、眼睛更大的手绘黑猫素材 */
-            background-image: url('https://i.pinimg.com/originals/5a/e0/9c/5ae09c68320a69f0d6633271d7c93e34.png'); 
-            background-size: contain; background-repeat: no-repeat; background-position: bottom center;
-            
-            /* 柔和的彩色阴影 */
-            filter: drop-shadow(0px 8px 10px rgba(100, 80, 120, 0.3)); 
-            
-            /* 默认呼吸动画 */
-            animation: soft-breathe 2.5s ease-in-out infinite;
-            transition: transform 0.3s, filter 0.3s, opacity 0.5s, left 1.5s cubic-bezier(0.25, 0.1, 0.25, 1), top 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-            transform-origin: bottom center; /* 锚点在底部，方便做挤压动画 */
-        }
-        /* 悬停时：期待的小眼神 */
-        .cute-cat-unit:hover { 
-            transform: scale(1.08) rotate(-2deg); 
-            filter: drop-shadow(0px 10px 15px rgba(100, 80, 120, 0.4)) brightness(1.05); 
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* --- 🍮 动画定义 --- */
-        @keyframes slow-drift { 0% { background-position: 0% 0%; } 100% { background-position: 10% 10%; } }
-        @keyframes soft-breathe { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(1.03) translateY(-3px); } }
-        
-        /* 核心交互动画：果冻般的挤压回弹 */
-        @keyframes jelly-jump { 
+        /* 漂浮的云朵装饰 */
+        .cloud {
+            position: absolute; background: rgba(255,255,255,0.4); border-radius: 50px;
+            filter: blur(8px); animation: float-cloud 20s linear infinite; z-index: 1;
+        }
+        @keyframes float-cloud { from { transform: translateX(-200px); } to { transform: translateX(120vw); } }
+
+        /* --- 3. 核心角色：高互动小猫 --- */
+        #cat-container {
+            position: absolute; left: 50%; top: 50%; 
+            transform: translate(-50%, -50%);
+            width: 280px; height: 280px; z-index: 10;
+            transition: transform 0.1s; /* 用于鼠标跟随的微动 */
+        }
+
+        /* 猫咪主体 (手绘风格 SVG 结构模拟) */
+        .cat-body {
+            position: relative; width: 100%; height: 100%;
+            background: url('https://i.pinimg.com/originals/30/56/27/305627f12eb6e5595914615a6b7d2f4d.png') no-repeat center bottom;
+            background-size: contain;
+            filter: drop-shadow(0 10px 15px rgba(100,80,120,0.2));
+            transform-origin: bottom center;
+            transition: filter 0.3s;
+        }
+
+        /* 交互反馈：果冻弹力 */
+        .jelly-anim { animation: jelly 0.6s cubic-bezier(0.25, 1.5, 0.5, 1); }
+        @keyframes jelly {
             0% { transform: scale(1, 1); }
-            30% { transform: scale(1.25, 0.75) translateY(10px); } /* 压扁 */
-            50% { transform: scale(0.85, 1.15) translateY(-40px); } /* 拉长跳起 */
-            70% { transform: scale(1.05, 0.95) translateY(-10px); } /* 落地缓冲 */
-            100% { transform: scale(1, 1) translateY(0); }
-        }
-        
-        @keyframes candy-pop { 0% { transform: scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; } }
-
-        /* --- 🍪 可爱手绘风 UI --- */
-        #hud { position: absolute; top: 25px; left: 25px; z-index: 100; }
-        .cookie-panel { 
-            background: #fff0f5; /* 饼干底色 */
-            padding: 12px 28px; border-radius: 30px; color: var(--text-color); font-weight: 900; 
-            box-shadow: 4px 4px 0px var(--macaron-pink), inset 2px 2px 5px rgba(255,255,255,0.8);
-            border: 3px solid #ffb3d1;
-            display: flex; align-items: center; gap: 12px; font-size: 20px;
+            30% { transform: scale(1.25, 0.75) translateY(10px); }
+            40% { transform: scale(0.75, 1.25) translateY(-20px); }
+            50% { transform: scale(1.15, 0.85) translateY(0); }
+            65% { transform: scale(0.95, 1.05) translateY(-5px); }
+            75% { transform: scale(1.05, 0.95) translateY(0); }
+            100% { transform: scale(1, 1); }
         }
 
-        #controls { position: absolute; bottom: 35px; width: 100%; display: flex; justify-content: center; gap: 25px; z-index: 100; }
-        .macaron-btn { 
-            width: 75px; height: 75px; border-radius: 50%; 
-            background: radial-gradient(circle at 30% 30%, var(--macaron-yellow), #ffd1dc); /* 立体感渐变 */
-            display: flex; align-items: center; justify-content: center; font-size: 36px; cursor: pointer; color: #fff;
-            box-shadow: 0 6px 0 #ff99bb, 0 10px 15px rgba(0,0,0,0.1); 
-            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1); border: 4px solid white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-        }
-        .macaron-btn:hover { transform: translateY(-4px); filter: brightness(1.05); }
-        .macaron-btn:active { transform: translateY(4px); box-shadow: 0 0px 0 #ff99bb, inset 0 2px 5px rgba(0,0,0,0.1); }
-        .btn-summon { background: radial-gradient(circle at 30% 30%, var(--macaron-mint), var(--macaron-blue)); box-shadow: 0 6px 0 #a1d9ff, 0 10px 15px rgba(0,0,0,0.1); }
-        .btn-summon:active { box-shadow: 0 0px 0 #a1d9ff, inset 0 2px 5px rgba(0,0,0,0.1); }
+        /* 交互反馈：舒服得发抖 */
+        .purr-anim { animation: vibrate 0.3s linear infinite; }
+        @keyframes vibrate { 0% { transform: rotate(0deg); } 25% { transform: rotate(1deg); } 75% { transform: rotate(-1deg); } 100% { transform: rotate(0deg); } }
 
-        .candy-particle { position: absolute; z-index: 200; pointer-events: none; font-size: 24px; }
+        /* --- 眼睛 (实现视线跟随) --- */
+        .eyes-container {
+            position: absolute; top: 110px; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 30px; display: flex; justify-content: space-between; z-index: 15;
+        }
+        .eye {
+            width: 24px; height: 24px; background: #fff; border-radius: 50%; position: relative; overflow: hidden;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        .pupil {
+            width: 14px; height: 14px; background: #333; border-radius: 50%; position: absolute; top: 5px; left: 5px;
+            transition: 0.1s; /* 视线移动速度 */
+        }
+        .eye-closed { /* 眯眼样式 */
+            height: 4px; top: 10px; background: #333; border-radius: 2px;
+        }
+
+        /* --- 4. 粒子特效 --- */
+        .particle {
+            position: absolute; pointer-events: none; z-index: 20;
+            font-size: 24px; animation: float-up 1s ease-out forwards;
+        }
+        @keyframes float-up { 
+            0% { transform: translate(0, 0) scale(0.5); opacity: 1; } 
+            100% { transform: translate(var(--tx), -100px) scale(1.5) rotate(var(--r)); opacity: 0; } 
+        }
+
+        /* --- UI 面板 --- */
+        #ui-panel {
+            position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
+            padding: 10px 30px; border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(255,105,180, 0.2);
+            border: 3px solid #fff; z-index: 100;
+            font-size: 24px; color: #ff6b81; font-weight: bold;
+            display: flex; gap: 10px; align-items: center;
+        }
+        .heart-icon { animation: heartbeat 1.5s infinite; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* 提示语 */
+        #hint {
+            position: absolute; bottom: 50px; width: 100%; text-align: center;
+            color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 18px; opacity: 0.8; animation: fade 2s infinite alternate;
+        }
+        @keyframes fade { from { opacity: 0.6; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div id="stage">
-    <div class="creamy-overlay"></div>
-    <div class="candy-dust"></div>
+    <div id="dynamic-bg"></div>
+    <div id="clouds"></div>
 
-    <div class="scene-container" id="world">
-        <div class="scene s0"><div class="bg-layer"></div></div>
-        <div class="scene s1"><div class="bg-layer"></div></div>
-        <div class="scene s2"><div class="bg-layer"></div></div>
+    <div id="ui-panel">
+        <span class="heart-icon">💖</span> 
+        <span id="love-score">0</span>
     </div>
 
-    <div id="hud">
-        <div class="cookie-panel">
-            <span>🍭</span> 
-            <span>糖果力: <span id="coin-txt">100</span></span>
+    <div id="cat-container">
+        <div class="cat-body" id="cat-visual">
+            <div class="eyes-container">
+                <div class="eye left"><div class="pupil"></div></div>
+                <div class="eye right"><div class="pupil"></div></div>
+            </div>
         </div>
     </div>
 
-    <div id="controls">
-        <div class="macaron-btn" onclick="switchScene(-1)">👈</div>
-        <div class="macaron-btn btn-summon" style="font-size: 42px;" onclick="summonCat()">🍬</div>
-        <div class="macaron-btn" onclick="switchScene(1)">👉</div>
-    </div>
-</div>
+    <div id="hint">试着在猫猫身上滑动抚摸，或者点击它！🔊 打开声音</div>
 
 <script>
-    let coins = 100;
-    let cats = [];
-    let currentSceneIdx = 0;
-    // 马卡龙粒子颜色库
-    const candyColors = ['#ffcce0', '#cce5ff', '#fff5cc', '#d9ffe6', '#e6ccff'];
-    const candyShapes = ['🌸', '⭐', '🍩', '🍬', '✨', '💖'];
+    // --- 🔊 音效管理器 (使用稳定 CDN) ---
+    const sounds = {
+        meow: new Audio('https://cdn.pixabay.com/audio/2024/09/20/audio_512030f576.mp3'), // 喵
+        purr: new Audio('https://cdn.pixabay.com/audio/2022/10/30/audio_3310065756.mp3'), // 呼噜
+        pop: new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_73147814b5.mp3') // 啵
+    };
+    // 预加载并设置音量
+    sounds.meow.volume = 0.6;
+    sounds.purr.volume = 0.4;
+    sounds.pop.volume = 0.3;
+    sounds.purr.loop = true; // 呼噜声循环
 
-    class CuteCat {
-        constructor() {
-            this.sceneLocation = currentSceneIdx;
-            this.x = window.innerWidth * 0.2 + Math.random() * (window.innerWidth * 0.6);
-            this.y = window.innerHeight * 0.4 + Math.random() * (window.innerHeight * 0.3); 
-            this.createDOM();
-            this.startAI();
-        }
+    let score = 0;
+    const catContainer = document.getElementById('cat-container');
+    const catVisual = document.getElementById('cat-visual');
+    const pupils = document.querySelectorAll('.pupil');
+    const eyes = document.querySelectorAll('.eye');
+    const scoreEl = document.getElementById('love-score');
 
-        createDOM() {
-            this.el = document.createElement('div');
-            this.el.className = 'cute-cat-unit';
-            this.updatePositionAndVisibility();
-            
-            this.el.onclick = (e) => { e.stopPropagation(); this.interact(e); };
-            document.getElementById('stage').appendChild(this.el);
+    // --- 👁️ 视线跟随逻辑 ---
+    document.addEventListener('mousemove', (e) => {
+        const rect = catContainer.getBoundingClientRect();
+        const catCenterX = rect.left + rect.width / 2;
+        const catCenterY = rect.top + rect.height / 2;
 
-            // Q弹入场
-            this.el.style.opacity = 0;
-            this.el.style.transform = 'scale(0.5, 1.5) translateY(50px)';
-            setTimeout(() => {
-                this.el.style.opacity = (this.sceneLocation === currentSceneIdx) ? 1 : 0;
-                this.el.style.transform = 'scale(1, 1) translateY(0)';
-            }, 50);
-        }
+        // 计算鼠标相对于猫中心的角度
+        const angle = Math.atan2(e.clientY - catCenterY, e.clientX - catCenterX);
+        // 限制眼球移动距离
+        const distance = Math.min(6, Math.hypot(e.clientX - catCenterX, e.clientY - catCenterY) / 10);
 
-        updatePositionAndVisibility() {
-            // 简单的透视缩放，让猫咪看起来融合在场景里
-            const perspectiveScale = 0.8 + (this.y / window.innerHeight) * 0.4;
-            this.el.style.left = this.x - 80 + 'px';
-            this.el.style.top = this.y - 140 + 'px';
-            // 应用透视缩放，但保留旋转接口
-            this.el.style.transform = `scale(${perspectiveScale}) rotate(0deg)`;
-            
-            const isVisible = (this.sceneLocation === currentSceneIdx);
-            this.el.style.opacity = isVisible ? 1 : 0;
-            this.el.style.pointerEvents = isVisible ? 'auto' : 'none';
-        }
+        const moveX = Math.cos(angle) * distance;
+        const moveY = Math.sin(angle) * distance;
 
-        interact(e) {
-            coins += 10; updateUI();
-            
-            // --- 核心交互升级：果冻般的挤压回弹动画 ---
-            this.el.style.animation = 'none'; // 先打断呼吸动画
-            // 强制重绘
-            void this.el.offsetWidth; 
-            // 应用果冻跳跃动画
-            this.el.style.animation = 'jelly-jump 0.6s cubic-bezier(0.25, 1.5, 0.5, 1)';
-            
-            // 爆发出马卡龙糖果粒子
-            spawnCandyExplosion(e.clientX, e.clientY - 50);
-
-            setTimeout(() => {
-                // 恢复呼吸动画
-                this.el.style.animation = 'soft-breathe 2.5s ease-in-out infinite';
-            }, 600);
-        }
-
-        startAI() {
-            setInterval(() => {
-                if (Math.random() > 0.65 && this.sceneLocation === currentSceneIdx) {
-                    this.wander();
-                }
-            }, 3000 + Math.random() * 2500);
-        }
-
-        wander() {
-            this.x += (Math.random() - 0.5) * 180;
-            this.y += (Math.random() - 0.5) * 100;
-            this.x = Math.max(100, Math.min(window.innerWidth - 100, this.x));
-            this.y = Math.max(window.innerHeight * 0.4, Math.min(window.innerHeight - 150, this.y));
-            this.updatePositionAndVisibility();
-        }
-    }
-
-    function updateUI() { document.getElementById('coin-txt').innerText = coins; }
-
-    function switchScene(dir) {
-        currentSceneIdx = (currentSceneIdx + dir + 3) % 3;
-        document.getElementById('world').style.transform = `translateX(-${currentSceneIdx * 33.333}%)`;
-        
-        document.querySelectorAll('.bg-layer').forEach((bg, idx) => {
-            const relativePos = idx - currentSceneIdx;
-            bg.style.transform = `translateX(${relativePos * 10}%) scale(1.05)`;
+        pupils.forEach(pupil => {
+            pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
         });
+    });
 
-        cats.forEach(cat => cat.updatePositionAndVisibility());
+    // --- 👆 核心交互：点击（Squish） ---
+    catContainer.addEventListener('mousedown', () => {
+        // 视觉反馈：压扁
+        catVisual.style.transform = 'scale(1.2, 0.8) translateY(10px)';
+        playAudio(sounds.meow);
+    });
+
+    catContainer.addEventListener('mouseup', (e) => {
+        // 视觉反馈：Q弹恢复
+        catVisual.style.transform = 'scale(1, 1)';
+        catVisual.classList.remove('jelly-anim');
+        void catVisual.offsetWidth; // 强制重绘
+        catVisual.classList.add('jelly-anim');
+        
+        // 粒子爆发
+        spawnParticles(e.clientX, e.clientY, 5);
+        addScore(5);
+    });
+
+    // --- 🖐️ 核心交互：抚摸（Rubbing） ---
+    let isHovering = false;
+    let rubDistance = 0;
+
+    catContainer.addEventListener('mouseenter', () => { 
+        isHovering = true; 
+        document.body.style.cursor = "url('https://cdn-icons-png.flaticon.com/32/10522/10522079.png'), auto"; // 确保光标
+    });
+    catContainer.addEventListener('mouseleave', () => { 
+        isHovering = false; 
+        stopPurring(); 
+    });
+
+    catContainer.addEventListener('mousemove', (e) => {
+        if (!isHovering) return;
+        
+        // 计算抚摸距离
+        rubDistance++;
+        
+        if (rubDistance > 10) { // 每移动一定距离触发一次
+            rubDistance = 0;
+            startPurring();
+            addScore(1);
+            spawnParticles(e.clientX, e.clientY, 1);
+            
+            // 抚摸时眯眼睛
+            eyes.forEach(eye => {
+                eye.style.height = '4px'; // 变成一条缝
+                eye.style.top = '10px';
+            });
+        }
+        
+        // 停止移动 200ms 后睁眼停止呼噜
+        clearTimeout(window.stopRubTimer);
+        window.stopRubTimer = setTimeout(() => {
+            stopPurring();
+        }, 200);
+    });
+
+    function startPurring() {
+        if (sounds.purr.paused) sounds.purr.play().catch(()=>{});
+        catVisual.classList.add('purr-anim'); // 身体抖动
     }
 
-    function summonCat() {
-        if(coins >= 50) {
-            coins -= 50; updateUI();
-            cats.push(new CuteCat());
-            spawnCandyExplosion(window.innerWidth/2, window.innerHeight/2 + 100);
+    function stopPurring() {
+        sounds.purr.pause();
+        catVisual.classList.remove('purr-anim');
+        // 睁开眼睛
+        eyes.forEach(eye => {
+            eye.style.height = '24px';
+            eye.style.top = '0px';
+        });
+    }
+
+    // --- 🎉 粒子系统 ---
+    const shapes = ['💖', '✨', '🍭', '🌸', '⭐'];
+    function spawnParticles(x, y, count) {
+        for(let i=0; i<count; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerText = shapes[Math.floor(Math.random() * shapes.length)];
+            p.style.left = x + 'px';
+            p.style.top = y + 'px';
+            
+            // 随机散射参数
+            const tx = (Math.random() - 0.5) * 100 + 'px';
+            const r = (Math.random() - 0.5) * 90 + 'deg';
+            p.style.setProperty('--tx', tx);
+            p.style.setProperty('--r', r);
+            
+            document.body.appendChild(p);
+            playAudio(sounds.pop); // 播放啵啵声
+
+            setTimeout(() => p.remove(), 1000);
         }
     }
 
-    // 生成马卡龙糖果爆炸特效
-    function spawnCandyExplosion(x, y) {
-        for(let i=0; i<12; i++) {
-            const candy = document.createElement('div');
-            candy.className = 'candy-particle';
-            candy.innerText = candyShapes[Math.floor(Math.random() * candyShapes.length)];
-            candy.style.left = x + 'px'; candy.style.top = y + 'px';
-            candy.style.color = candyColors[Math.floor(Math.random() * candyColors.length)];
-            // 随机爆炸方向和旋转
-            const tx = (Math.random() - 0.5) * 250 + 'px';
-            const ty = (Math.random() - 0.8) * 250 + 'px'; // 更多向上炸
-            const rot = (Math.random() - 0.5) * 360 + 'deg';
-            candy.style.setProperty('--tx', tx);
-            candy.style.setProperty('--ty', ty);
-            candy.style.setProperty('--rot', rot);
-            candy.style.animation = `candy-pop ${0.8 + Math.random()*0.4}s ease-out forwards`;
-            document.getElementById('stage').appendChild(candy);
-            setTimeout(() => candy.remove(), 1200);
-        }
+    function addScore(val) {
+        score += val;
+        scoreEl.innerText = score;
+        scoreEl.style.transform = 'scale(1.5)';
+        setTimeout(() => scoreEl.style.transform = 'scale(1)', 100);
     }
 
-    cats.push(new CuteCat());
-    updateUI();
-    switchScene(0);
+    function playAudio(audioObj) {
+        // 重置播放进度，允许快速连续播放
+        audioObj.currentTime = 0;
+        audioObj.play().catch(e => console.log("需交互后播放音频"));
+    }
+
+    // --- ☁️ 自动生成云朵 ---
+    for(let i=0; i<5; i++) {
+        const c = document.createElement('div');
+        c.className = 'cloud';
+        c.style.width = Math.random() * 100 + 100 + 'px';
+        c.style.height = Math.random() * 40 + 30 + 'px';
+        c.style.top = Math.random() * 80 + '%';
+        c.style.animationDuration = Math.random() * 20 + 20 + 's';
+        c.style.animationDelay = Math.random() * -20 + 's';
+        document.getElementById('clouds').appendChild(c);
+    }
 </script>
 </body>
 </html>
