@@ -2,311 +2,460 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>马卡龙喵灵：抚摸与呼噜</title>
+    <title>赛博喵影：重力代码 | Cyber-Neko</title>
     <style>
-        /* --- 1. 马卡龙色系定义 --- */
-        :root {
-            --bg-1: #ffdde1; /* 樱花粉 */
-            --bg-2: #ee9ca7; /* 蜜桃粉 */
-            --bg-3: #a7bfe8; /* 婴儿蓝 */
-            --bg-4: #6190e8; /* 天空蓝 */
-            --bubble: #fff5e6; /* 奶油白 */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050510; /* 深空蓝黑 */
+            overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
         }
 
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-            font-family: "Mady Madi", "幼圆", cursive; /* 圆润字体 */
-            cursor: url('https://cdn-icons-png.flaticon.com/32/10522/10522079.png'), auto; /* 替换为猫爪光标 */
-            user-select: none;
+        #game-container {
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.2);
+            border: 2px solid #333;
+            border-radius: 10px;
         }
 
-        /* --- 2. 动态马卡龙背景 (CSS Animation) --- */
-        #dynamic-bg {
-            position: absolute; width: 200%; height: 200%;
-            background: linear-gradient(300deg, var(--bg-1), var(--bg-3), var(--bg-2), var(--bg-4));
-            background-size: 180% 180%;
-            animation: gradient-flow 15s ease infinite;
-            z-index: 0;
-            left: -50%; top: -50%;
+        canvas {
+            display: block;
+            border-radius: 8px;
+            background: linear-gradient(to bottom, #0a0a2a, #1a0b2e);
         }
 
-        @keyframes gradient-flow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+            text-shadow: 0 0 10px #00f3ff;
         }
 
-        /* 漂浮的云朵装饰 */
-        .cloud {
-            position: absolute; background: rgba(255,255,255,0.4); border-radius: 50px;
-            filter: blur(8px); animation: float-cloud 20s linear infinite; z-index: 1;
-        }
-        @keyframes float-cloud { from { transform: translateX(-200px); } to { transform: translateX(120vw); } }
-
-        /* --- 3. 核心角色：高互动小猫 --- */
-        #cat-container {
-            position: absolute; left: 50%; top: 50%; 
-            transform: translate(-50%, -50%);
-            width: 280px; height: 280px; z-index: 10;
-            transition: transform 0.1s; /* 用于鼠标跟随的微动 */
+        h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #00f3ff;
+            letter-spacing: 2px;
         }
 
-        /* 猫咪主体 (手绘风格 SVG 结构模拟) */
-        .cat-body {
-            position: relative; width: 100%; height: 100%;
-            background: url('https://i.pinimg.com/originals/30/56/27/305627f12eb6e5595914615a6b7d2f4d.png') no-repeat center bottom;
-            background-size: contain;
-            filter: drop-shadow(0 10px 15px rgba(100,80,120,0.2));
-            transform-origin: bottom center;
-            transition: filter 0.3s;
+        p {
+            font-size: 14px;
+            color: #ff00ff;
+            margin: 5px 0;
         }
 
-        /* 交互反馈：果冻弹力 */
-        .jelly-anim { animation: jelly 0.6s cubic-bezier(0.25, 1.5, 0.5, 1); }
-        @keyframes jelly {
-            0% { transform: scale(1, 1); }
-            30% { transform: scale(1.25, 0.75) translateY(10px); }
-            40% { transform: scale(0.75, 1.25) translateY(-20px); }
-            50% { transform: scale(1.15, 0.85) translateY(0); }
-            65% { transform: scale(0.95, 1.05) translateY(-5px); }
-            75% { transform: scale(1.05, 0.95) translateY(0); }
-            100% { transform: scale(1, 1); }
+        #tutorial {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            pointer-events: none;
+            animation: pulse 2s infinite;
         }
 
-        /* 交互反馈：舒服得发抖 */
-        .purr-anim { animation: vibrate 0.3s linear infinite; }
-        @keyframes vibrate { 0% { transform: rotate(0deg); } 25% { transform: rotate(1deg); } 75% { transform: rotate(-1deg); } 100% { transform: rotate(0deg); } }
-
-        /* --- 眼睛 (实现视线跟随) --- */
-        .eyes-container {
-            position: absolute; top: 110px; left: 50%; transform: translateX(-50%);
-            width: 80px; height: 30px; display: flex; justify-content: space-between; z-index: 15;
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
         }
-        .eye {
-            width: 24px; height: 24px; background: #fff; border-radius: 50%; position: relative; overflow: hidden;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
-        }
-        .pupil {
-            width: 14px; height: 14px; background: #333; border-radius: 50%; position: absolute; top: 5px; left: 5px;
-            transition: 0.1s; /* 视线移动速度 */
-        }
-        .eye-closed { /* 眯眼样式 */
-            height: 4px; top: 10px; background: #333; border-radius: 2px;
-        }
-
-        /* --- 4. 粒子特效 --- */
-        .particle {
-            position: absolute; pointer-events: none; z-index: 20;
-            font-size: 24px; animation: float-up 1s ease-out forwards;
-        }
-        @keyframes float-up { 
-            0% { transform: translate(0, 0) scale(0.5); opacity: 1; } 
-            100% { transform: translate(var(--tx), -100px) scale(1.5) rotate(var(--r)); opacity: 0; } 
-        }
-
-        /* --- UI 面板 --- */
-        #ui-panel {
-            position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
-            padding: 10px 30px; border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(255,105,180, 0.2);
-            border: 3px solid #fff; z-index: 100;
-            font-size: 24px; color: #ff6b81; font-weight: bold;
-            display: flex; gap: 10px; align-items: center;
-        }
-        .heart-icon { animation: heartbeat 1.5s infinite; }
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-
-        /* 提示语 */
-        #hint {
-            position: absolute; bottom: 50px; width: 100%; text-align: center;
-            color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            font-size: 18px; opacity: 0.8; animation: fade 2s infinite alternate;
-        }
-        @keyframes fade { from { opacity: 0.6; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="dynamic-bg"></div>
-    <div id="clouds"></div>
-
-    <div id="ui-panel">
-        <span class="heart-icon">💖</span> 
-        <span id="love-score">0</span>
+<div id="game-container">
+    <canvas id="gameCanvas" width="960" height="540"></canvas>
+    
+    <div id="ui-layer">
+        <h1>CYBER-NEKO</h1>
+        <p>数据包收集: <span id="score">0</span> / 5</p>
     </div>
 
-    <div id="cat-container">
-        <div class="cat-body" id="cat-visual">
-            <div class="eyes-container">
-                <div class="eye left"><div class="pupil"></div></div>
-                <div class="eye right"><div class="pupil"></div></div>
-            </div>
-        </div>
+    <div id="tutorial">
+        按 [ A / D ] 移动  •  按 [ 空格 ] 反转重力
     </div>
-
-    <div id="hint">试着在猫猫身上滑动抚摸，或者点击它！🔊 打开声音</div>
+</div>
 
 <script>
-    // --- 🔊 音效管理器 (使用稳定 CDN) ---
-    const sounds = {
-        meow: new Audio('https://cdn.pixabay.com/audio/2024/09/20/audio_512030f576.mp3'), // 喵
-        purr: new Audio('https://cdn.pixabay.com/audio/2022/10/30/audio_3310065756.mp3'), // 呼噜
-        pop: new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_73147814b5.mp3') // 啵
-    };
-    // 预加载并设置音量
-    sounds.meow.volume = 0.6;
-    sounds.purr.volume = 0.4;
-    sounds.pop.volume = 0.3;
-    sounds.purr.loop = true; // 呼噜声循环
+/**
+ * 赛博喵影 - 核心游戏引擎
+ */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const scoreEl = document.getElementById('score');
 
-    let score = 0;
-    const catContainer = document.getElementById('cat-container');
-    const catVisual = document.getElementById('cat-visual');
-    const pupils = document.querySelectorAll('.pupil');
-    const eyes = document.querySelectorAll('.eye');
-    const scoreEl = document.getElementById('love-score');
+// 游戏配置
+const CONSTANTS = {
+    GRAVITY: 0.6,
+    SPEED: 6,
+    JUMP_FORCE: 12,
+    COLOR_PRIMARY: '#00f3ff', // 赛博蓝
+    COLOR_SECONDARY: '#ff00ff', // 霓虹粉
+    COLOR_HAZARD: '#ff3333', // 警告红
+    FRICTION: 0.85
+};
 
-    // --- 👁️ 视线跟随逻辑 ---
-    document.addEventListener('mousemove', (e) => {
-        const rect = catContainer.getBoundingClientRect();
-        const catCenterX = rect.left + rect.width / 2;
-        const catCenterY = rect.top + rect.height / 2;
+// 游戏状态
+let gameState = {
+    score: 0,
+    cameraX: 0,
+    shake: 0,
+    isGameOver: false
+};
 
-        // 计算鼠标相对于猫中心的角度
-        const angle = Math.atan2(e.clientY - catCenterY, e.clientX - catCenterX);
-        // 限制眼球移动距离
-        const distance = Math.min(6, Math.hypot(e.clientX - catCenterX, e.clientY - catCenterY) / 10);
+// 输入控制
+const keys = {
+    ArrowRight: false,
+    ArrowLeft: false,
+    KeyD: false,
+    KeyA: false,
+    Space: false
+};
 
-        const moveX = Math.cos(angle) * distance;
-        const moveY = Math.sin(angle) * distance;
+window.addEventListener('keydown', (e) => {
+    if(e.code === 'Space' && !e.repeat) {
+        player.flipGravity();
+    }
+    if (e.code in keys) keys[e.code] = true;
+});
+window.addEventListener('keyup', (e) => {
+    if (e.code in keys) keys[e.code] = false;
+});
 
-        pupils.forEach(pupil => {
-            pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        });
-    });
+// 粒子系统 (用于特效)
+let particles = [];
+class Particle {
+    constructor(x, y, color, speed) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.vx = (Math.random() - 0.5) * speed;
+        this.vy = (Math.random() - 0.5) * speed;
+        this.life = 1.0; // 生命值 1.0 -> 0
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life -= 0.03;
+    }
+    draw(ctx, camX) {
+        ctx.globalAlpha = this.life;
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x - camX, this.y, 4, 4);
+        ctx.globalAlpha = 1.0;
+    }
+}
 
-    // --- 👆 核心交互：点击（Squish） ---
-    catContainer.addEventListener('mousedown', () => {
-        // 视觉反馈：压扁
-        catVisual.style.transform = 'scale(1.2, 0.8) translateY(10px)';
-        playAudio(sounds.meow);
-    });
-
-    catContainer.addEventListener('mouseup', (e) => {
-        // 视觉反馈：Q弹恢复
-        catVisual.style.transform = 'scale(1, 1)';
-        catVisual.classList.remove('jelly-anim');
-        void catVisual.offsetWidth; // 强制重绘
-        catVisual.classList.add('jelly-anim');
+// 玩家类 (猫咪)
+class Player {
+    constructor() {
+        this.width = 30;
+        this.height = 30;
+        this.reset();
         
-        // 粒子爆发
-        spawnParticles(e.clientX, e.clientY, 5);
-        addScore(5);
-    });
+        // 拖尾特效记录
+        this.trail = []; 
+    }
 
-    // --- 🖐️ 核心交互：抚摸（Rubbing） ---
-    let isHovering = false;
-    let rubDistance = 0;
+    reset() {
+        this.x = 100;
+        this.y = 200;
+        this.vx = 0;
+        this.vy = 0;
+        this.gravityDir = 1; // 1: 下, -1: 上
+        this.isGrounded = false;
+        this.color = CONSTANTS.COLOR_PRIMARY;
+        this.scaleY = 1; // 用于挤压拉伸动画
+    }
 
-    catContainer.addEventListener('mouseenter', () => { 
-        isHovering = true; 
-        document.body.style.cursor = "url('https://cdn-icons-png.flaticon.com/32/10522/10522079.png'), auto"; // 确保光标
-    });
-    catContainer.addEventListener('mouseleave', () => { 
-        isHovering = false; 
-        stopPurring(); 
-    });
-
-    catContainer.addEventListener('mousemove', (e) => {
-        if (!isHovering) return;
+    flipGravity() {
+        // 只有落地时或者在特定情况下才允许反转? 
+        // 这是一个核心玩法设计。为了爽快感，允许空中反转，但增加特效
+        this.gravityDir *= -1;
+        this.scaleY = 0.5; // 瞬间压扁
+        createExplosion(this.x + this.width/2, this.y + this.height/2, '#ffffff', 10);
         
-        // 计算抚摸距离
-        rubDistance++;
-        
-        if (rubDistance > 10) { // 每移动一定距离触发一次
-            rubDistance = 0;
-            startPurring();
-            addScore(1);
-            spawnParticles(e.clientX, e.clientY, 1);
-            
-            // 抚摸时眯眼睛
-            eyes.forEach(eye => {
-                eye.style.height = '4px'; // 变成一条缝
-                eye.style.top = '10px';
-            });
+        // 播放虚拟音效 (此处为视觉代替)
+        // playSound('flip');
+    }
+
+    update(platforms, hazards, fish) {
+        // 1. 物理计算
+        if (keys.ArrowRight || keys.KeyD) this.vx += 1;
+        if (keys.ArrowLeft || keys.KeyA) this.vx -= 1;
+
+        this.vx *= CONSTANTS.FRICTION; // 摩擦力
+        this.vy += CONSTANTS.GRAVITY * this.gravityDir; // 重力
+
+        // 限制最大速度
+        if (this.vx > CONSTANTS.SPEED) this.vx = CONSTANTS.SPEED;
+        if (this.vx < -CONSTANTS.SPEED) this.vx = -CONSTANTS.SPEED;
+
+        // 恢复挤压效果
+        this.scaleY += (1 - this.scaleY) * 0.2;
+
+        // 2. 碰撞检测 (X轴)
+        this.x += this.vx;
+        this.checkWallCollision(platforms);
+
+        // 3. 碰撞检测 (Y轴)
+        this.y += this.vy;
+        this.isGrounded = false;
+        this.checkFloorCollision(platforms);
+
+        // 4. 边界检查 (掉出屏幕)
+        if (this.y > canvas.height + 100 || this.y < -100) {
+            this.respawn();
         }
-        
-        // 停止移动 200ms 后睁眼停止呼噜
-        clearTimeout(window.stopRubTimer);
-        window.stopRubTimer = setTimeout(() => {
-            stopPurring();
-        }, 200);
-    });
 
-    function startPurring() {
-        if (sounds.purr.paused) sounds.purr.play().catch(()=>{});
-        catVisual.classList.add('purr-anim'); // 身体抖动
+        // 5. 危险物检测
+        for (let h of hazards) {
+            if (this.checkRectCollision(h)) {
+                this.respawn();
+            }
+        }
+
+        // 6. 收集物检测
+        for (let i = fish.length - 1; i >= 0; i--) {
+            if (!fish[i].collected && this.checkRectCollision(fish[i])) {
+                fish[i].collected = true;
+                gameState.score++;
+                scoreEl.innerText = gameState.score;
+                createExplosion(fish[i].x + 10, fish[i].y + 10, '#ffff00', 20);
+                gameState.shake = 5; // 吃到东西轻微震屏
+            }
+        }
+
+        // 更新拖尾
+        this.trail.push({x: this.x, y: this.y});
+        if (this.trail.length > 10) this.trail.shift();
     }
 
-    function stopPurring() {
-        sounds.purr.pause();
-        catVisual.classList.remove('purr-anim');
-        // 睁开眼睛
-        eyes.forEach(eye => {
-            eye.style.height = '24px';
-            eye.style.top = '0px';
-        });
+    checkRectCollision(rect) {
+        return (this.x < rect.x + rect.w &&
+                this.x + this.width > rect.x &&
+                this.y < rect.y + rect.h &&
+                this.y + this.height > rect.y);
     }
 
-    // --- 🎉 粒子系统 ---
-    const shapes = ['💖', '✨', '🍭', '🌸', '⭐'];
-    function spawnParticles(x, y, count) {
-        for(let i=0; i<count; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            p.innerText = shapes[Math.floor(Math.random() * shapes.length)];
-            p.style.left = x + 'px';
-            p.style.top = y + 'px';
-            
-            // 随机散射参数
-            const tx = (Math.random() - 0.5) * 100 + 'px';
-            const r = (Math.random() - 0.5) * 90 + 'deg';
-            p.style.setProperty('--tx', tx);
-            p.style.setProperty('--r', r);
-            
-            document.body.appendChild(p);
-            playAudio(sounds.pop); // 播放啵啵声
-
-            setTimeout(() => p.remove(), 1000);
+    checkWallCollision(platforms) {
+        for (let p of platforms) {
+            if (this.checkRectCollision(p)) {
+                // 简单的墙壁碰撞：如果速度向右，贴在墙左边，反之亦然
+                if (this.vx > 0) this.x = p.x - this.width;
+                else if (this.vx < 0) this.x = p.x + p.w;
+                this.vx = 0;
+            }
         }
     }
 
-    function addScore(val) {
-        score += val;
-        scoreEl.innerText = score;
-        scoreEl.style.transform = 'scale(1.5)';
-        setTimeout(() => scoreEl.style.transform = 'scale(1)', 100);
+    checkFloorCollision(platforms) {
+        for (let p of platforms) {
+            if (this.checkRectCollision(p)) {
+                // 落地逻辑
+                if (this.vy * this.gravityDir > 0) { // 正在往下掉(相对于重力方向)
+                    if (this.gravityDir === 1) this.y = p.y - this.height;
+                    else this.y = p.y + p.h;
+                    
+                    this.vy = 0;
+                    this.isGrounded = true;
+                } 
+                // 顶头逻辑
+                else if (this.vy * this.gravityDir < 0) {
+                    if (this.gravityDir === 1) this.y = p.y + p.h;
+                    else this.y = p.y - this.height;
+                    this.vy = 0;
+                }
+            }
+        }
     }
 
-    function playAudio(audioObj) {
-        // 重置播放进度，允许快速连续播放
-        audioObj.currentTime = 0;
-        audioObj.play().catch(e => console.log("需交互后播放音频"));
+    respawn() {
+        createExplosion(this.x, this.y, CONSTANTS.COLOR_PRIMARY, 30);
+        gameState.shake = 20; // 剧烈震动
+        this.reset();
+        // 这里可以加一个 "System Resetting..." 的UI提示
     }
 
-    // --- ☁️ 自动生成云朵 ---
-    for(let i=0; i<5; i++) {
-        const c = document.createElement('div');
-        c.className = 'cloud';
-        c.style.width = Math.random() * 100 + 100 + 'px';
-        c.style.height = Math.random() * 40 + 30 + 'px';
-        c.style.top = Math.random() * 80 + '%';
-        c.style.animationDuration = Math.random() * 20 + 20 + 's';
-        c.style.animationDelay = Math.random() * -20 + 's';
-        document.getElementById('clouds').appendChild(c);
+    draw(ctx, camX) {
+        // 绘制拖尾 (Cyber Trail)
+        ctx.beginPath();
+        for (let i = 0; i < this.trail.length; i++) {
+            let pos = this.trail[i];
+            ctx.lineTo(pos.x - camX + this.width/2, pos.y + this.height/2);
+        }
+        ctx.strokeStyle = `rgba(0, 243, 255, 0.3)`;
+        ctx.lineWidth = 10;
+        ctx.stroke();
+
+        // 绘制猫咪主体 (带发光)
+        ctx.save();
+        ctx.translate(this.x - camX + this.width/2, this.y + this.height/2);
+        
+        // 挤压拉伸变换
+        ctx.scale(1, this.scaleY); 
+        if (this.gravityDir === -1) ctx.scale(1, -1); // 倒立
+        if (this.vx < -0.1) ctx.scale(-1, 1); // 左右翻转
+
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = this.color;
+        ctx.fillStyle = this.color;
+        
+        // 猫身体 (简单的矩形+耳朵)
+        ctx.fillRect(-15, -15, 30, 30); 
+        
+        // 猫耳朵
+        ctx.beginPath();
+        ctx.moveTo(-15, -15);
+        ctx.lineTo(-20, -25);
+        ctx.lineTo(-5, -15);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(15, -15);
+        ctx.lineTo(20, -25);
+        ctx.lineTo(5, -15);
+        ctx.fill();
+
+        // 护目镜 (酷炫细节)
+        ctx.fillStyle = "#111";
+        ctx.fillRect(-10, -5, 20, 8);
+        ctx.fillStyle = CONSTANTS.COLOR_SECONDARY;
+        ctx.fillRect(-8, -3, 6, 4); // 左眼镜片
+        ctx.fillRect(2, -3, 6, 4);  // 右眼镜片
+
+        ctx.restore();
     }
+}
+
+// 关卡数据
+const platforms = [
+    {x: 0, y: 300, w: 400, h: 50},       // 起点平台
+    {x: 500, y: 200, w: 200, h: 50},     // 跳跃平台1
+    {x: 800, y: 400, w: 200, h: 50},     // 下层平台
+    {x: 1100, y: 100, w: 300, h: 50},    // 高空平台 (需要反转)
+    {x: 1500, y: 300, w: 200, h: 50},    // 终点前
+    {x: 1800, y: 350, w: 100, h: 200},   // 终点墙
+    
+    // 天花板平台 (用于反转玩法)
+    {x: 600, y: 0, w: 400, h: 50},       
+    {x: 1200, y: 0, w: 200, h: 50},
+];
+
+const hazards = [
+    {x: 400, y: 530, w: 1400, h: 20, type: 'void'}, // 底部虚空
+    {x: 900, y: 200, w: 20, h: 100, type: 'wall'},  // 红色防火墙
+];
+
+const fish = [
+    {x: 550, y: 150, w: 20, h: 20, collected: false},
+    {x: 900, y: 350, w: 20, h: 20, collected: false},
+    {x: 1200, y: 150, w: 20, h: 20, collected: false}, // 放在高处
+    {x: 700, y: 50, w: 20, h: 20, collected: false},  // 放在天花板
+    {x: 1600, y: 250, w: 20, h: 20, collected: false},
+];
+
+function createExplosion(x, y, color, count) {
+    for(let i=0; i<count; i++) {
+        particles.push(new Particle(x, y, color, 8));
+    }
+}
+
+// 游戏主循环
+const player = new Player();
+
+function gameLoop() {
+    // 1. 清除画布
+    ctx.fillStyle = '#0a0a2a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 震屏效果应用
+    let shakeX = 0, shakeY = 0;
+    if (gameState.shake > 0) {
+        shakeX = (Math.random() - 0.5) * gameState.shake;
+        shakeY = (Math.random() - 0.5) * gameState.shake;
+        gameState.shake *= 0.9;
+        if(gameState.shake < 0.5) gameState.shake = 0;
+    }
+
+    // 2. 摄像机跟随 (平滑移动)
+    let targetCamX = player.x - 200;
+    if (targetCamX < 0) targetCamX = 0;
+    gameState.cameraX += (targetCamX - gameState.cameraX) * 0.1;
+    
+    ctx.save();
+    ctx.translate(-gameState.cameraX + shakeX, shakeY);
+
+    // 3. 绘制背景网格 (增加赛博感)
+    ctx.strokeStyle = 'rgba(0, 243, 255, 0.1)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < canvas.width + gameState.cameraX; i+=50) {
+        // 简单的视差滚动效果：背景动得慢
+        let parallaxX = i - (gameState.cameraX * 0.5) % 50; 
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+    }
+
+    // 4. 更新与绘制实体
+    player.update(platforms, hazards, fish);
+    player.draw(ctx, gameState.cameraX);
+
+    // 绘制平台
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#00f3ff';
+    ctx.fillStyle = '#111';
+    ctx.strokeStyle = '#00f3ff';
+    for (let p of platforms) {
+        ctx.fillRect(p.x, p.y, p.w, p.h);
+        ctx.strokeRect(p.x, p.y, p.w, p.h);
+    }
+
+    // 绘制危险区域 (红色防火墙)
+    ctx.shadowColor = '#ff3333';
+    ctx.fillStyle = 'rgba(255, 51, 51, 0.2)';
+    ctx.strokeStyle = '#ff3333';
+    for (let h of hazards) {
+        ctx.fillRect(h.x, h.y, h.w, h.h);
+        ctx.strokeRect(h.x, h.y, h.w, h.h);
+        // 绘制内部噪点
+        ctx.fillStyle = '#fff';
+        if (Math.random() > 0.9) ctx.fillRect(h.x + Math.random()*h.w, h.y + Math.random()*h.h, 2, 2);
+        ctx.fillStyle = 'rgba(255, 51, 51, 0.2)';
+    }
+
+    // 绘制收集物 (小鱼干/数据包)
+    for (let f of fish) {
+        if (!f.collected) {
+            ctx.shadowColor = '#ffff00';
+            ctx.fillStyle = '#ffff00';
+            let floatY = Math.sin(Date.now() / 200) * 5; // 悬浮动画
+            ctx.fillRect(f.x, f.y + floatY, f.w, f.h);
+        }
+    }
+
+    // 更新与绘制粒子
+    for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        particles[i].draw(ctx, gameState.cameraX);
+        if (particles[i].life <= 0) particles.splice(i, 1);
+    }
+
+    ctx.restore();
+
+    requestAnimationFrame(gameLoop);
+}
+
+// 启动游戏
+gameLoop();
+
 </script>
 </body>
 </html>
