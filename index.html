@@ -3,303 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>梦幻精灵猫：魔法追逐</title>
+    <title>幻境猫灵：百变魔法屋</title>
     <style>
-        /* --- 1. 梦幻场景 --- */
+        /* --- 1. 全局与场景 --- */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-            /* 深色魔法森林背景 */
-            background: radial-gradient(circle at bottom, #1a0f2e 0%, #090510 100%);
-            font-family: "幼圆", cursive; user-select: none;
+            font-family: "幼圆", "Rounded Mplus 1c", cursive;
+            background-color: #2c1e3b;
+            transition: background-image 0.5s ease-in-out;
+            background-size: cover; background-position: center;
+            cursor: url('https://cdn-icons-png.flaticon.com/32/9921/9921170.png'), auto; /* 魔法棒光标 */
+            user-select: none;
+        }
+
+        /* 背景覆盖层（增加魔法氛围） */
+        .bg-overlay {
+            position: absolute; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
         }
         
-        /* 背景漂浮的光点 */
-        .ambient-particle {
-            position: absolute; background: white; border-radius: 50%;
-            box-shadow: 0 0 10px #fff, 0 0 20px #a855ff;
-            opacity: 0.3; animation: float-ambient 10s linear infinite;
+        /* 漂浮的魔法尘埃 */
+        .magic-dust {
+            position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--glow-color);
+            opacity: 0.6; animation: floatUp 10s linear infinite;
         }
-        @keyframes float-ambient { from { transform: translateY(0); } to { transform: translateY(-100vh); } }
+        @keyframes floatUp { from { transform: translateY(100vh) scale(0.5); opacity: 0; } to { transform: translateY(-10vh) scale(1.5); opacity: 0.8; } }
 
-        /* 魔法光球模式的光标 */
-        body.magic-mode { cursor: none; }
-        #magic-orb {
-            position: absolute; width: 20px; height: 20px; background: #00f7ff; border-radius: 50%;
-            box-shadow: 0 0 15px #00f7ff, 0 0 30px #a855ff, inset 0 0 10px white;
-            pointer-events: none; z-index: 100; display: none; mix-blend-mode: screen;
-            transform: translate(-50%, -50%); animation: orb-pulse 1s infinite alternate;
-        }
-        @keyframes orb-pulse { from { transform: translate(-50%, -50%) scale(1); } to { transform: translate(-50%, -50%) scale(1.2); } }
-
-        /* --- 2. 主角：精灵猫 --- */
+        /* --- 2. 主角：百变精灵猫 --- */
         #cat-container {
             position: absolute; left: 50%; top: 50%;
-            width: 160px; height: 160px;
-            /* 锚点改到中心，适合飞行和瞬移 */
+            width: 180px; height: 180px;
+            transform: translate(-50%, -50%);
             transform-origin: center center;
-            transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            z-index: 20; cursor: grab;
+            transition: left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 20; cursor: pointer;
         }
 
-        /* 精灵翅膀层 */
-        .wings-layer {
-            position: absolute; top: 20%; left: -10%; width: 120%; height: 60%;
+        /* 精灵翅膀 */
+        .wings-wrap {
+            position: absolute; top: 30%; left: -10%; width: 120%; height: 50%;
             display: flex; justify-content: space-between; z-index: -1;
-            opacity: 0.8; mix-blend-mode: screen;
+            filter: drop-shadow(0 0 10px var(--glow-color));
+            opacity: 0.9; mix-blend-mode: screen;
         }
         .wing {
-            width: 50px; height: 80px;
-            background: rgba(200, 255, 255, 0.5);
-            border-radius: 50% 50% 0 50%;
-            box-shadow: 0 0 15px #00f7ff;
-            filter: blur(2px);
+            width: 60px; height: 90px;
+            /* 使用半透明的翅膀素材 */
+            background-image: url('https://cdn-icons-png.flaticon.com/512/9373/9373775.png');
+            background-size: contain; background-repeat: no-repeat;
         }
-        .wing.left { transform-origin: right center; animation: flap-l 0.1s infinite alternate; }
-        .wing.right { transform: scaleX(-1); transform-origin: left center; animation: flap-r 0.1s infinite alternate; }
-        @keyframes flap-l { from { transform: rotate(10deg) scaleY(1); } to { transform: rotate(-20deg) scaleY(0.8); } }
-        @keyframes flap-r { from { transform: scaleX(-1) rotate(10deg) scaleY(1); } to { transform: scaleX(-1) rotate(-20deg) scaleY(0.8); } }
+        .wing.left { transform-origin: right center; animation: flapL 0.15s infinite alternate; }
+        .wing.right { transform: scaleX(-1); transform-origin: left center; animation: flapR 0.15s infinite alternate; }
+        @keyframes flapL { from { transform: rotate(15deg) scaleY(1); } to { transform: rotate(-25deg) scaleY(0.8); } }
+        @keyframes flapR { from { transform: scaleX(-1) rotate(15deg) scaleY(1); } to { transform: scaleX(-1) rotate(-25deg) scaleY(0.8); } }
 
-
-        /* 猫咪本体层 */
-        .cat-sprite {
+        /* 猫咪本体图片 */
+        #cat-img {
             width: 100%; height: 100%;
-            background-image: url('https://i.pinimg.com/originals/08/43/d4/0843d40ae137e0ba7b56c03bc6681c84.png');
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-            /* 悬浮动画 和 魔法荧光滤镜 */
-            animation: float-cat 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px #00f7ff) brightness(1.1);
-            transition: transform 0.3s;
+            object-fit: contain;
+            /* 悬浮动画 + 魔法光晕 */
+            animation: hover 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px var(--glow-color));
+            transition: transform 0.2s;
         }
+        @keyframes hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        @keyframes float-cat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        /* 瞬移动画 */
-        .teleporting-out { animation: teleport-out 0.3s forwards !important; }
-        .teleporting-in { animation: teleport-in 0.3s forwards !important; }
-        @keyframes teleport-out { to { transform: scale(0) rotate(360deg); opacity: 0; filter: brightness(3) blur(10px); } }
-        @keyframes teleport-in { from { transform: scale(3); opacity: 0; filter: brightness(3) blur(10px); } to { transform: scale(1); opacity: 1; } }
-
-        /* 点击施法反馈 */
-        .cast-spell { animation: spell-anim 0.4s !important; }
-        @keyframes spell-anim { 0% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.3); filter: brightness(2) hue-rotate(180deg); } 100% { transform: scale(1); } }
-
-        .face-left { transform: scaleX(-1); }
-
-        /* --- 3. 特效粒子 --- */
-        /* 移动拖尾 */
-        .trail-particle {
-            position: absolute; width: 10px; height: 10px; background: #00f7ff;
-            border-radius: 50%; pointer-events: none; z-index: 15;
-            box-shadow: 0 0 10px #a855ff; mix-blend-mode: screen;
-            animation: fade-trail 0.8s ease-out forwards;
-        }
-        @keyframes fade-trail { to { transform: scale(0.2); opacity: 0; } }
-
-        /* 点击爆炸粒子 */
-        .magic-burst {
-            position: absolute; font-size: 24px; pointer-events: none; z-index: 30;
-            animation: burst-anim 1s ease-out forwards; color: #00f7ff;
-            text-shadow: 0 0 5px #fff;
-        }
-        @keyframes burst-anim {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--r)); opacity: 0; }
-        }
+        /* 状态动画类 */
+        .face-left #cat-img { transform: scaleX(-1); } /* 向左看 */
+        .eating #cat-img { animation: eatAnim 0.5s infinite alternate !important; } /* 吃东西 */
+        @keyframes eatAnim { 0% { transform: translateY(0) rotate(0deg) scale(1); } 100% { transform: translateY(10px) rotate(5deg) scale(0.95); } }
+        .playing #cat-img { animation: playAnim 0.4s infinite !important; } /* 玩耍 */
+        @keyframes playAnim { 0% { transform: translateX(0) rotate(0); } 25% { transform: translateX(-10px) rotate(-10deg); } 75% { transform: translateX(10px) rotate(10deg); } }
         
-        /* --- 4. UI --- */
-        #controls {
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 50;
+        /* 瞬移特效 */
+        .teleport-out { animation: tpOut 0.4s forwards !important; }
+        .teleport-in { animation: tpIn 0.4s forwards !important; }
+        @keyframes tpOut { to { transform: translate(-50%, -50%) scale(0) rotate(720deg); opacity: 0; filter: brightness(3); } }
+        @keyframes tpIn { from { transform: translate(-50%, -50%) scale(2); opacity: 0; filter: brightness(3); } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+
+        /* --- 3. 互动元素与特效 --- */
+        /* 拖尾粒子 */
+        .trail {
+            position: absolute; width: 12px; height: 12px; border-radius: 50%;
+            background: var(--glow-color); box-shadow: 0 0 15px var(--glow-color);
+            pointer-events: none; z-index: 15; mix-blend-mode: screen;
+            animation: fadeTrail 0.8s ease-out forwards;
         }
-        .btn {
-            background: rgba(0,0,0,0.5); padding: 12px 25px; border-radius: 30px;
-            box-shadow: 0 0 20px #a855ff; font-weight: bold; color: #00f7ff;
-            cursor: pointer; border: 2px solid #00f7ff; transition: 0.3s;
-            backdrop-filter: blur(5px); text-shadow: 0 0 5px #00f7ff;
+        @keyframes fadeTrail { to { transform: scale(0.1); opacity: 0; } }
+        
+        /* 掉落的物品（鱼/球） */
+        .item-drop {
+            position: absolute; font-size: 40px; z-index: 18;
+            animation: dropIn 0.5s ease-out; filter: drop-shadow(0 0 10px #fff);
         }
-        .btn:hover { background: rgba(0, 247, 255, 0.2); transform: scale(1.05); }
-        .btn.active { background: #00f7ff; color: #1a0f2e; box-shadow: 0 0 30px #00f7ff; }
+        @keyframes dropIn { from { transform: translate(-50%, -50%) scale(2); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+
+        /* 点击爆发特效 */
+        .burst-fx {
+            position: absolute; font-size: 24px; pointer-events: none; z-index: 30;
+            animation: burst 1s ease-out forwards; color: var(--glow-color); text-shadow: 0 0 5px #fff;
+        }
+        @keyframes burst { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--r)); opacity: 0; } }
+
+        /* --- 4. 底部功能按键栏 --- */
+        #dock {
+            position: absolute; bottom: 30px; width: 100%;
+            display: flex; justify-content: center; gap: 20px; z-index: 100;
+        }
+        .dock-btn {
+            width: 70px; height: 70px; border-radius: 25px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.5);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s; color: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .dock-btn:hover { transform: translateY(-5px); background: rgba(255,255,255,0.3); box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 0 20px var(--glow-color); }
+        .dock-btn:active { transform: scale(0.95); }
+        .btn-icon { font-size: 30px; margin-bottom: 5px; filter: drop-shadow(0 0 5px currentColor); }
+        .btn-label { font-size: 12px; font-weight: bold; }
 
     </style>
 </head>
 <body>
 
-    <div id="ambient-container"></div>
-    <div id="magic-orb"></div>
+    <div class="bg-overlay"></div>
+    <div id="dust-layer"></div>
 
-    <div id="cat-container" onclick="petCat(event)">
-        <div class="wings-layer">
+    <div id="cat-container" onclick="clickCat(event)">
+        <div class="wings-wrap">
             <div class="wing left"></div>
             <div class="wing right"></div>
         </div>
-        <div class="cat-sprite" id="cat-visual"></div>
+        <img id="cat-img" src="" alt="Magic Cat">
     </div>
 
-    <div id="controls">
-        <div class="btn" id="magic-btn" onclick="toggleMagicMode()">✨ 召唤魔法光球</div>
+    <div id="dock">
+        <div class="dock-btn" onclick="changeCatType()">
+            <div class="btn-icon">🔄</div>
+            <div class="btn-label">换猫咪</div>
+        </div>
+        <div class="dock-btn" onclick="changeBackground()">
+            <div class="btn-icon">🎨</div>
+            <div class="btn-label">换场景</div>
+        </div>
+        <div class="dock-btn" style="color: #ff9f43;" onclick="dropItem('🐟', 'eating')">
+            <div class="btn-icon">🐟</div>
+            <div class="btn-label">喂食</div>
+        </div>
+        <div class="dock-btn" style="color: #ff6b81;" onclick="dropItem('🧶', 'playing')">
+            <div class="btn-icon">🧶</div>
+            <div class="btn-label">玩球</div>
+        </div>
     </div>
 
 <script>
+    // --- 数据配置 ---
+    // 1. 百变精灵猫数据 (种类, 图片, 光晕颜色)
+    // 使用了高质量、可爱的全身卡通猫咪素材
+    const catTypes = [
+        { name: '森之灵', src: 'https://cdn-icons-png.flaticon.com/512/4392/4392469.png', glow: '#55efc4' }, // 绿色系
+        { name: '星之灵', src: 'https://cdn-icons-png.flaticon.com/512/4392/4392486.png', glow: '#a29bfe' }, // 紫色系
+        { name: '火之灵', src: 'https://cdn-icons-png.flaticon.com/512/4392/4392520.png', glow: '#ff7675' }, // 红色系
+        { name: '雪之灵', src: 'https://cdn-icons-png.flaticon.com/512/4392/4392504.png', glow: '#74b9ff' }  // 蓝色系
+    ];
+    let catIdx = 0;
+
+    // 2. 魔法场景数据
+    const backgrounds = [
+        'https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=1920&auto=format&fit=crop', // 神秘森林
+        'https://images.unsplash.com/photo-1536599018102-9f803c140fc1?q=80&w=1920&auto=format&fit=crop', // 云端天宫
+        'https://images.unsplash.com/photo-1596303766859-615876789365?q=80&w=1920&auto=format&fit=crop'  // 水晶洞穴
+    ];
+    let bgIdx = 0;
+
+    // --- DOM 元素 ---
     const catContainer = document.getElementById('cat-container');
-    const catVisual = document.getElementById('cat-visual');
-    const magicOrb = document.getElementById('magic-orb');
-    const magicBtn = document.getElementById('magic-btn');
-    let isMagicMode = false;
-    let isMoving = false;
+    const catImg = document.getElementById('cat-img');
+    const root = document.documentElement; // 用于设置 CSS 变量
+    let catPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    let targetPos = { x: catPos.x, y: catPos.y };
+    let isBusy = false; // 是否正在忙于吃/玩
     let trailTimer = null;
 
-    let catPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    updateCatPos();
-
-    // 生成背景氛围
-    for(let i=0; i<30; i++) {
-        let p = document.createElement('div'); p.className = 'ambient-particle';
-        p.style.left = Math.random()*100+'vw'; p.style.top = Math.random()*100+'vh';
-        p.style.width = p.style.height = Math.random()*5+'px';
-        p.style.animationDelay = Math.random()*-10+'s';
-        p.style.animationDuration = 10+Math.random()*20+'s';
-        document.getElementById('ambient-container').appendChild(p);
+    // --- 初始化 ---
+    function init() {
+        applyCatType();
+        applyBackground();
+        generateDust();
+        gameLoop(); // 启动游戏循环
+        startTrail(); // 启动拖尾
     }
 
-    // --- 核心交互：鼠标/光球跟随 ---
-    document.addEventListener('mousemove', (e) => {
-        if (isMagicMode) {
-            magicOrb.style.left = e.clientX + 'px';
-            magicOrb.style.top = e.clientY + 'px';
-            // 魔法模式下，猫咪尝试追逐
-            if (!isMoving) chaseTarget(e.clientX, e.clientY);
-        } else {
-            faceTarget(e.clientX);
-        }
-    });
-
-    document.addEventListener('mousedown', (e) => {
-        if (e.target.closest('.btn') || e.target.closest('#cat-container')) return;
-        if (!isMagicMode && !isMoving) {
-            chaseTarget(e.clientX, e.clientY);
-            spawnBurst(e.clientX, e.clientY, 1, '✨');
-        }
-    });
-
-    // --- 核心交互：点击施法 (替代抚摸) ---
-    function petCat(e) {
-        e.stopPropagation();
-        // 视觉反馈：施法爆发
-        catVisual.classList.remove('float-cat');
-        void catVisual.offsetWidth;
-        catVisual.classList.add('cast-spell');
-        
-        spawnBurst(e.clientX, e.clientY, 8, ['✨', '⚡', '⭐', '💠'][Math.floor(Math.random()*4)]);
-
-        setTimeout(() => {
-            catVisual.classList.remove('cast-spell');
-        }, 400);
+    // --- 核心逻辑：应用猫咪数据 ---
+    function applyCatType() {
+        const data = catTypes[catIdx];
+        catImg.src = data.src;
+        // 设置全局光晕颜色变量，翅膀、拖尾、特效都会变色
+        root.style.setProperty('--glow-color', data.glow);
+        spawnBurst(catPos.x, catPos.y, 15, '✨'); // 切换特效
     }
 
-    // --- 功能：切换魔法模式 ---
-    function toggleMagicMode() {
-        isMagicMode = !isMagicMode;
-        document.body.classList.toggle('magic-mode', isMagicMode);
-        magicOrb.style.display = isMagicMode ? 'block' : 'none';
-        magicBtn.classList.toggle('active', isMagicMode);
-        // 魔法模式速度更快
-        catContainer.style.transitionDuration = isMagicMode ? '0.2s' : '0.4s';
+    // --- 核心逻辑：应用背景 ---
+    function applyBackground() {
+        document.body.style.backgroundImage = `url('${backgrounds[bgIdx]}')`;
     }
 
-    // --- 动作逻辑：追逐与瞬移 ---
-    function chaseTarget(x, y) {
-        isMoving = true;
-        faceTarget(x);
-
-        // 魔法模式下有 30% 概率触发瞬移
-        if (isMagicMode && Math.random() > 0.7) {
-            performTeleport(x, y);
-        } else {
-            // 普通飞行追逐
-            startTrail(); // 开始生成拖尾
-            catPos.x = x - 80; catPos.y = y - 80;
-            updateCatPos();
-            // 移动结束后停止状态
-            setTimeout(() => {
-                isMoving = false;
-                stopTrail();
-            }, isMagicMode ? 200 : 400);
-        }
-    }
-
-    // 瞬移动作
-    function performTeleport(x, y) {
-        stopTrail();
-        // 消失动画
-        catVisual.classList.add('teleporting-out');
-        spawnBurst(catPos.x+80, catPos.y+80, 10, '💨'); // 原地留下烟雾
-        
-        setTimeout(() => {
-            // 瞬间移动坐标
-            catPos.x = x - 80; catPos.y = y - 80;
-            catContainer.style.transition = 'none'; // 关闭过渡以实现瞬移
-            updateCatPos();
+    // --- 游戏主循环 (负责平滑移动) ---
+    function gameLoop() {
+        if (!isBusy) {
+            // 简单的缓动跟随鼠标
+            catPos.x += (targetPos.x - catPos.x) * 0.05;
+            catPos.y += (targetPos.y - catPos.y) * 0.05;
             
-            // 出现动画
-            catVisual.classList.remove('teleporting-out');
-            catVisual.classList.add('teleporting-in');
-            spawnBurst(x, y, 10, '⚡'); // 目的地爆发出闪电
+            // 面向判断
+            if (targetPos.x < catPos.x) catContainer.classList.add('face-left');
+            else catContainer.classList.remove('face-left');
 
+            catContainer.style.left = catPos.x + 'px';
+            catContainer.style.top = catPos.y + 'px';
+        }
+        requestAnimationFrame(gameLoop);
+    }
+
+    // --- 交互事件 ---
+    // 鼠标移动更新目标点
+    document.addEventListener('mousemove', (e) => {
+        if (!isBusy) {
+            targetPos.x = e.clientX;
+            targetPos.y = e.clientY;
+        }
+    });
+
+    // 点击猫咪
+    function clickCat(e) {
+        e.stopPropagation();
+        spawnBurst(e.clientX, e.clientY, 10, '💖');
+        // 瞬移特效：有概率触发
+        if (Math.random() > 0.5 && !isBusy) teleportCat();
+    }
+
+    // --- 按钮功能 ---
+    // 1. 换猫
+    function changeCatType() {
+        catIdx = (catIdx + 1) % catTypes.length;
+        applyCatType();
+    }
+    // 2. 换背景
+    function changeBackground() {
+        bgIdx = (bgIdx + 1) % backgrounds.length;
+        applyBackground();
+    }
+    // 3. 喂食/玩球 (核心互动升级)
+    function dropItem(emoji, actionClass) {
+        if (isBusy) return;
+        isBusy = true; // 标记为忙碌，暂停跟随鼠标
+
+        // 生成物品
+        const item = document.createElement('div');
+        item.className = 'item-drop';
+        item.innerText = emoji;
+        // 在鼠标位置生成
+        const dropX = targetPos.x;
+        const dropY = targetPos.y;
+        item.style.left = dropX + 'px';
+        item.style.top = dropY + 'px';
+        document.body.appendChild(item);
+
+        // 猫咪飞向物品
+        catPos.x = dropX;
+        catPos.y = dropY;
+        catContainer.style.left = catPos.x + 'px';
+        catContainer.style.top = catPos.y + 'px';
+        
+        // 到达后执行动作
+        setTimeout(() => {
+            catContainer.classList.add(actionClass); // 添加吃/玩动画类
+            spawnBurst(dropX, dropY, 8, emoji === '🐟' ? '😋' : '✨');
+            
+            // 动作持续一段时间后恢复
             setTimeout(() => {
-                catVisual.classList.remove('teleporting-in');
-                catContainer.style.transition = ''; // 恢复过渡
-                isMoving = false;
-            }, 300);
+                catContainer.classList.remove(actionClass);
+                item.remove();
+                isBusy = false; // 恢复跟随
+            }, 2000);
         }, 300);
     }
 
-    function faceTarget(targetX) {
-        const catRect = catContainer.getBoundingClientRect();
-        if (targetX < catRect.left + catRect.width / 2) {
-            catVisual.classList.add('face-left');
-        } else {
-            catVisual.classList.remove('face-left');
-        }
+    // --- 特效系统 ---
+    // 瞬移
+    function teleportCat() {
+        catContainer.classList.add('teleport-out');
+        setTimeout(() => {
+            // 随机瞬移到屏幕某处
+            catPos.x = Math.random() * window.innerWidth;
+            catPos.y = Math.random() * window.innerHeight;
+            targetPos.x = catPos.x; targetPos.y = catPos.y; // 重置目标点防止立刻飞走
+            catContainer.style.left = catPos.x + 'px';
+            catContainer.style.top = catPos.y + 'px';
+            
+            catContainer.classList.remove('teleport-out');
+            catContainer.classList.add('teleport-in');
+            setTimeout(() => catContainer.classList.remove('teleport-in'), 400);
+        }, 400);
     }
 
-    function updateCatPos() {
-        catContainer.style.left = catPos.x + 'px';
-        catContainer.style.top = catPos.y + 'px';
-    }
-
-    // --- 特效工具 ---
-    // 生成拖尾
+    // 拖尾生成器
     function startTrail() {
-        if(trailTimer) return;
-        trailTimer = setInterval(() => {
-            const rect = catContainer.getBoundingClientRect();
-            const p = document.createElement('div');
-            p.className = 'trail-particle';
-            // 在猫咪中心稍微随机一点的位置生成
-            p.style.left = rect.left + rect.width/2 + (Math.random()-0.5)*20 + 'px';
-            p.style.top = rect.top + rect.height/2 + (Math.random()-0.5)*20 + 'px';
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), 800);
-        }, 50); // 每50ms生成一个粒子
-    }
-    function stopTrail() {
-        clearInterval(trailTimer);
-        trailTimer = null;
+        setInterval(() => {
+            if (isBusy) return; // 忙碌时不生成
+            const p = document.createElement('div'); p.className = 'trail';
+            p.style.left = catPos.x + (Math.random()-0.5)*20 + 'px';
+            p.style.top = catPos.y + (Math.random()-0.5)*20 + 'px';
+            document.body.appendChild(p); setTimeout(() => p.remove(), 800);
+        }, 40);
     }
 
-    // 生成爆炸粒子
+    // 爆发粒子
     function spawnBurst(x, y, count, char) {
         for(let i=0; i<count; i++) {
-            const p = document.createElement('div'); p.className = 'magic-burst';
-            p.innerText = Array.isArray(char) ? char[Math.floor(Math.random()*char.length)] : char;
-            p.style.left = x + 'px'; p.style.top = y + 'px';
-            const tx = (Math.random() - 0.5) * 200 + 'px';
-            const ty = (Math.random() - 0.5) * 200 + 'px';
-            const r = (Math.random() - 0.5) * 360 + 'deg';
-            p.style.setProperty('--tx', tx); p.style.setProperty('--ty', ty); p.style.setProperty('--r', r);
+            const p = document.createElement('div'); p.className = 'burst-fx';
+            p.innerText = char; p.style.left = x + 'px'; p.style.top = y + 'px';
+            p.style.setProperty('--tx', (Math.random()-0.5)*200+'px');
+            p.style.setProperty('--ty', (Math.random()-0.5)*200+'px');
+            p.style.setProperty('--r', (Math.random()-0.5)*360+'deg');
             document.body.appendChild(p); setTimeout(() => p.remove(), 1000);
         }
     }
+    
+    // 环境尘埃
+    function generateDust() {
+        for(let i=0; i<40; i++) {
+            let d = document.createElement('div'); d.className = 'magic-dust';
+            d.style.left = Math.random()*100+'vw'; 
+            d.style.animationDelay = Math.random()*-10+'s';
+            d.style.animationDuration = 10+Math.random()*20+'s';
+            document.getElementById('dust-layer').appendChild(d);
+        }
+    }
 
+    init();
 </script>
 </body>
 </html>
