@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>星愿喵灵：梦幻岛</title>
+    <style>
+        body { margin: 0; font-family: "Microsoft YaHei", sans-serif; background: #1a1a2e; color: white; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+        #game-container { width: 100vw; height: 100vh; position: relative; background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%); transition: 1s; }
+        /* 场景背景 */
+        .scene-bedroom { background: radial-gradient(circle, #2e1a47 0%, #1a1a2e 100%) !important; }
+        .scene-kitchen { background: radial-gradient(circle, #473a1a 0%, #1a1a2e 100%) !important; }
+        
+        #ui-layer { position: absolute; top: 20px; left: 20px; z-index: 10; }
+        .stat-card { background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 20px; backdrop-filter: blur(5px); margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.2); }
+        
+        #cat-area { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .cat { font-size: 100px; cursor: pointer; transition: 0.3s; user-select: none; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
+        .cat:hover { transform: scale(1.1); }
+        .cat:active { transform: scale(0.9) rotate(5deg); }
+        
+        #hatch-machine { position: absolute; bottom: 20px; right: 20px; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; }
+        .egg-btn { font-size: 40px; }
+        
+        .action-menu { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; }
+        button { padding: 10px 20px; border-radius: 20px; border: none; background: #4ecca3; color: white; cursor: pointer; font-weight: bold; }
+        button:disabled { background: #555; }
+        
+        .message { position: absolute; top: 150px; text-align: center; width: 100%; color: #ffd700; font-size: 20px; text-shadow: 0 0 5px black; }
+    </style>
+</head>
+<body onclick="playAmbient()">
+
+<div id="game-container" class="scene-bedroom">
+    <div id="ui-layer">
+        <div class="stat-card">🌟 星愿金币: <span id="coin-count">0</span></div>
+        <div class="stat-card">🏠 当前场景: <span id="scene-name">梦幻卧室</span></div>
+    </div>
+
+    <div class="message" id="msg">欢迎来到梦幻岛！摸摸小橘翅赚取金币吧~</div>
+
+    <div id="cat-area">
+        <div id="cat-body" class="cat" onclick="touchCat()">🐱‍👤</div>
+        <div id="cat-status" style="margin-top:20px; font-size: 18px;"></div>
+    </div>
+
+    <div id="hatch-machine" onclick="buyEgg()">
+        <div class="egg-btn">🔮</div>
+        <div>星愿孵化机</div>
+        <small>10金币/颗蛋</small>
+    </div>
+
+    <div class="action-menu">
+        <button onclick="feed()">喂食鱼干</button>
+        <button onclick="play()">玩逗猫棒</button>
+        <button onclick="changeScene()">解锁新场景</button>
+    </div>
+</div>
+
+<script>
+    let coins = 0;
+    let catLevel = 1;
+    const catIcons = ['🐱‍👤', '🐱‍👓', '🐱‍🚀', '🐱‍🐉', '🦄', '🐲'];
+    const scenes = [
+        { name: '梦幻卧室', class: 'scene-bedroom' },
+        { name: '魔法厨房', class: 'scene-kitchen' }
+    ];
+    let currentSceneIdx = 0;
+
+    function touchCat() {
+        coins += 1;
+        updateUI();
+        showMsg("你轻轻摸了摸小猫，它开心地摇了摇翅膀！+1金币");
+    }
+
+    function buyEgg() {
+        if (coins >= 10) {
+            coins -= 10;
+            const newCat = catIcons[Math.floor(Math.random() * catIcons.length)];
+            document.getElementById('cat-body').innerText = newCat;
+            updateUI();
+            showMsg("孵化成功！你得到了一只新的精灵猫！");
+        } else {
+            showMsg("金币不够哟，再去摸摸猫咪吧~");
+        }
+    }
+
+    function feed() {
+        showMsg("猫咪吃到了彩虹鱼干，满足地打了个饱嗝~");
+        coins += 2;
+        updateUI();
+    }
+
+    function changeScene() {
+        if (coins >= 5) {
+            coins -= 5;
+            currentSceneIdx = (currentSceneIdx + 1) % scenes.length;
+            document.getElementById('game-container').className = scenes[currentSceneIdx].class;
+            document.getElementById('scene-name').innerText = scenes[currentSceneIdx].name;
+            updateUI();
+            showMsg("场景切换！你来到了 " + scenes[currentSceneIdx].name);
+        } else {
+            showMsg("解锁新场景需要5个金币！");
+        }
+    }
+
+    function updateUI() {
+        document.getElementById('coin-count').innerText = coins;
+    }
+
+    function showMsg(text) {
+        const m = document.getElementById('msg');
+        m.innerText = text;
+        m.style.opacity = 1;
+    }
+</script>
+</body>
+</html>
