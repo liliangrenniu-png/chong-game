@@ -2,523 +2,282 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>巴拉拉喵魔仙：云端猫屋</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>胖猫飞行记：云端迷宫</title>
     <style>
-        :root {
-            --primary: #ff9a9e;
-            --secondary: #fad0c4;
-            --accent: #a18cd1;
-            --text: #555;
-            --bar-bg: #eee;
-        }
-
+        /* --- 1. 梦幻背景 --- */
         body {
-            font-family: "Microsoft YaHei", cursive, sans-serif;
-            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            user-select: none;
-            overflow: hidden;
+            margin: 0; padding: 0;
+            background: linear-gradient(180deg, #a1c4fd 0%, #c2e9fb 100%);
+            height: 100vh; width: 100vw;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: "Mady Madi", cursive, sans-serif;
+            overflow: hidden; touch-action: none;
         }
 
-        .game-container {
-            width: 380px;
-            height: 700px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
+        /* --- 2. 迷宫容器 --- */
+        #game-board {
             position: relative;
-            border: 5px solid #fff;
-        }
-
-        /* 顶部资源栏 */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 10px;
-        }
-
-        .currency {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff6b6b;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* 舞台区域 */
-        .stage {
-            flex: 1;
-            background: radial-gradient(circle, #fff 0%, #ffeaf2 100%);
+            width: 350px; height: 350px;
+            background: rgba(255, 255, 255, 0.4);
             border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 4px solid #fff;
+            display: grid;
+            /* 10x10 网格 */
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+        }
+
+        /* --- 3. 迷宫元素 --- */
+        /* 墙壁：变成了云朵 */
+        .wall {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.05);
             position: relative;
-            margin-bottom: 15px;
-            border: 2px dashed var(--primary);
+        }
+        .wall::after {
+            content: '☁️'; font-size: 20px;
+            position: absolute; left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.7;
         }
 
-        .cat-avatar {
-            font-size: 100px;
-            animation: breathe 3s infinite ease-in-out;
-            cursor: pointer;
-            transition: transform 0.2s;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        /* 地板：空气 */
+        .path { }
+
+        /* 终点：大鸡腿 */
+        .goal {
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .goal::before {
+            content: '🍗'; font-size: 28px;
+            animation: float-food 1s infinite alternate;
+            filter: drop-shadow(0 0 5px gold);
         }
 
-        .cat-avatar:active {
-            transform: scale(0.9);
-        }
-
-        .cat-name {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--text);
-            margin-top: 10px;
-            background: rgba(255,255,255,0.8);
-            padding: 2px 10px;
-            border-radius: 10px;
-        }
-
-        /* 状态条 */
-        .status-panel {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .status-item {
-            background: #fff;
-            padding: 5px 10px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-
-        .bar-container {
-            height: 8px;
-            background: var(--bar-bg);
-            border-radius: 4px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            height: 100%;
-            width: 100%;
-            border-radius: 4px;
-            transition: width 0.3s, background 0.3s;
-        }
-
-        /* 互动按钮 */
-        .actions {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .btn {
-            border: none;
-            background: #fff;
-            border-radius: 15px;
-            padding: 10px 0;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #eee;
-            transition: transform 0.1s, box-shadow 0.1s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .btn span {
-            font-size: 12px;
-            margin-top: 5px;
-            color: #666;
-        }
-
-        .btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #eee;
-        }
-
-        .btn-eat { color: #ff9f43; }
-        .btn-water { color: #54a0ff; }
-        .btn-sleep { color: #5f27cd; }
-        .btn-bath { color: #00d2d3; }
-
-        /* 商店与图鉴区域 */
-        .bottom-panel {
-            display: flex;
-            gap: 10px;
-        }
-
-        .big-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 15px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .btn-shop {
-            background: linear-gradient(to right, #ff9a9e, #fad0c4);
-        }
-        
-        .btn-collection {
-            background: linear-gradient(to right, #a18cd1, #fbc2eb);
-        }
-
-        .big-btn:hover {
-            filter: brightness(1.1);
-            transform: translateY(-2px);
-        }
-
-        /* 弹窗与特效 */
-        .floating-text {
-            position: absolute;
-            color: #ff6b6b;
-            font-weight: bold;
-            font-size: 20px;
+        /* --- 4. 主角：胖乎乎的飞行黑猫 --- */
+        #player {
+            width: 35px; height: 35px;
+            position: absolute; z-index: 10;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* Q弹移动 */
             pointer-events: none;
-            animation: floatUp 1s forwards;
-            z-index: 100;
-            text-shadow: 0 0 5px white;
         }
 
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-50px); opacity: 0; }
-        }
-
-        /* 孵化弹窗 */
-        #hatch-modal {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95);
-            border-radius: 25px;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-        }
-
-        .egg {
-            font-size: 80px;
-            animation: shake 0.5s infinite;
-            cursor: pointer;
-        }
-
-        @keyframes shake {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(5deg); }
-            75% { transform: rotate(-5deg); }
-            100% { transform: rotate(0deg); }
+        /* 身体：圆滚滚的黑煤球 */
+        .cat-body {
+            width: 100%; height: 80%;
+            background: #2d3436; /* 软黑色 */
+            border-radius: 50%; /* 圆形 */
+            position: absolute; bottom: 0;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            display: flex; justify-content: center;
         }
         
-        /* 侧边栏列表 */
-        #cat-list {
-            position: absolute;
-            bottom: 80px;
-            right: 20px;
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-            width: 150px;
+        /* 肚子：灰色的圆肚皮，显示吃饱了 */
+        .cat-belly {
+            width: 60%; height: 50%;
+            background: #636e72;
+            border-radius: 50%;
+            position: absolute; bottom: 5px;
         }
+
+        /* 眼睛：大大的 */
+        .cat-eyes {
+            width: 100%; position: absolute; top: 8px;
+            display: flex; justify-content: space-around; padding: 0 6px; box-sizing: border-box;
+        }
+        .eye { width: 8px; height: 8px; background: white; border-radius: 50%; position: relative; }
+        .pupil { width: 4px; height: 4px; background: black; border-radius: 50%; position: absolute; right: 1px; top: 2px; }
+
+        /* 翅膀：白色，不停扇动 */
+        .cat-wings { width: 100%; position: absolute; top: 5px; z-index: -1; }
+        .wing {
+            width: 15px; height: 10px; background: rgba(255,255,255,0.9);
+            position: absolute; border-radius: 50%;
+            animation: flap 0.2s infinite alternate;
+        }
+        .wing.left { left: -8px; transform-origin: right center; }
+        .wing.right { right: -8px; transform-origin: left center; }
+
+        /* 动画 */
+        @keyframes flap { from { transform: rotate(0deg) scaleY(1); } to { transform: rotate(-20deg) scaleY(0.8); } }
+        @keyframes float-food { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+        @keyframes eat-anim { 0% { transform: scale(1); } 50% { transform: scale(1.5); } 100% { transform: scale(1); } }
+
+        /* --- 5. 控制器 --- */
+        .controls {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 60px 60px 60px;
+            grid-template-rows: 60px 60px;
+            gap: 10px;
+        }
+        .btn {
+            width: 60px; height: 60px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 15px; border: 2px solid #fff;
+            font-size: 24px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+        .btn:active { transform: translateY(2px); box-shadow: none; background: white; }
         
-        .list-item {
-            padding: 5px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .up { grid-column: 2; grid-row: 1; }
+        .left { grid-column: 1; grid-row: 2; }
+        .down { grid-column: 2; grid-row: 2; }
+        .right { grid-column: 3; grid-row: 2; }
+
+        /* 胜利提示 */
+        #win-msg {
+            position: absolute; top: 10%;
+            background: #fff; padding: 10px 20px; border-radius: 20px;
+            font-size: 20px; color: #ff6b81; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: none; animation: pop 0.5s;
         }
-        .list-item:hover { background: #f9f9f9; }
+        @keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <div class="header">
-        <div class="currency">✨ 魔仙片: <span id="shard-count">0</span></div>
-        <div style="font-size: 12px; color: #aaa;">每只猫猫都在等你照顾哦~</div>
-    </div>
-
-    <div class="stage">
-        <div class="cat-avatar" id="cat-display" onclick="petCat()">🐱</div>
-        <div class="cat-name" id="cat-name-display">咪咪</div>
-        <div id="bubble" style="position: absolute; top: 20px; right: 20px; background: white; padding: 5px 10px; border-radius: 10px; font-size: 12px; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">喵~</div>
-    </div>
-
-    <div class="status-panel">
-        <div class="status-item">
-            <div>🐟 饱食度</div>
-            <div class="bar-container"><div class="bar-fill" id="bar-food" style="background: #ff9f43; width: 50%;"></div></div>
-        </div>
-        <div class="status-item">
-            <div>💧 口渴度</div>
-            <div class="bar-container"><div class="bar-fill" id="bar-water" style="background: #54a0ff; width: 50%;"></div></div>
-        </div>
-        <div class="status-item">
-            <div>💤 精力值</div>
-            <div class="bar-container"><div class="bar-fill" id="bar-energy" style="background: #5f27cd; width: 50%;"></div></div>
-        </div>
-        <div class="status-item">
-            <div>✨ 清洁度</div>
-            <div class="bar-container"><div class="bar-fill" id="bar-clean" style="background: #00d2d3; width: 50%;"></div></div>
-        </div>
-    </div>
-
-    <div class="actions">
-        <button class="btn btn-eat" onclick="doAction('food')">
-            🍖<span>喂食</span>
-        </button>
-        <button class="btn btn-water" onclick="doAction('water')">
-            🥤<span>喝水</span>
-        </button>
-        <button class="btn btn-sleep" onclick="doAction('energy')">
-            🛌<span>睡觉</span>
-        </button>
-        <button class="btn btn-bath" onclick="doAction('clean')">
-            🛁<span>洗澡</span>
-        </button>
-    </div>
-
-    <div class="bottom-panel">
-        <button class="big-btn btn-shop" onclick="buyEgg()">
-            🎁 100魔仙片换猫蛋
-        </button>
-        <button class="big-btn btn-collection" onclick="toggleList()">
-            📜 切换猫猫
-        </button>
-    </div>
+    <h2 style="color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 10px;">☁️ 胖猫飞行迷宫 ☁️</h2>
     
-    <div id="cat-list"></div>
+    <div id="win-msg">Yummy! 吃到了! 🍗</div>
 
-    <div id="hatch-modal" onclick="hatchEgg()">
-        <div style="margin-bottom: 20px; font-size: 18px; color: #ff9a9e;">点击神秘魔仙蛋孵化！</div>
-        <div class="egg">🥚</div>
+    <div id="game-board">
+        <div id="player" style="transform: translate(0px, 0px);">
+            <div class="cat-wings">
+                <div class="wing left"></div>
+                <div class="wing right" style="animation-delay: 0.1s"></div>
+            </div>
+            <div class="cat-body">
+                <div class="cat-belly"></div>
+                <div class="cat-eyes">
+                    <div class="eye"><div class="pupil"></div></div>
+                    <div class="eye"><div class="pupil"></div></div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+    <div class="controls">
+        <div class="btn up" onclick="move(0, -1)">⬆️</div>
+        <div class="btn left" onclick="move(-1, 0)">⬅️</div>
+        <div class="btn down" onclick="move(0, 1)">⬇️</div>
+        <div class="btn right" onclick="move(1, 0)">➡️</div>
+    </div>
 
 <script>
-    // 游戏数据
-    let shards = 200; // 初始魔仙片
-    let cats = [
-        {
-            id: Date.now(),
-            name: "初始咪",
-            emoji: "🐱",
-            stats: { food: 80, water: 80, energy: 80, clean: 80 },
-            color: "#ff9a9e"
+    // 1 = 云朵墙壁, 0 = 通路, 2 = 终点, 9 = 起点
+    const mapLayout = [
+        [9, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+        [0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 1, 1, 0, 1, 1, 1, 1, 1, 0],
+        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 1, 1, 1, 1, 1, 1, 1, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 0, 0, 2]
+    ];
+
+    const cellSize = 35; // 每个格子的像素大小
+    let playerPos = { x: 0, y: 0 };
+    const board = document.getElementById('game-board');
+    const player = document.getElementById('player');
+
+    // 初始化地图
+    function initGame() {
+        board.innerHTML = ''; // 清空
+        board.appendChild(player); // 把主角放回去
+
+        for (let y = 0; y < 10; y++) {
+            for (let x = 0; x < 10; x++) {
+                const cell = document.createElement('div');
+                cell.style.width = cellSize + 'px';
+                cell.style.height = cellSize + 'px';
+                
+                if (mapLayout[y][x] === 1) {
+                    cell.className = 'wall';
+                } else if (mapLayout[y][x] === 2) {
+                    cell.className = 'goal';
+                } else {
+                    cell.className = 'path';
+                }
+                
+                if (mapLayout[y][x] === 9) {
+                    playerPos = { x, y };
+                }
+                
+                board.appendChild(catPlaceHolder(cell)); // 将格子加入
+                board.appendChild(cell);
+            }
         }
-    ];
-    let currentCatIndex = 0;
-
-    // 随机猫咪生成库
-    const catTypes = [
-        { emoji: "😸", name: "乐乐猫" },
-        { emoji: "😼", name: "酷酷猫" },
-        { emoji: "😽", name: "亲亲猫" },
-        { emoji: "🙀", name: "惊吓猫" },
-        { emoji: "😿", name: "哭哭猫" },
-        { emoji: "😻", name: "花痴猫" },
-        { emoji: "🦁", name: "辛巴猫" },
-        { emoji: "🐯", name: "老虎猫" },
-        { emoji: "🐈‍⬛", name: "黑魔仙" }
-    ];
-
-    // 初始化
-    function init() {
-        updateUI();
-        // 启动自然消耗循环
-        setInterval(gameLoop, 2000); 
+        updatePlayerPos();
     }
 
-    // 更新界面显示
-    function updateUI() {
-        document.getElementById('shard-count').innerText = shards;
-        
-        let cat = cats[currentCatIndex];
-        document.getElementById('cat-display').innerText = cat.emoji;
-        document.getElementById('cat-name-display').innerText = cat.name;
+    // 辅助函数：只是为了让代码结构不报错，实际上直接 appendChild 就行
+    function catPlaceHolder(el) { return document.createDocumentFragment(); }
 
-        updateBar('bar-food', cat.stats.food);
-        updateBar('bar-water', cat.stats.water);
-        updateBar('bar-energy', cat.stats.energy);
-        updateBar('bar-clean', cat.stats.clean);
-        
-        updateCatList();
-    }
+    // 移动逻辑
+    function move(dx, dy) {
+        const newX = playerPos.x + dx;
+        const newY = playerPos.y + dy;
 
-    function updateBar(id, value) {
-        let bar = document.getElementById(id);
-        bar.style.width = value + "%";
-        // 颜色变化
-        if(value < 30) bar.style.background = "#ff4757"; // 危险红色
-        else if(value > 80) bar.style.background = "#2ed573"; // 健康绿色
-        // 否则保持原色，这里为了简化代码不重置原色，实际可以优化
-    }
+        // 检查边界
+        if (newX < 0 || newX >= 10 || newY < 0 || newY >= 10) return;
 
-    // 执行动作
-    function doAction(type) {
-        let cat = cats[currentCatIndex];
-        let gain = 15; // 每次获得的魔仙片
-        let cost = 5; // 每次动作可能消耗一点点其他属性（可选，这里简化为只加不减）
-        
-        if (cat.stats[type] >= 100) {
-            showBubble("我不想要那个！");
+        // 检查撞墙
+        if (mapLayout[newY][newX] === 1) {
+            // 撞墙反馈：稍微晃动一下
+            player.style.transform = `translate(${playerPos.x * cellSize + dx*5}px, ${playerPos.y * cellSize + dy*5}px)`;
+            setTimeout(() => updatePlayerPos(), 100);
             return;
         }
 
-        // 增加对应属性
-        cat.stats[type] = Math.min(100, cat.stats[type] + 30);
-        
-        // 获得魔仙片
-        shards += gain;
-        showFloatingText(`+${gain} 魔仙片`, event.clientX, event.clientY);
-        
-        // 播放动作表情
-        let originalEmoji = cat.emoji;
-        if(type === 'food') cat.emoji = "😋";
-        if(type === 'water') cat.emoji = "👅";
-        if(type === 'energy') cat.emoji = "😴";
-        if(type === 'clean') cat.emoji = "🧼";
-        
-        updateUI();
+        // 移动
+        playerPos.x = newX;
+        playerPos.y = newY;
+        updatePlayerPos();
 
-        setTimeout(() => {
-            cat.emoji = originalEmoji;
-            updateUI();
-        }, 800);
-    }
-
-    // 抚摸猫咪（额外小彩蛋）
-    function petCat() {
-        showBubble("喵呜~ ❤️");
-        shards += 1;
-        updateUI();
-    }
-
-    // 气泡提示
-    function showBubble(text) {
-        let b = document.getElementById('bubble');
-        b.innerText = text;
-        b.style.display = 'block';
-        setTimeout(() => b.style.display = 'none', 1500);
-    }
-
-    // 漂浮文字特效
-    function showFloatingText(text, x, y) {
-        let el = document.createElement('div');
-        el.className = 'floating-text';
-        el.innerText = text;
-        el.style.left = x + 'px';
-        el.style.top = y + 'px';
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 1000);
-    }
-
-    // 游戏自然循环（属性随时间下降）
-    function gameLoop() {
-        cats.forEach(cat => {
-            cat.stats.food = Math.max(0, cat.stats.food - 2);
-            cat.stats.water = Math.max(0, cat.stats.water - 3);
-            cat.stats.energy = Math.max(0, cat.stats.energy - 1);
-            cat.stats.clean = Math.max(0, cat.stats.clean - 2);
-        });
-        updateUI();
-    }
-
-    // 购买猫蛋
-    function buyEgg() {
-        if (shards >= 100) {
-            shards -= 100;
-            updateUI();
-            document.getElementById('hatch-modal').style.display = 'flex';
-        } else {
-            alert("魔仙片不足哦！快去照顾猫咪赚取吧！");
+        // 检查胜利
+        if (mapLayout[newY][newX] === 2) {
+            win();
         }
     }
 
-    // 孵化过程
-    function hatchEgg() {
-        let type = catTypes[Math.floor(Math.random() * catTypes.length)];
-        let newCat = {
-            id: Date.now(),
-            name: type.name,
-            emoji: type.emoji,
-            stats: { food: 50, water: 50, energy: 50, clean: 50 } // 新猫状态一般
-        };
+    function updatePlayerPos() {
+        player.style.transform = `translate(${playerPos.x * cellSize}px, ${playerPos.y * cellSize}px)`;
+    }
+
+    function win() {
+        const msg = document.getElementById('win-msg');
+        msg.style.display = 'block';
+        player.style.animation = 'eat-anim 0.5s infinite'; // 吃到东西变大
         
-        cats.push(newCat);
-        currentCatIndex = cats.length - 1; // 自动切换到新猫
-        
-        document.getElementById('hatch-modal').style.display = 'none';
-        alert(`恭喜！孵化出了一只 ${newCat.name}！`);
-        updateUI();
+        setTimeout(() => {
+            msg.style.display = 'none';
+            player.style.animation = '';
+            // 重置回起点（简单循环）
+            playerPos = { x: 0, y: 0 };
+            updatePlayerPos();
+        }, 2000);
     }
 
-    // 切换列表显示
-    function toggleList() {
-        let list = document.getElementById('cat-list');
-        list.style.display = list.style.display === 'block' ? 'none' : 'block';
-    }
+    // 键盘支持
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowUp') move(0, -1);
+        if (e.key === 'ArrowDown') move(0, 1);
+        if (e.key === 'ArrowLeft') move(-1, 0);
+        if (e.key === 'ArrowRight') move(1, 0);
+    });
 
-    // 更新猫咪列表
-    function updateCatList() {
-        let list = document.getElementById('cat-list');
-        list.innerHTML = '';
-        cats.forEach((cat, index) => {
-            let item = document.createElement('div');
-            item.className = 'list-item';
-            item.innerHTML = `<span>${cat.emoji}</span> ${cat.name}`;
-            if (index === currentCatIndex) item.style.fontWeight = 'bold';
-            item.onclick = () => {
-                currentCatIndex = index;
-                toggleList();
-                updateUI();
-            };
-            list.appendChild(item);
-        });
-    }
-
-    // 启动游戏
-    init();
+    initGame();
 
 </script>
 </body>
