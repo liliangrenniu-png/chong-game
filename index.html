@@ -2,459 +2,523 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>赛博喵影：重力代码 | Cyber-Neko</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>巴拉拉喵魔仙：云端猫屋</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        :root {
+            --primary: #ff9a9e;
+            --secondary: #fad0c4;
+            --accent: #a18cd1;
+            --text: #555;
+            --bar-bg: #eee;
+        }
 
         body {
+            font-family: "Microsoft YaHei", cursive, sans-serif;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
             margin: 0;
-            padding: 0;
-            background-color: #050510; /* 深空蓝黑 */
-            overflow: hidden;
-            font-family: 'Orbitron', sans-serif;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            color: white;
+            user-select: none;
+            overflow: hidden;
         }
 
-        #game-container {
+        .game-container {
+            width: 380px;
+            height: 700px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
             position: relative;
-            box-shadow: 0 0 50px rgba(0, 243, 255, 0.2);
-            border: 2px solid #333;
+            border: 5px solid #fff;
+        }
+
+        /* 顶部资源栏 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
+        }
+
+        .currency {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6b6b;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 舞台区域 */
+        .stage {
+            flex: 1;
+            background: radial-gradient(circle, #fff 0%, #ffeaf2 100%);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 15px;
+            border: 2px dashed var(--primary);
+        }
+
+        .cat-avatar {
+            font-size: 100px;
+            animation: breathe 3s infinite ease-in-out;
+            cursor: pointer;
+            transition: transform 0.2s;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+
+        .cat-avatar:active {
+            transform: scale(0.9);
+        }
+
+        .cat-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text);
+            margin-top: 10px;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 10px;
             border-radius: 10px;
         }
 
-        canvas {
-            display: block;
-            border-radius: 8px;
-            background: linear-gradient(to bottom, #0a0a2a, #1a0b2e);
+        /* 状态条 */
+        .status-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        #ui-layer {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            pointer-events: none;
-            text-shadow: 0 0 10px #00f3ff;
+        .status-item {
+            background: #fff;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
         }
 
-        h1 {
-            font-size: 20px;
-            margin: 0;
-            color: #00f3ff;
-            letter-spacing: 2px;
+        .bar-container {
+            height: 8px;
+            background: var(--bar-bg);
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
         }
 
-        p {
-            font-size: 14px;
-            color: #ff00ff;
-            margin: 5px 0;
-        }
-
-        #tutorial {
-            position: absolute;
-            bottom: 30px;
+        .bar-fill {
+            height: 100%;
             width: 100%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
-            pointer-events: none;
-            animation: pulse 2s infinite;
+            border-radius: 4px;
+            transition: width 0.3s, background 0.3s;
         }
 
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+        /* 互动按钮 */
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
         }
+
+        .btn {
+            border: none;
+            background: #fff;
+            border-radius: 15px;
+            padding: 10px 0;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #eee;
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn span {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #eee;
+        }
+
+        .btn-eat { color: #ff9f43; }
+        .btn-water { color: #54a0ff; }
+        .btn-sleep { color: #5f27cd; }
+        .btn-bath { color: #00d2d3; }
+
+        /* 商店与图鉴区域 */
+        .bottom-panel {
+            display: flex;
+            gap: 10px;
+        }
+
+        .big-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-shop {
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+        }
+        
+        .btn-collection {
+            background: linear-gradient(to right, #a18cd1, #fbc2eb);
+        }
+
+        .big-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        /* 弹窗与特效 */
+        .floating-text {
+            position: absolute;
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatUp 1s forwards;
+            z-index: 100;
+            text-shadow: 0 0 5px white;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-50px); opacity: 0; }
+        }
+
+        /* 孵化弹窗 */
+        #hatch-modal {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .egg {
+            font-size: 80px;
+            animation: shake 0.5s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        /* 侧边栏列表 */
+        #cat-list {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            width: 150px;
+        }
+        
+        .list-item {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .list-item:hover { background: #f9f9f9; }
+
     </style>
 </head>
 <body>
 
-<div id="game-container">
-    <canvas id="gameCanvas" width="960" height="540"></canvas>
-    
-    <div id="ui-layer">
-        <h1>CYBER-NEKO</h1>
-        <p>数据包收集: <span id="score">0</span> / 5</p>
+<div class="game-container">
+    <div class="header">
+        <div class="currency">✨ 魔仙片: <span id="shard-count">0</span></div>
+        <div style="font-size: 12px; color: #aaa;">每只猫猫都在等你照顾哦~</div>
     </div>
 
-    <div id="tutorial">
-        按 [ A / D ] 移动  •  按 [ 空格 ] 反转重力
+    <div class="stage">
+        <div class="cat-avatar" id="cat-display" onclick="petCat()">🐱</div>
+        <div class="cat-name" id="cat-name-display">咪咪</div>
+        <div id="bubble" style="position: absolute; top: 20px; right: 20px; background: white; padding: 5px 10px; border-radius: 10px; font-size: 12px; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">喵~</div>
+    </div>
+
+    <div class="status-panel">
+        <div class="status-item">
+            <div>🐟 饱食度</div>
+            <div class="bar-container"><div class="bar-fill" id="bar-food" style="background: #ff9f43; width: 50%;"></div></div>
+        </div>
+        <div class="status-item">
+            <div>💧 口渴度</div>
+            <div class="bar-container"><div class="bar-fill" id="bar-water" style="background: #54a0ff; width: 50%;"></div></div>
+        </div>
+        <div class="status-item">
+            <div>💤 精力值</div>
+            <div class="bar-container"><div class="bar-fill" id="bar-energy" style="background: #5f27cd; width: 50%;"></div></div>
+        </div>
+        <div class="status-item">
+            <div>✨ 清洁度</div>
+            <div class="bar-container"><div class="bar-fill" id="bar-clean" style="background: #00d2d3; width: 50%;"></div></div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-eat" onclick="doAction('food')">
+            🍖<span>喂食</span>
+        </button>
+        <button class="btn btn-water" onclick="doAction('water')">
+            🥤<span>喝水</span>
+        </button>
+        <button class="btn btn-sleep" onclick="doAction('energy')">
+            🛌<span>睡觉</span>
+        </button>
+        <button class="btn btn-bath" onclick="doAction('clean')">
+            🛁<span>洗澡</span>
+        </button>
+    </div>
+
+    <div class="bottom-panel">
+        <button class="big-btn btn-shop" onclick="buyEgg()">
+            🎁 100魔仙片换猫蛋
+        </button>
+        <button class="big-btn btn-collection" onclick="toggleList()">
+            📜 切换猫猫
+        </button>
+    </div>
+    
+    <div id="cat-list"></div>
+
+    <div id="hatch-modal" onclick="hatchEgg()">
+        <div style="margin-bottom: 20px; font-size: 18px; color: #ff9a9e;">点击神秘魔仙蛋孵化！</div>
+        <div class="egg">🥚</div>
     </div>
 </div>
 
 <script>
-/**
- * 赛博喵影 - 核心游戏引擎
- */
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const scoreEl = document.getElementById('score');
+    // 游戏数据
+    let shards = 200; // 初始魔仙片
+    let cats = [
+        {
+            id: Date.now(),
+            name: "初始咪",
+            emoji: "🐱",
+            stats: { food: 80, water: 80, energy: 80, clean: 80 },
+            color: "#ff9a9e"
+        }
+    ];
+    let currentCatIndex = 0;
 
-// 游戏配置
-const CONSTANTS = {
-    GRAVITY: 0.6,
-    SPEED: 6,
-    JUMP_FORCE: 12,
-    COLOR_PRIMARY: '#00f3ff', // 赛博蓝
-    COLOR_SECONDARY: '#ff00ff', // 霓虹粉
-    COLOR_HAZARD: '#ff3333', // 警告红
-    FRICTION: 0.85
-};
+    // 随机猫咪生成库
+    const catTypes = [
+        { emoji: "😸", name: "乐乐猫" },
+        { emoji: "😼", name: "酷酷猫" },
+        { emoji: "😽", name: "亲亲猫" },
+        { emoji: "🙀", name: "惊吓猫" },
+        { emoji: "😿", name: "哭哭猫" },
+        { emoji: "😻", name: "花痴猫" },
+        { emoji: "🦁", name: "辛巴猫" },
+        { emoji: "🐯", name: "老虎猫" },
+        { emoji: "🐈‍⬛", name: "黑魔仙" }
+    ];
 
-// 游戏状态
-let gameState = {
-    score: 0,
-    cameraX: 0,
-    shake: 0,
-    isGameOver: false
-};
-
-// 输入控制
-const keys = {
-    ArrowRight: false,
-    ArrowLeft: false,
-    KeyD: false,
-    KeyA: false,
-    Space: false
-};
-
-window.addEventListener('keydown', (e) => {
-    if(e.code === 'Space' && !e.repeat) {
-        player.flipGravity();
+    // 初始化
+    function init() {
+        updateUI();
+        // 启动自然消耗循环
+        setInterval(gameLoop, 2000); 
     }
-    if (e.code in keys) keys[e.code] = true;
-});
-window.addEventListener('keyup', (e) => {
-    if (e.code in keys) keys[e.code] = false;
-});
 
-// 粒子系统 (用于特效)
-let particles = [];
-class Particle {
-    constructor(x, y, color, speed) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.vx = (Math.random() - 0.5) * speed;
-        this.vy = (Math.random() - 0.5) * speed;
-        this.life = 1.0; // 生命值 1.0 -> 0
-    }
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.life -= 0.03;
-    }
-    draw(ctx, camX) {
-        ctx.globalAlpha = this.life;
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x - camX, this.y, 4, 4);
-        ctx.globalAlpha = 1.0;
-    }
-}
-
-// 玩家类 (猫咪)
-class Player {
-    constructor() {
-        this.width = 30;
-        this.height = 30;
-        this.reset();
+    // 更新界面显示
+    function updateUI() {
+        document.getElementById('shard-count').innerText = shards;
         
-        // 拖尾特效记录
-        this.trail = []; 
-    }
+        let cat = cats[currentCatIndex];
+        document.getElementById('cat-display').innerText = cat.emoji;
+        document.getElementById('cat-name-display').innerText = cat.name;
 
-    reset() {
-        this.x = 100;
-        this.y = 200;
-        this.vx = 0;
-        this.vy = 0;
-        this.gravityDir = 1; // 1: 下, -1: 上
-        this.isGrounded = false;
-        this.color = CONSTANTS.COLOR_PRIMARY;
-        this.scaleY = 1; // 用于挤压拉伸动画
-    }
-
-    flipGravity() {
-        // 只有落地时或者在特定情况下才允许反转? 
-        // 这是一个核心玩法设计。为了爽快感，允许空中反转，但增加特效
-        this.gravityDir *= -1;
-        this.scaleY = 0.5; // 瞬间压扁
-        createExplosion(this.x + this.width/2, this.y + this.height/2, '#ffffff', 10);
+        updateBar('bar-food', cat.stats.food);
+        updateBar('bar-water', cat.stats.water);
+        updateBar('bar-energy', cat.stats.energy);
+        updateBar('bar-clean', cat.stats.clean);
         
-        // 播放虚拟音效 (此处为视觉代替)
-        // playSound('flip');
+        updateCatList();
     }
 
-    update(platforms, hazards, fish) {
-        // 1. 物理计算
-        if (keys.ArrowRight || keys.KeyD) this.vx += 1;
-        if (keys.ArrowLeft || keys.KeyA) this.vx -= 1;
-
-        this.vx *= CONSTANTS.FRICTION; // 摩擦力
-        this.vy += CONSTANTS.GRAVITY * this.gravityDir; // 重力
-
-        // 限制最大速度
-        if (this.vx > CONSTANTS.SPEED) this.vx = CONSTANTS.SPEED;
-        if (this.vx < -CONSTANTS.SPEED) this.vx = -CONSTANTS.SPEED;
-
-        // 恢复挤压效果
-        this.scaleY += (1 - this.scaleY) * 0.2;
-
-        // 2. 碰撞检测 (X轴)
-        this.x += this.vx;
-        this.checkWallCollision(platforms);
-
-        // 3. 碰撞检测 (Y轴)
-        this.y += this.vy;
-        this.isGrounded = false;
-        this.checkFloorCollision(platforms);
-
-        // 4. 边界检查 (掉出屏幕)
-        if (this.y > canvas.height + 100 || this.y < -100) {
-            this.respawn();
-        }
-
-        // 5. 危险物检测
-        for (let h of hazards) {
-            if (this.checkRectCollision(h)) {
-                this.respawn();
-            }
-        }
-
-        // 6. 收集物检测
-        for (let i = fish.length - 1; i >= 0; i--) {
-            if (!fish[i].collected && this.checkRectCollision(fish[i])) {
-                fish[i].collected = true;
-                gameState.score++;
-                scoreEl.innerText = gameState.score;
-                createExplosion(fish[i].x + 10, fish[i].y + 10, '#ffff00', 20);
-                gameState.shake = 5; // 吃到东西轻微震屏
-            }
-        }
-
-        // 更新拖尾
-        this.trail.push({x: this.x, y: this.y});
-        if (this.trail.length > 10) this.trail.shift();
+    function updateBar(id, value) {
+        let bar = document.getElementById(id);
+        bar.style.width = value + "%";
+        // 颜色变化
+        if(value < 30) bar.style.background = "#ff4757"; // 危险红色
+        else if(value > 80) bar.style.background = "#2ed573"; // 健康绿色
+        // 否则保持原色，这里为了简化代码不重置原色，实际可以优化
     }
 
-    checkRectCollision(rect) {
-        return (this.x < rect.x + rect.w &&
-                this.x + this.width > rect.x &&
-                this.y < rect.y + rect.h &&
-                this.y + this.height > rect.y);
-    }
-
-    checkWallCollision(platforms) {
-        for (let p of platforms) {
-            if (this.checkRectCollision(p)) {
-                // 简单的墙壁碰撞：如果速度向右，贴在墙左边，反之亦然
-                if (this.vx > 0) this.x = p.x - this.width;
-                else if (this.vx < 0) this.x = p.x + p.w;
-                this.vx = 0;
-            }
-        }
-    }
-
-    checkFloorCollision(platforms) {
-        for (let p of platforms) {
-            if (this.checkRectCollision(p)) {
-                // 落地逻辑
-                if (this.vy * this.gravityDir > 0) { // 正在往下掉(相对于重力方向)
-                    if (this.gravityDir === 1) this.y = p.y - this.height;
-                    else this.y = p.y + p.h;
-                    
-                    this.vy = 0;
-                    this.isGrounded = true;
-                } 
-                // 顶头逻辑
-                else if (this.vy * this.gravityDir < 0) {
-                    if (this.gravityDir === 1) this.y = p.y + p.h;
-                    else this.y = p.y - this.height;
-                    this.vy = 0;
-                }
-            }
-        }
-    }
-
-    respawn() {
-        createExplosion(this.x, this.y, CONSTANTS.COLOR_PRIMARY, 30);
-        gameState.shake = 20; // 剧烈震动
-        this.reset();
-        // 这里可以加一个 "System Resetting..." 的UI提示
-    }
-
-    draw(ctx, camX) {
-        // 绘制拖尾 (Cyber Trail)
-        ctx.beginPath();
-        for (let i = 0; i < this.trail.length; i++) {
-            let pos = this.trail[i];
-            ctx.lineTo(pos.x - camX + this.width/2, pos.y + this.height/2);
-        }
-        ctx.strokeStyle = `rgba(0, 243, 255, 0.3)`;
-        ctx.lineWidth = 10;
-        ctx.stroke();
-
-        // 绘制猫咪主体 (带发光)
-        ctx.save();
-        ctx.translate(this.x - camX + this.width/2, this.y + this.height/2);
+    // 执行动作
+    function doAction(type) {
+        let cat = cats[currentCatIndex];
+        let gain = 15; // 每次获得的魔仙片
+        let cost = 5; // 每次动作可能消耗一点点其他属性（可选，这里简化为只加不减）
         
-        // 挤压拉伸变换
-        ctx.scale(1, this.scaleY); 
-        if (this.gravityDir === -1) ctx.scale(1, -1); // 倒立
-        if (this.vx < -0.1) ctx.scale(-1, 1); // 左右翻转
+        if (cat.stats[type] >= 100) {
+            showBubble("我不想要那个！");
+            return;
+        }
 
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = this.color;
-        ctx.fillStyle = this.color;
+        // 增加对应属性
+        cat.stats[type] = Math.min(100, cat.stats[type] + 30);
         
-        // 猫身体 (简单的矩形+耳朵)
-        ctx.fillRect(-15, -15, 30, 30); 
+        // 获得魔仙片
+        shards += gain;
+        showFloatingText(`+${gain} 魔仙片`, event.clientX, event.clientY);
         
-        // 猫耳朵
-        ctx.beginPath();
-        ctx.moveTo(-15, -15);
-        ctx.lineTo(-20, -25);
-        ctx.lineTo(-5, -15);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(15, -15);
-        ctx.lineTo(20, -25);
-        ctx.lineTo(5, -15);
-        ctx.fill();
+        // 播放动作表情
+        let originalEmoji = cat.emoji;
+        if(type === 'food') cat.emoji = "😋";
+        if(type === 'water') cat.emoji = "👅";
+        if(type === 'energy') cat.emoji = "😴";
+        if(type === 'clean') cat.emoji = "🧼";
+        
+        updateUI();
 
-        // 护目镜 (酷炫细节)
-        ctx.fillStyle = "#111";
-        ctx.fillRect(-10, -5, 20, 8);
-        ctx.fillStyle = CONSTANTS.COLOR_SECONDARY;
-        ctx.fillRect(-8, -3, 6, 4); // 左眼镜片
-        ctx.fillRect(2, -3, 6, 4);  // 右眼镜片
-
-        ctx.restore();
-    }
-}
-
-// 关卡数据
-const platforms = [
-    {x: 0, y: 300, w: 400, h: 50},       // 起点平台
-    {x: 500, y: 200, w: 200, h: 50},     // 跳跃平台1
-    {x: 800, y: 400, w: 200, h: 50},     // 下层平台
-    {x: 1100, y: 100, w: 300, h: 50},    // 高空平台 (需要反转)
-    {x: 1500, y: 300, w: 200, h: 50},    // 终点前
-    {x: 1800, y: 350, w: 100, h: 200},   // 终点墙
-    
-    // 天花板平台 (用于反转玩法)
-    {x: 600, y: 0, w: 400, h: 50},       
-    {x: 1200, y: 0, w: 200, h: 50},
-];
-
-const hazards = [
-    {x: 400, y: 530, w: 1400, h: 20, type: 'void'}, // 底部虚空
-    {x: 900, y: 200, w: 20, h: 100, type: 'wall'},  // 红色防火墙
-];
-
-const fish = [
-    {x: 550, y: 150, w: 20, h: 20, collected: false},
-    {x: 900, y: 350, w: 20, h: 20, collected: false},
-    {x: 1200, y: 150, w: 20, h: 20, collected: false}, // 放在高处
-    {x: 700, y: 50, w: 20, h: 20, collected: false},  // 放在天花板
-    {x: 1600, y: 250, w: 20, h: 20, collected: false},
-];
-
-function createExplosion(x, y, color, count) {
-    for(let i=0; i<count; i++) {
-        particles.push(new Particle(x, y, color, 8));
-    }
-}
-
-// 游戏主循环
-const player = new Player();
-
-function gameLoop() {
-    // 1. 清除画布
-    ctx.fillStyle = '#0a0a2a';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // 震屏效果应用
-    let shakeX = 0, shakeY = 0;
-    if (gameState.shake > 0) {
-        shakeX = (Math.random() - 0.5) * gameState.shake;
-        shakeY = (Math.random() - 0.5) * gameState.shake;
-        gameState.shake *= 0.9;
-        if(gameState.shake < 0.5) gameState.shake = 0;
+        setTimeout(() => {
+            cat.emoji = originalEmoji;
+            updateUI();
+        }, 800);
     }
 
-    // 2. 摄像机跟随 (平滑移动)
-    let targetCamX = player.x - 200;
-    if (targetCamX < 0) targetCamX = 0;
-    gameState.cameraX += (targetCamX - gameState.cameraX) * 0.1;
-    
-    ctx.save();
-    ctx.translate(-gameState.cameraX + shakeX, shakeY);
-
-    // 3. 绘制背景网格 (增加赛博感)
-    ctx.strokeStyle = 'rgba(0, 243, 255, 0.1)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < canvas.width + gameState.cameraX; i+=50) {
-        // 简单的视差滚动效果：背景动得慢
-        let parallaxX = i - (gameState.cameraX * 0.5) % 50; 
-        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+    // 抚摸猫咪（额外小彩蛋）
+    function petCat() {
+        showBubble("喵呜~ ❤️");
+        shards += 1;
+        updateUI();
     }
 
-    // 4. 更新与绘制实体
-    player.update(platforms, hazards, fish);
-    player.draw(ctx, gameState.cameraX);
-
-    // 绘制平台
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = '#00f3ff';
-    ctx.fillStyle = '#111';
-    ctx.strokeStyle = '#00f3ff';
-    for (let p of platforms) {
-        ctx.fillRect(p.x, p.y, p.w, p.h);
-        ctx.strokeRect(p.x, p.y, p.w, p.h);
+    // 气泡提示
+    function showBubble(text) {
+        let b = document.getElementById('bubble');
+        b.innerText = text;
+        b.style.display = 'block';
+        setTimeout(() => b.style.display = 'none', 1500);
     }
 
-    // 绘制危险区域 (红色防火墙)
-    ctx.shadowColor = '#ff3333';
-    ctx.fillStyle = 'rgba(255, 51, 51, 0.2)';
-    ctx.strokeStyle = '#ff3333';
-    for (let h of hazards) {
-        ctx.fillRect(h.x, h.y, h.w, h.h);
-        ctx.strokeRect(h.x, h.y, h.w, h.h);
-        // 绘制内部噪点
-        ctx.fillStyle = '#fff';
-        if (Math.random() > 0.9) ctx.fillRect(h.x + Math.random()*h.w, h.y + Math.random()*h.h, 2, 2);
-        ctx.fillStyle = 'rgba(255, 51, 51, 0.2)';
+    // 漂浮文字特效
+    function showFloatingText(text, x, y) {
+        let el = document.createElement('div');
+        el.className = 'floating-text';
+        el.innerText = text;
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000);
     }
 
-    // 绘制收集物 (小鱼干/数据包)
-    for (let f of fish) {
-        if (!f.collected) {
-            ctx.shadowColor = '#ffff00';
-            ctx.fillStyle = '#ffff00';
-            let floatY = Math.sin(Date.now() / 200) * 5; // 悬浮动画
-            ctx.fillRect(f.x, f.y + floatY, f.w, f.h);
+    // 游戏自然循环（属性随时间下降）
+    function gameLoop() {
+        cats.forEach(cat => {
+            cat.stats.food = Math.max(0, cat.stats.food - 2);
+            cat.stats.water = Math.max(0, cat.stats.water - 3);
+            cat.stats.energy = Math.max(0, cat.stats.energy - 1);
+            cat.stats.clean = Math.max(0, cat.stats.clean - 2);
+        });
+        updateUI();
+    }
+
+    // 购买猫蛋
+    function buyEgg() {
+        if (shards >= 100) {
+            shards -= 100;
+            updateUI();
+            document.getElementById('hatch-modal').style.display = 'flex';
+        } else {
+            alert("魔仙片不足哦！快去照顾猫咪赚取吧！");
         }
     }
 
-    // 更新与绘制粒子
-    for (let i = particles.length - 1; i >= 0; i--) {
-        particles[i].update();
-        particles[i].draw(ctx, gameState.cameraX);
-        if (particles[i].life <= 0) particles.splice(i, 1);
+    // 孵化过程
+    function hatchEgg() {
+        let type = catTypes[Math.floor(Math.random() * catTypes.length)];
+        let newCat = {
+            id: Date.now(),
+            name: type.name,
+            emoji: type.emoji,
+            stats: { food: 50, water: 50, energy: 50, clean: 50 } // 新猫状态一般
+        };
+        
+        cats.push(newCat);
+        currentCatIndex = cats.length - 1; // 自动切换到新猫
+        
+        document.getElementById('hatch-modal').style.display = 'none';
+        alert(`恭喜！孵化出了一只 ${newCat.name}！`);
+        updateUI();
     }
 
-    ctx.restore();
+    // 切换列表显示
+    function toggleList() {
+        let list = document.getElementById('cat-list');
+        list.style.display = list.style.display === 'block' ? 'none' : 'block';
+    }
 
-    requestAnimationFrame(gameLoop);
-}
+    // 更新猫咪列表
+    function updateCatList() {
+        let list = document.getElementById('cat-list');
+        list.innerHTML = '';
+        cats.forEach((cat, index) => {
+            let item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `<span>${cat.emoji}</span> ${cat.name}`;
+            if (index === currentCatIndex) item.style.fontWeight = 'bold';
+            item.onclick = () => {
+                currentCatIndex = index;
+                toggleList();
+                updateUI();
+            };
+            list.appendChild(item);
+        });
+    }
 
-// 启动游戏
-gameLoop();
+    // 启动游戏
+    init();
 
 </script>
 </body>
