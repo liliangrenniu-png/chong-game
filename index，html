@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>神奇猫蛋孵化场</title>
+    <style>
+        body { text-align: center; background-color: #f0f8ff; font-family: "微软雅黑"; }
+        #egg { font-size: 100px; cursor: pointer; user-select: none; transition: transform 0.1s; }
+        #egg:active { transform: scale(0.9); }
+        .hidden { display: none; }
+        #cat-display { font-size: 80px; }
+    </style>
+</head>
+<body>
+    <h1>🐱 神奇猫蛋孵化器 🥚</h1>
+    <p>点击这颗蛋，直到它裂开！</p>
+    
+    <div id="egg">🥚</div>
+    
+    <div id="result" class="hidden">
+        <div id="cat-display"></div>
+        <h2 id="cat-name"></h2>
+        <button onclick="resetGame()">再孵一颗！</button>
+    </div>
+
+    <script>
+        let clicks = 0;
+        const target = 10;
+        const cats = [
+            {icon: '🐱', name: '大橘猫（十只橘猫九只胖）'},
+            {icon: '🐱‍👤', name: '忍者黑猫'},
+            {icon: '🦁', name: '小狮子猫'},
+            {icon: '🐯', name: '虎斑猫'},
+            {icon: '✨🐱', name: '独角幻想猫（稀有！）'}
+        ];
+
+        const egg = document.getElementById('egg');
+        const result = document.getElementById('result');
+
+        egg.onclick = function() {
+            clicks++;
+            if (clicks >= target) {
+                hatch();
+            } else {
+                egg.style.opacity = 1 - (clicks/target * 0.5); // 蛋越来越透明（快裂了）
+            }
+        };
+
+        function hatch() {
+            egg.classList.add('hidden');
+            result.classList.remove('hidden');
+            const randomCat = cats[Math.floor(Math.random() * cats.length)];
+            document.getElementById('cat-display').innerText = randomCat.icon;
+            document.getElementById('cat-name').innerText = "哇！你孵出了一只 " + randomCat.name;
+        }
+
+        function resetGame() {
+            clicks = 0;
+            egg.style.opacity = 1;
+            egg.classList.remove('hidden');
+            result.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
