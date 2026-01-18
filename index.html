@@ -3,103 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>绘梦猫灵：视觉魔法篇</title>
+    <title>绘梦猫灵：马卡龙之吻</title>
     <style>
-        :root { --ui-font: "Georgia", cursive, serif; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #0c0c1d; font-family: var(--ui-font); user-select: none; }
+        /* --- 🍭 马卡龙甜点色盘定义 --- */
+        :root {
+            --macaron-pink: #ffcce0;
+            --macaron-blue: #cce5ff;
+            --macaron-yellow: #fff5cc;
+            --macaron-mint: #d9ffe6;
+            --macaron-purple: #e6ccff;
+            --text-color: #8c7a8b; /* 柔和的深灰紫色，代替纯黑 */
+            --ui-font: "Comic Sans MS", "幼圆", "Microsoft YaHei", cursive, sans-serif; /* 选择圆润可爱的字体 */
+        }
+
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: var(--macaron-pink); font-family: var(--ui-font); user-select: none; color: var(--text-color); }
 
         #stage { width: 100%; height: 100%; position: relative; overflow: hidden; }
         
-        /* --- 魔法氛围层 (全局) --- */
-        /* 全局光照统一层：给整个画面蒙上一层梦幻的质感 */
-        .global-overlay {
+        /* --- 🍰 氛围层：糖霜与柔光 --- */
+        /* 给整个画面加一层柔焦奶油滤镜 */
+        .creamy-overlay {
             position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 30;
-            background: radial-gradient(circle at center, transparent 20%, rgba(12, 12, 29, 0.6) 100%); /* 暗角 */
-            mix-blend-mode: multiply;
+            background: radial-gradient(circle at center, transparent 30%, rgba(255, 245, 204, 0.4) 100%);
+            mix-blend-mode: overlay;
+            filter: blur(10px);
         }
-        /* 魔法微粒 */
-        .magic-dust {
+        /* 漂浮的糖果粒子 */
+        .candy-dust {
             position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 25;
-            background-image: url('https://cdn.pixabay.com/photo/2016/11/23/13/39/christmas-1853231_1280.jpg'); /* 散焦光点素材 */
-            background-size: cover; opacity: 0.2; mix-blend-mode: screen;
-            animation: drift 40s linear infinite alternate;
+            background-image: url('https://cdn.pixabay.com/photo/2018/04/18/17/43/bokeh-3331178_1280.jpg'); /* 柔和的彩色光斑 */
+            background-size: cover; opacity: 0.3; mix-blend-mode: screen;
+            animation: slow-drift 50s linear infinite alternate;
         }
 
-        /* --- 场景容器 --- */
+        /* --- 🖼️ 场景容器 (保持视差结构) --- */
         .scene-container { 
             width: 300%; height: 100%; display: flex; position: absolute; top: 0; left: 0; 
-            transition: transform 1.2s cubic-bezier(0.215, 0.610, 0.355, 1); /* 更富有弹性的切换曲线 */
+            transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* 更Q弹的切换曲线 */
         }
         .scene { position: relative; width: 33.333%; height: 100%; overflow: hidden; }
 
-        /* 通用图层样式 */
-        .layer { position: absolute; background-size: cover; background-position: center; transition: transform 1.2s ease-out; }
-        /* 背景层 (移动最慢) */
-        .bg-layer { width: 110%; height: 110%; left: -5%; top: -5%; z-index: 1; filter: blur(1px); }
-        /* 前景层 (移动最快，用于制造景深遮挡) */
-        .fg-layer { width: 120%; height: 120%; left: -10%; top: -5%; z-index: 60; pointer-events: none; }
-
-        /* 场景1：暖光书房 */
-        .s0 .bg-layer { background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2070&q=80'); filter: sepia(0.5) brightness(0.8) contrast(1.1); }
-        .s0 .fg-layer { background-image: url('https://png.pngtree.com/png-clipart/20230916/ourmid/pngtree-bookshelf-library-frame-png-image_10074963.png'); opacity: 0.7; filter: sepia(0.8) brightness(0.5) blur(3px); } /* 前景书架框架 */
-        
-        /* 场景2：冷寂森林 */
-        .s1 .bg-layer { background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2070&q=80'); filter: brightness(0.6) hue-rotate(190deg) contrast(1.2); }
-        .s1 .fg-layer { background-image: url('https://static.vecteezy.com/system/resources/previews/024/583/799/original/dark-forest-frame-with-tree-branches-and-leaves-overlay-png.png'); opacity: 0.8; filter: brightness(0.3) blur(2px); } /* 前景树枝 */
-
-        /* 场景3：梦幻云端 */
-        .s2 .bg-layer { background-image: url('https://images.unsplash.com/photo-1499346030926-9a72daac6c63?auto=format&fit=crop&w=2070&q=80'); filter: brightness(1.1) hue-rotate(-20deg); }
-        .s2 .fg-layer { background-image: url('https://png.pngtree.com/png-clipart/20230428/ourmid/pngtree-clouds-fluffy-white-cartoon-frame-border-png-image_6741259.png'); opacity: 0.5; filter: brightness(1.2) blur(5px); } /* 前景云朵 */
-
-        /* --- 主角：拥有透视感的小黑猫 --- */
-        .cat-container {
-            position: absolute;
-            z-index: 50; /* 在背景之上，前景之下 */
-            /* 核心：使用 CSS 变量控制透视缩放和光照 */
-            transform: translate(var(--x), var(--y)) scale(var(--scale));
-            filter: var(--scene-light-filter); /* 接收环境光 */
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 1.2s ease-out, opacity 0.3s;
-            will-change: transform; /* 性能优化 */
+        /* 手绘背景层 - 统一处理为柔和的水彩感 */
+        .bg-layer { 
+            position: absolute; width: 110%; height: 110%; left: -5%; top: -5%; 
+            background-size: cover; background-position: center; 
+            transition: transform 1.2s ease-out;
+            /* 核心：通过滤镜将照片转为马卡龙手绘色调 */
+            filter: brightness(1.2) contrast(0.8) saturate(1.2) hue-rotate(0deg) blur(2px);
         }
+
+        /* 场景1：樱花奶油屋 (粉色调) */
+        .s0 .bg-layer { background-image: url('https://images.unsplash.com/photo-1528459199957-0ff28496a7f6?auto=format&fit=crop&w=1920&q=80'); filter: brightness(1.2) saturate(0.8) sepia(0.2) hue-rotate(320deg) blur(3px); }
         
-        .cat-sprite {
-            width: 180px; height: 180px; cursor: pointer;
-            /* 使用一个更高质量、带有毛发质感的插画素材 */
-            background-image: url('https://i.pinimg.com/originals/81/6d/a5/816da53317b6a90861ba18250589c452.png');
+        /* 场景2：薄荷糖森林 (绿蓝调) */
+        .s1 .bg-layer { background-image: url('https://images.unsplash.com/photo-1518144591331-17a5dd71c477?auto=format&fit=crop&w=1920&q=80'); filter: brightness(1.1) saturate(1.1) hue-rotate(160deg) blur(3px); }
+        
+        /* 场景3：香芋云朵梦境 (紫调) */
+        .s2 .bg-layer { background-image: url('https://images.unsplash.com/photo-1536599018102-9f803c140fc1?auto=format&fit=crop&w=1920&q=80'); filter: brightness(1.3) saturate(0.9) hue-rotate(220deg) blur(4px); }
+
+        /* --- 🐱 主角：Q弹手绘小煤球 --- */
+        .cute-cat-unit {
+            position: absolute; width: 160px; height: 160px; cursor: url('https://cdn-icons-png.flaticon.com/32/2567/2567820.png'), auto; /* 鼠标变成小爪子 */ z-index: 50;
+            
+            /* --- 核心升级：更换为超可爱的手绘素材 --- */
+            /* 这里使用一个更Q版、眼睛更大的手绘黑猫素材 */
+            background-image: url('https://i.pinimg.com/originals/5a/e0/9c/5ae09c68320a69f0d6633271d7c93e34.png'); 
             background-size: contain; background-repeat: no-repeat; background-position: bottom center;
-            /* 动态阴影：随着猫咪位置变化，阴影也会变化，增强接地感 */
-            filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.5)); 
-            animation: cat-idle 4s ease-in-out infinite;
+            
+            /* 柔和的彩色阴影 */
+            filter: drop-shadow(0px 8px 10px rgba(100, 80, 120, 0.3)); 
+            
+            /* 默认呼吸动画 */
+            animation: soft-breathe 2.5s ease-in-out infinite;
+            transition: transform 0.3s, filter 0.3s, opacity 0.5s, left 1.5s cubic-bezier(0.25, 0.1, 0.25, 1), top 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            transform-origin: bottom center; /* 锚点在底部，方便做挤压动画 */
         }
-        .cat-sprite:hover { filter: drop-shadow(0px 15px 25px rgba(0,0,0,0.7)) brightness(1.1); }
+        /* 悬停时：期待的小眼神 */
+        .cute-cat-unit:hover { 
+            transform: scale(1.08) rotate(-2deg); 
+            filter: drop-shadow(0px 10px 15px rgba(100, 80, 120, 0.4)) brightness(1.05); 
+        }
 
-        @keyframes drift { 0% { background-position: 0% 0%; } 100% { background-position: 20% 10%; } }
-        @keyframes cat-idle { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.04) translateY(-5px); } }
+        /* --- 🍮 动画定义 --- */
+        @keyframes slow-drift { 0% { background-position: 0% 0%; } 100% { background-position: 10% 10%; } }
+        @keyframes soft-breathe { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(1.03) translateY(-3px); } }
+        
+        /* 核心交互动画：果冻般的挤压回弹 */
+        @keyframes jelly-jump { 
+            0% { transform: scale(1, 1); }
+            30% { transform: scale(1.25, 0.75) translateY(10px); } /* 压扁 */
+            50% { transform: scale(0.85, 1.15) translateY(-40px); } /* 拉长跳起 */
+            70% { transform: scale(1.05, 0.95) translateY(-10px); } /* 落地缓冲 */
+            100% { transform: scale(1, 1) translateY(0); }
+        }
+        
+        @keyframes candy-pop { 0% { transform: scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; } }
 
-        /* UI 保持不变，省略样式以聚焦核心逻辑 */
-        #hud, #controls { position: absolute; z-index: 100; pointer-events: none; }
-        .ui-btn { pointer-events: auto; background: rgba(0,0,0,0.5); color: white; border: 2px solid rgba(255,255,255,0.5); padding: 10px 20px; border-radius: 20px; cursor: pointer; backdrop-filter: blur(5px); font-weight: bold; }
-        .fx-floater { position: absolute; z-index: 200; font-size: 40px; animation: float-up 1.5s forwards; text-shadow: 0 0 10px white; }
-        @keyframes float-up { to { transform: translateY(-100px) scale(1.5); opacity: 0; } }
+        /* --- 🍪 可爱手绘风 UI --- */
+        #hud { position: absolute; top: 25px; left: 25px; z-index: 100; }
+        .cookie-panel { 
+            background: #fff0f5; /* 饼干底色 */
+            padding: 12px 28px; border-radius: 30px; color: var(--text-color); font-weight: 900; 
+            box-shadow: 4px 4px 0px var(--macaron-pink), inset 2px 2px 5px rgba(255,255,255,0.8);
+            border: 3px solid #ffb3d1;
+            display: flex; align-items: center; gap: 12px; font-size: 20px;
+        }
+
+        #controls { position: absolute; bottom: 35px; width: 100%; display: flex; justify-content: center; gap: 25px; z-index: 100; }
+        .macaron-btn { 
+            width: 75px; height: 75px; border-radius: 50%; 
+            background: radial-gradient(circle at 30% 30%, var(--macaron-yellow), #ffd1dc); /* 立体感渐变 */
+            display: flex; align-items: center; justify-content: center; font-size: 36px; cursor: pointer; color: #fff;
+            box-shadow: 0 6px 0 #ff99bb, 0 10px 15px rgba(0,0,0,0.1); 
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1); border: 4px solid white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .macaron-btn:hover { transform: translateY(-4px); filter: brightness(1.05); }
+        .macaron-btn:active { transform: translateY(4px); box-shadow: 0 0px 0 #ff99bb, inset 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-summon { background: radial-gradient(circle at 30% 30%, var(--macaron-mint), var(--macaron-blue)); box-shadow: 0 6px 0 #a1d9ff, 0 10px 15px rgba(0,0,0,0.1); }
+        .btn-summon:active { box-shadow: 0 0px 0 #a1d9ff, inset 0 2px 5px rgba(0,0,0,0.1); }
+
+        .candy-particle { position: absolute; z-index: 200; pointer-events: none; font-size: 24px; }
     </style>
 </head>
 <body>
 
 <div id="stage">
-    <div class="global-overlay"></div>
-    <div class="magic-dust"></div>
+    <div class="creamy-overlay"></div>
+    <div class="candy-dust"></div>
 
     <div class="scene-container" id="world">
-        <div class="scene s0"><div class="layer bg-layer"></div><div class="layer fg-layer"></div></div>
-        <div class="scene s1"><div class="layer bg-layer"></div><div class="layer fg-layer"></div></div>
-        <div class="scene s2"><div class="layer bg-layer"></div><div class="layer fg-layer"></div></div>
+        <div class="scene s0"><div class="bg-layer"></div></div>
+        <div class="scene s1"><div class="bg-layer"></div></div>
+        <div class="scene s2"><div class="bg-layer"></div></div>
     </div>
 
-    <div id="hud" style="top:20px; left:20px;"><div class="ui-btn">🌙 魔力: <span id="coin-txt">100</span></div></div>
-    <div id="controls" style="bottom:30px; width:100%; display:flex; justify-content:center; gap:20px;">
-        <div class="ui-btn" onclick="switchScene(-1)">◀</div>
-        <div class="ui-btn" style="font-size:30px; background: linear-gradient(45deg, #ff9a9e, #fad0c4);" onclick="summonCat()">✨</div>
-        <div class="ui-btn" onclick="switchScene(1)">▶</div>
+    <div id="hud">
+        <div class="cookie-panel">
+            <span>🍭</span> 
+            <span>糖果力: <span id="coin-txt">100</span></span>
+        </div>
+    </div>
+
+    <div id="controls">
+        <div class="macaron-btn" onclick="switchScene(-1)">👈</div>
+        <div class="macaron-btn btn-summon" style="font-size: 42px;" onclick="summonCat()">🍬</div>
+        <div class="macaron-btn" onclick="switchScene(1)">👉</div>
     </div>
 </div>
 
@@ -107,100 +156,82 @@
     let coins = 100;
     let cats = [];
     let currentSceneIdx = 0;
+    // 马卡龙粒子颜色库
+    const candyColors = ['#ffcce0', '#cce5ff', '#fff5cc', '#d9ffe6', '#e6ccff'];
+    const candyShapes = ['🌸', '⭐', '🍩', '🍬', '✨', '💖'];
 
-    // 定义每个场景的环境光滤镜
-    const sceneLightFilters = [
-        'sepia(0.5) brightness(1.1) contrast(0.9)', // 暖书房：偏黄，柔和
-        'brightness(0.6) hue-rotate(190deg) saturate(0.8)', // 冷森林：暗淡，偏蓝冷色
-        'brightness(1.2) saturate(1.2)' // 亮云端：明亮，高饱和
-    ];
-
-    class VisualMagicCat {
+    class CuteCat {
         constructor() {
             this.sceneLocation = currentSceneIdx;
-            // 初始位置
-            this.posX = window.innerWidth * 0.2 + Math.random() * (window.innerWidth * 0.6);
-            this.posY = window.innerHeight * 0.4 + Math.random() * (window.innerHeight * 0.4); // 限制在地板区域
+            this.x = window.innerWidth * 0.2 + Math.random() * (window.innerWidth * 0.6);
+            this.y = window.innerHeight * 0.4 + Math.random() * (window.innerHeight * 0.3); 
             this.createDOM();
             this.startAI();
         }
 
         createDOM() {
-            // 容器用于处理位置和透视
-            this.container = document.createElement('div');
-            this.container.className = 'cat-container';
-            // 精灵用于处理动画和交互
-            this.sprite = document.createElement('div');
-            this.sprite.className = 'cat-sprite';
+            this.el = document.createElement('div');
+            this.el.className = 'cute-cat-unit';
+            this.updatePositionAndVisibility();
             
-            this.container.appendChild(this.sprite);
-            
-            this.sprite.onclick = (e) => { e.stopPropagation(); this.interact(); };
-            document.getElementById('stage').appendChild(this.container);
+            this.el.onclick = (e) => { e.stopPropagation(); this.interact(e); };
+            document.getElementById('stage').appendChild(this.el);
 
-            this.updateVisuals();
+            // Q弹入场
+            this.el.style.opacity = 0;
+            this.el.style.transform = 'scale(0.5, 1.5) translateY(50px)';
+            setTimeout(() => {
+                this.el.style.opacity = (this.sceneLocation === currentSceneIdx) ? 1 : 0;
+                this.el.style.transform = 'scale(1, 1) translateY(0)';
+            }, 50);
         }
 
-        /**
-         * 核心魔法函数：根据猫咪的位置和所处场景，动态更新它的视觉表现
-         */
-        updateVisuals() {
-            // 1. 计算透视缩放 (Perspective Calculation)
-            // 屏幕越靠下 (posY越大)，scale越大。范围大约在 0.7 (远) 到 1.1 (近) 之间
-            const perspectiveScale = 0.7 + (this.posY / window.innerHeight) * 0.4;
+        updatePositionAndVisibility() {
+            // 简单的透视缩放，让猫咪看起来融合在场景里
+            const perspectiveScale = 0.8 + (this.y / window.innerHeight) * 0.4;
+            this.el.style.left = this.x - 80 + 'px';
+            this.el.style.top = this.y - 140 + 'px';
+            // 应用透视缩放，但保留旋转接口
+            this.el.style.transform = `scale(${perspectiveScale}) rotate(0deg)`;
             
-            // 2. 应用位置和缩放
-            // 使用 CSS 变量可以获得更流畅的性能
-            this.container.style.setProperty('--x', (this.posX - 90) + 'px');
-            this.container.style.setProperty('--y', (this.posY - 160) + 'px'); // 锚点定在脚底
-            this.container.style.setProperty('--scale', perspectiveScale);
-
-            // 3. 应用环境光融合 (Environmental Blending)
-            // 只有当猫咪在当前观看的场景时，才应用当前场景的光照
-            if (this.sceneLocation === currentSceneIdx) {
-                 this.container.style.setProperty('--scene-light-filter', sceneLightFilters[currentSceneIdx]);
-                 this.container.style.opacity = 1;
-                 this.container.style.pointerEvents = 'auto';
-            } else {
-                 this.container.style.opacity = 0;
-                 this.container.style.pointerEvents = 'none';
-            }
+            const isVisible = (this.sceneLocation === currentSceneIdx);
+            this.el.style.opacity = isVisible ? 1 : 0;
+            this.el.style.pointerEvents = isVisible ? 'auto' : 'none';
         }
 
-        interact() {
+        interact(e) {
             coins += 10; updateUI();
-            this.sprite.style.animation = 'none';
-            this.container.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; // 临时加快动画
-            // 交互时稍微放大并跳起，同时叠加金色高光
-            this.container.style.transform = `translate(var(--x), calc(var(--y) - 30px)) scale(calc(var(--scale) * 1.2))`;
-            this.container.style.filter = `var(--scene-light-filter) drop-shadow(0 0 30px gold) brightness(1.3)`;
             
-            spawnFX('💖', this.posX, this.posY - 100);
+            // --- 核心交互升级：果冻般的挤压回弹动画 ---
+            this.el.style.animation = 'none'; // 先打断呼吸动画
+            // 强制重绘
+            void this.el.offsetWidth; 
+            // 应用果冻跳跃动画
+            this.el.style.animation = 'jelly-jump 0.6s cubic-bezier(0.25, 1.5, 0.5, 1)';
+            
+            // 爆发出马卡龙糖果粒子
+            spawnCandyExplosion(e.clientX, e.clientY - 50);
 
             setTimeout(() => {
-                this.sprite.style.animation = 'cat-idle 4s ease-in-out infinite';
-                this.container.style.transition = ''; // 恢复默认过渡
-                this.updateVisuals(); // 恢复正常视觉
-            }, 500);
+                // 恢复呼吸动画
+                this.el.style.animation = 'soft-breathe 2.5s ease-in-out infinite';
+            }, 600);
         }
 
         startAI() {
             setInterval(() => {
-                if (Math.random() > 0.6 && this.sceneLocation === currentSceneIdx) {
+                if (Math.random() > 0.65 && this.sceneLocation === currentSceneIdx) {
                     this.wander();
                 }
-            }, 3000 + Math.random() * 2000);
+            }, 3000 + Math.random() * 2500);
         }
 
         wander() {
-            this.posX += (Math.random() - 0.5) * 200;
-            // 在Y轴移动时，限制范围，确保它不会走到“天上”去
-            this.posY += (Math.random() - 0.5) * 120;
-            this.posX = Math.max(100, Math.min(window.innerWidth - 100, this.posX));
-            this.posY = Math.max(window.innerHeight * 0.35, Math.min(window.innerHeight - 100, this.posY));
-            
-            // 移动后，立即更新透视和视觉
-            this.updateVisuals();
+            this.x += (Math.random() - 0.5) * 180;
+            this.y += (Math.random() - 0.5) * 100;
+            this.x = Math.max(100, Math.min(window.innerWidth - 100, this.x));
+            this.y = Math.max(window.innerHeight * 0.4, Math.min(window.innerHeight - 150, this.y));
+            this.updatePositionAndVisibility();
         }
     }
 
@@ -210,40 +241,45 @@
         currentSceneIdx = (currentSceneIdx + dir + 3) % 3;
         document.getElementById('world').style.transform = `translateX(-${currentSceneIdx * 33.333}%)`;
         
-        // 专家级视差滚动 (Parallax Scrolling)
-        // 背景层慢速反向移动
         document.querySelectorAll('.bg-layer').forEach((bg, idx) => {
             const relativePos = idx - currentSceneIdx;
-            bg.style.transform = `translateX(${relativePos * 15}%) scale(1.1)`;
-        });
-        // 前景层快速反向移动 (制造强烈的遮挡感)
-        document.querySelectorAll('.fg-layer').forEach((fg, idx) => {
-            const relativePos = idx - currentSceneIdx;
-            fg.style.transform = `translateX(${relativePos * 35}%) scale(1.2)`;
+            bg.style.transform = `translateX(${relativePos * 10}%) scale(1.05)`;
         });
 
-        // 更新所有猫咪的视觉状态（主要是光照和可见性）
-        cats.forEach(cat => cat.updateVisuals());
+        cats.forEach(cat => cat.updatePositionAndVisibility());
     }
 
     function summonCat() {
         if(coins >= 50) {
             coins -= 50; updateUI();
-            cats.push(new VisualMagicCat());
-            spawnFX('✨', window.innerWidth/2, window.innerHeight/2);
+            cats.push(new CuteCat());
+            spawnCandyExplosion(window.innerWidth/2, window.innerHeight/2 + 100);
         }
     }
 
-    function spawnFX(emoji, x, y) {
-        const fx = document.createElement('div'); fx.className = 'fx-floater'; fx.innerText = emoji;
-        fx.style.left = x + 'px'; fx.style.top = y + 'px';
-        document.getElementById('stage').appendChild(fx);
-        setTimeout(() => fx.remove(), 1500);
+    // 生成马卡龙糖果爆炸特效
+    function spawnCandyExplosion(x, y) {
+        for(let i=0; i<12; i++) {
+            const candy = document.createElement('div');
+            candy.className = 'candy-particle';
+            candy.innerText = candyShapes[Math.floor(Math.random() * candyShapes.length)];
+            candy.style.left = x + 'px'; candy.style.top = y + 'px';
+            candy.style.color = candyColors[Math.floor(Math.random() * candyColors.length)];
+            // 随机爆炸方向和旋转
+            const tx = (Math.random() - 0.5) * 250 + 'px';
+            const ty = (Math.random() - 0.8) * 250 + 'px'; // 更多向上炸
+            const rot = (Math.random() - 0.5) * 360 + 'deg';
+            candy.style.setProperty('--tx', tx);
+            candy.style.setProperty('--ty', ty);
+            candy.style.setProperty('--rot', rot);
+            candy.style.animation = `candy-pop ${0.8 + Math.random()*0.4}s ease-out forwards`;
+            document.getElementById('stage').appendChild(candy);
+            setTimeout(() => candy.remove(), 1200);
+        }
     }
 
-    cats.push(new VisualMagicCat());
+    cats.push(new CuteCat());
     updateUI();
-    // 初始化一次视差位置
     switchScene(0);
 </script>
 </body>
