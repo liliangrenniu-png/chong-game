@@ -2,282 +2,251 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>胖猫飞行记：云端迷宫</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵境猫语：森之国度</title>
     <style>
-        /* --- 1. 梦幻背景 --- */
+        /* --- 1. 世界场景 --- */
         body {
             margin: 0; padding: 0;
-            background: linear-gradient(180deg, #a1c4fd 0%, #c2e9fb 100%);
-            height: 100vh; width: 100vw;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-family: "Mady Madi", cursive, sans-serif;
-            overflow: hidden; touch-action: none;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #a8edea 0%, #fed6e3 100%); /* 梦幻天空 */
+            height: 100vh;
+            font-family: "Segoe UI", cursive, sans-serif;
         }
 
-        /* --- 2. 迷宫容器 --- */
-        #game-board {
+        #world {
             position: relative;
-            width: 350px; height: 350px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 4px solid #fff;
-            display: grid;
-            /* 10x10 网格 */
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(10, 1fr);
+            width: 100%; height: 100%;
+            background-color: #78e08f; /* 草地底色 */
+            background-image: 
+                radial-gradient(circle at 20% 30%, #b8e994 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, #82ccdd 0%, transparent 40%); /* 草地光影变化 */
+            overflow: hidden;
         }
 
-        /* --- 3. 迷宫元素 --- */
-        /* 墙壁：变成了云朵 */
-        .wall {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.05);
-            position: relative;
-        }
-        .wall::after {
-            content: '☁️'; font-size: 20px;
-            position: absolute; left: 50%; top: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.7;
+        /* --- 2. 环境元素 --- */
+        /* 小路 */
+        .path-layer {
+            position: absolute; top: 50%; left: 0; width: 100%; height: 120px;
+            background: #dcdde1;
+            border-top: 4px dashed #b2bec3;
+            border-bottom: 4px dashed #b2bec3;
+            transform: rotate(-5deg) scale(1.2); /* 倾斜创造透视感 */
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
         }
 
-        /* 地板：空气 */
-        .path { }
+        /* 通用物体样式 */
+        .object { position: absolute; pointer-events: none; }
 
-        /* 终点：大鸡腿 */
-        .goal {
-            position: relative;
-            display: flex; justify-content: center; align-items: center;
+        /* 树木/小树苗 */
+        .tree {
+            width: 60px; height: 80px;
+            display: flex; flex-direction: column; align-items: center;
+            z-index: 5; /* 树木要能遮挡角色 */
         }
-        .goal::before {
-            content: '🍗'; font-size: 28px;
-            animation: float-food 1s infinite alternate;
-            filter: drop-shadow(0 0 5px gold);
+        .tree-top {
+            width: 60px; height: 60px; background: #00b894; border-radius: 50%;
+            box-shadow: inset -5px -5px #00cec9;
         }
+        .tree-trunk { width: 15px; height: 25px; background: #634200; margin-top: -5px; }
+        .sapling .tree-top { width: 30px; height: 30px; background: #55efc4; } /* 小树苗更嫩绿 */
+        .sapling .tree-trunk { width: 8px; height: 15px; }
 
-        /* --- 4. 主角：胖乎乎的飞行黑猫 --- */
+        /* NPC动物 */
+        .npc-animal { font-size: 30px; z-index: 4; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); }
+
+        /* --- 3. 主角：猫灵 (核心设计) --- */
         #player {
-            width: 35px; height: 35px;
-            position: absolute; z-index: 10;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* Q弹移动 */
-            pointer-events: none;
+            position: absolute;
+            width: 60px; height: 60px;
+            z-index: 10;
+            transition: all 0.1s ease-out; /* 丝滑移动 */
         }
 
-        /* 身体：圆滚滚的黑煤球 */
-        .cat-body {
-            width: 100%; height: 80%;
-            background: #2d3436; /* 软黑色 */
-            border-radius: 50%; /* 圆形 */
-            position: absolute; bottom: 0;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-            display: flex; justify-content: center;
-        }
-        
-        /* 肚子：灰色的圆肚皮，显示吃饱了 */
-        .cat-belly {
-            width: 60%; height: 50%;
-            background: #636e72;
-            border-radius: 50%;
-            position: absolute; bottom: 5px;
+        /* 猫灵身体容器 */
+        .spirit-body {
+            position: relative; width: 100%; height: 100%;
+            animation: float 2s ease-in-out infinite; /* 上下浮动 */
         }
 
-        /* 眼睛：大大的 */
-        .cat-eyes {
-            width: 100%; position: absolute; top: 8px;
-            display: flex; justify-content: space-around; padding: 0 6px; box-sizing: border-box;
+        /* 核心：发光的灵体 */
+        .core {
+            width: 40px; height: 50px;
+            border-radius: 25px 25px 40px 40px; /* 类似猫坐姿的椭圆 */
+            position: absolute; bottom: 0; left: 10px;
+            background: var(--spirit-color, rgba(255, 255, 255, 0.8));
+            box-shadow: 0 0 20px var(--spirit-glow, white); /* 发光特效 */
+            backdrop-filter: blur(5px); /* 半透明磨砂感 */
+            border: 2px solid rgba(255,255,255,0.5);
         }
-        .eye { width: 8px; height: 8px; background: white; border-radius: 50%; position: relative; }
-        .pupil { width: 4px; height: 4px; background: black; border-radius: 50%; position: absolute; right: 1px; top: 2px; }
 
-        /* 翅膀：白色，不停扇动 */
-        .cat-wings { width: 100%; position: absolute; top: 5px; z-index: -1; }
-        .wing {
-            width: 15px; height: 10px; background: rgba(255,255,255,0.9);
-            position: absolute; border-radius: 50%;
-            animation: flap 0.2s infinite alternate;
+        /* 猫耳 (重要特征) */
+        .ears { position: absolute; top: -5px; width: 100%; display: flex; justify-content: space-between; padding: 0 5px; box-sizing: border-box; }
+        .ear {
+            width: 0; height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 15px solid var(--spirit-color, rgba(255, 255, 255, 0.8));
+            filter: drop-shadow(0 0 5px var(--spirit-glow));
         }
-        .wing.left { left: -8px; transform-origin: right center; }
-        .wing.right { right: -8px; transform-origin: left center; }
+
+        /* 眼睛 */
+        .eyes { position: absolute; top: 15px; width: 100%; display: flex; justify-content: center; gap: 10px;}
+        .eye { width: 6px; height: 8px; background: #fff; border-radius: 50%; }
+
+        /* 元素装饰 (翅膀/叶子/火焰) */
+        .element-deco { position: absolute; font-size: 20px; top: 20px; right: -10px; opacity: 0.8; animation: spin 3s linear infinite;}
+
+        /* --- 4. 不同种类的猫灵皮肤 --- */
+        /* 森之灵 */
+        .nature-spirit { --spirit-color: rgba(85, 239, 196, 0.7); --spirit-glow: #00b894; }
+        .nature-spirit .element-deco::after { content: '🍃'; }
+        /* 火之灵 */
+        .fire-spirit { --spirit-color: rgba(250, 177, 160, 0.7); --spirit-glow: #e17055; }
+        .fire-spirit .element-deco::after { content: '🔥'; }
+        /* 水之灵 */
+        .water-spirit { --spirit-color: rgba(116, 185, 255, 0.7); --spirit-glow: #0984e3; }
+        .water-spirit .element-deco::after { content: '💧'; }
+
 
         /* 动画 */
-        @keyframes flap { from { transform: rotate(0deg) scaleY(1); } to { transform: rotate(-20deg) scaleY(0.8); } }
-        @keyframes float-food { from { transform: translateY(0); } to { transform: translateY(-5px); } }
-        @keyframes eat-anim { 0% { transform: scale(1); } 50% { transform: scale(1.5); } 100% { transform: scale(1); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- 5. 控制器 --- */
-        .controls {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: 60px 60px 60px;
-            grid-template-rows: 60px 60px;
-            gap: 10px;
+        /* 交互气泡 */
+        .interaction-bubble {
+            position: absolute; top: -30px; left: 10px;
+            font-size: 24px; animation: pop-up 1s forwards;
+        }
+        @keyframes pop-up { 0% { transform: scale(0); opacity: 0;} 50% { transform: scale(1.2); opacity: 1;} 100% { transform: scale(1) translateY(-20px); opacity: 0;} }
+
+        /* UI */
+        #ui-panel {
+            position: absolute; top: 20px; left: 20px;
+            background: rgba(255,255,255,0.8); padding: 15px; border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .btn {
-            width: 60px; height: 60px;
-            background: rgba(255,255,255,0.6);
-            border-radius: 15px; border: 2px solid #fff;
-            font-size: 24px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            background: #fff; border: 2px solid #eee; padding: 5px 10px; cursor: pointer; border-radius: 10px; font-size: 14px;
         }
-        .btn:active { transform: translateY(2px); box-shadow: none; background: white; }
-        
-        .up { grid-column: 2; grid-row: 1; }
-        .left { grid-column: 1; grid-row: 2; }
-        .down { grid-column: 2; grid-row: 2; }
-        .right { grid-column: 3; grid-row: 2; }
-
-        /* 胜利提示 */
-        #win-msg {
-            position: absolute; top: 10%;
-            background: #fff; padding: 10px 20px; border-radius: 20px;
-            font-size: 20px; color: #ff6b81; font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: none; animation: pop 0.5s;
-        }
-        @keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .btn:hover { background: #f1f2f6; }
 
     </style>
 </head>
 <body>
 
-    <h2 style="color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 10px;">☁️ 胖猫飞行迷宫 ☁️</h2>
-    
-    <div id="win-msg">Yummy! 吃到了! 🍗</div>
+    <div id="world">
+        <div class="path-layer"></div>
 
-    <div id="game-board">
-        <div id="player" style="transform: translate(0px, 0px);">
-            <div class="cat-wings">
-                <div class="wing left"></div>
-                <div class="wing right" style="animation-delay: 0.1s"></div>
-            </div>
-            <div class="cat-body">
-                <div class="cat-belly"></div>
-                <div class="cat-eyes">
-                    <div class="eye"><div class="pupil"></div></div>
-                    <div class="eye"><div class="pupil"></div></div>
+        <div class="object tree" style="top: 100px; left: 200px;"><div class="tree-top"></div><div class="tree-trunk"></div></div>
+        <div class="object tree sapling" style="top: 350px; left: 50px;"><div class="tree-top"></div><div class="tree-trunk"></div></div>
+        <div class="object tree" style="top: 400px; left: 600px;"><div class="tree-top"></div><div class="tree-trunk"></div></div>
+        <div class="object" style="top: 500px; left: 300px; font-size: 20px;">🍄</div>
+        <div class="object" style="top: 150px; left: 700px; font-size: 20px;">🌸</div>
+
+        <div class="object npc-animal" data-type="npc" style="top: 250px; left: 450px;">🐕</div>
+        <div class="object npc-animal" data-type="npc" style="top: 550px; left: 150px;">🐈</div>
+        <div class="object npc-animal" data-type="npc" style="top: 100px; left: 50px;">🐇</div>
+
+
+        <div id="player">
+            <div class="spirit-body nature-spirit" id="player-skin">
+                <div class="ears"><div class="ear"></div><div class="ear"></div></div>
+                <div class="core">
+                    <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
                 </div>
+                <div class="element-deco"></div>
             </div>
+        </div>
+
+    </div>
+
+    <div id="ui-panel">
+        <h3 style="margin: 0 0 10px 0;">森之国度</h3>
+        <p style="font-size: 12px; color: #666;">使用方向键移动，靠近小动物打招呼</p>
+        <div>
+            切换形态: 
+            <button class="btn" onclick="changeSkin('nature-spirit')">森🍃</button>
+            <button class="btn" onclick="changeSkin('fire-spirit')">火🔥</button>
+            <button class="btn" onclick="changeSkin('water-spirit')">水💧</button>
         </div>
     </div>
 
-    <div class="controls">
-        <div class="btn up" onclick="move(0, -1)">⬆️</div>
-        <div class="btn left" onclick="move(-1, 0)">⬅️</div>
-        <div class="btn down" onclick="move(0, 1)">⬇️</div>
-        <div class="btn right" onclick="move(1, 0)">➡️</div>
-    </div>
-
 <script>
-    // 1 = 云朵墙壁, 0 = 通路, 2 = 终点, 9 = 起点
-    const mapLayout = [
-        [9, 1, 0, 0, 0, 1, 0, 0, 0, 1],
-        [0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-        [0, 1, 1, 0, 1, 1, 1, 1, 1, 0],
-        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-        [1, 0, 1, 1, 1, 1, 1, 1, 1, 0],
-        [1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-        [1, 1, 1, 1, 1, 1, 1, 0, 0, 2]
-    ];
-
-    const cellSize = 35; // 每个格子的像素大小
-    let playerPos = { x: 0, y: 0 };
-    const board = document.getElementById('game-board');
     const player = document.getElementById('player');
+    const playerSkin = document.getElementById('player-skin');
+    const world = document.getElementById('world');
+    
+    let playerPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    let speed = 15; // 移动速度
+    let keysPressed = {};
 
-    // 初始化地图
-    function initGame() {
-        board.innerHTML = ''; // 清空
-        board.appendChild(player); // 把主角放回去
+    // 初始化位置
+    updatePlayerPos();
 
-        for (let y = 0; y < 10; y++) {
-            for (let x = 0; x < 10; x++) {
-                const cell = document.createElement('div');
-                cell.style.width = cellSize + 'px';
-                cell.style.height = cellSize + 'px';
-                
-                if (mapLayout[y][x] === 1) {
-                    cell.className = 'wall';
-                } else if (mapLayout[y][x] === 2) {
-                    cell.className = 'goal';
-                } else {
-                    cell.className = 'path';
-                }
-                
-                if (mapLayout[y][x] === 9) {
-                    playerPos = { x, y };
-                }
-                
-                board.appendChild(catPlaceHolder(cell)); // 将格子加入
-                board.appendChild(cell);
-            }
-        }
-        updatePlayerPos();
+    // 皮肤切换
+    function changeSkin(skinName) {
+        playerSkin.className = 'spirit-body ' + skinName;
     }
 
-    // 辅助函数：只是为了让代码结构不报错，实际上直接 appendChild 就行
-    function catPlaceHolder(el) { return document.createDocumentFragment(); }
-
-    // 移动逻辑
-    function move(dx, dy) {
-        const newX = playerPos.x + dx;
-        const newY = playerPos.y + dy;
-
-        // 检查边界
-        if (newX < 0 || newX >= 10 || newY < 0 || newY >= 10) return;
-
-        // 检查撞墙
-        if (mapLayout[newY][newX] === 1) {
-            // 撞墙反馈：稍微晃动一下
-            player.style.transform = `translate(${playerPos.x * cellSize + dx*5}px, ${playerPos.y * cellSize + dy*5}px)`;
-            setTimeout(() => updatePlayerPos(), 100);
-            return;
-        }
-
-        // 移动
-        playerPos.x = newX;
-        playerPos.y = newY;
-        updatePlayerPos();
-
-        // 检查胜利
-        if (mapLayout[newY][newX] === 2) {
-            win();
-        }
-    }
-
+    // 核心移动逻辑 (平滑移动)
     function updatePlayerPos() {
-        player.style.transform = `translate(${playerPos.x * cellSize}px, ${playerPos.y * cellSize}px)`;
-    }
-
-    function win() {
-        const msg = document.getElementById('win-msg');
-        msg.style.display = 'block';
-        player.style.animation = 'eat-anim 0.5s infinite'; // 吃到东西变大
+        // 边界限制
+        playerPos.x = Math.max(0, Math.min(window.innerWidth - 60, playerPos.x));
+        playerPos.y = Math.max(0, Math.min(window.innerHeight - 60, playerPos.y));
         
-        setTimeout(() => {
-            msg.style.display = 'none';
-            player.style.animation = '';
-            // 重置回起点（简单循环）
-            playerPos = { x: 0, y: 0 };
-            updatePlayerPos();
-        }, 2000);
+        player.style.transform = `translate(${playerPos.x}px, ${playerPos.y}px)`;
+        
+        checkInteraction();
     }
 
-    // 键盘支持
+    // 键盘事件监听
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowUp') move(0, -1);
-        if (e.key === 'ArrowDown') move(0, 1);
-        if (e.key === 'ArrowLeft') move(-1, 0);
-        if (e.key === 'ArrowRight') move(1, 0);
+        keysPressed[e.key] = true;
+        movePlayer();
+    });
+    document.addEventListener('keyup', (e) => {
+        delete keysPressed[e.key];
     });
 
-    initGame();
+    function movePlayer() {
+        if (keysPressed['ArrowUp']) playerPos.y -= speed;
+        if (keysPressed['ArrowDown']) playerPos.y += speed;
+        if (keysPressed['ArrowLeft']) playerPos.x -= speed;
+        if (keysPressed['ArrowRight']) playerPos.x += speed;
+        updatePlayerPos();
+    }
+
+    // 简单的交互检测
+    let lastInteractionTime = 0;
+    function checkInteraction() {
+        const now = Date.now();
+        if (now - lastInteractionTime < 1000) return; // 冷却时间
+
+        const npcs = document.querySelectorAll('.npc-animal');
+        npcs.forEach(npc => {
+            const npcRect = npc.getBoundingClientRect();
+            const playerRect = player.getBoundingClientRect();
+            
+            // 计算中心点距离
+            const dx = (playerRect.left + playerRect.width/2) - (npcRect.left + npcRect.width/2);
+            const dy = (playerRect.top + playerRect.height/2) - (npcRect.top + npcRect.height/2);
+            const distance = Math.sqrt(dx*dx + dy*dy);
+
+            if (distance < 60) { // 如果距离小于60像素
+                showInteraction(npc);
+                lastInteractionTime = now;
+            }
+        });
+    }
+
+    function showInteraction(target) {
+        const bubble = document.createElement('div');
+        bubble.className = 'interaction-bubble';
+        bubble.innerText = '❤️';
+        target.appendChild(bubble);
+        setTimeout(() => bubble.remove(), 1000);
+    }
 
 </script>
 </body>
