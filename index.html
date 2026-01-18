@@ -2,302 +2,252 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>梦幻喵灵：自由国度</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星愿幻兽之森：觉醒</title>
     <style>
-        :root { --glow: drop-shadow(0 0 10px rgba(255,255,255,0.6)); --primary: #ff9a9e; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Segoe UI", cursive; background: #000; user-select: none; }
+        :root { --primary: #6c5ce7; --secondary: #a29bfe; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Segoe UI", "Microsoft YaHei", cursive; background: #000; user-select: none; }
 
-        /* --- 场景架构 --- */
-        #viewport { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
-        .scene-container { 
+        /* --- 核心舞台与光影 --- */
+        #stage { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+        
+        /* 全局光效：丁达尔光束 */
+        .god-rays {
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: repeating-conic-gradient(from 0deg, rgba(255,255,255,0.05) 0deg, rgba(255,255,255,0) 15deg, rgba(255,255,255,0.05) 30deg);
+            animation: rotateRays 60s linear infinite; pointer-events: none; z-index: 20; mix-blend-mode: overlay;
+        }
+        /* 环境粒子 */
+        .particles { position: absolute; width: 100%; height: 100%; background-image: url('https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_960_720.jpg'); opacity: 0.2; animation: drift 30s linear infinite; pointer-events: none; z-index: 15; mix-blend-mode: screen; }
+
+        /* --- 场景容器 --- */
+        .scene-slider { 
             width: 300vw; height: 100%; display: flex; position: absolute; top: 0; left: 0; 
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1); /* 高级缓动效果 */
         }
         .scene { position: relative; width: 100vw; height: 100%; overflow: hidden; }
-        .ambient { position: absolute; width: 100%; height: 100%; mix-blend-mode: screen; opacity: 0.6; pointer-events: none; }
-        .landmark { position: absolute; filter: var(--glow); opacity: 0.8; pointer-events: none; }
+        /* 高清背景图层 */
+        .bg-layer { position: absolute; width: 110%; height: 110%; left: -5%; top: -5%; background-size: cover; background-position: center; transition: transform 1s ease-out; }
 
-        /* 场景1: 卧室 */
-        .s0 { background: linear-gradient(to top, #1c1c3c, #4b3d60); }
-        .s0 .landmark { bottom: 50px; right: 10%; font-size: 150px; } 
+        /* 场景1: 永恒之森 */
+        .s0 .bg-layer { background-image: url('https://picsum.photos/id/1015/1920/1080'); filter: hue-rotate(290deg) brightness(0.7); }
+        /* 场景2: 天空之城 */
+        .s1 .bg-layer { background-image: url('https://picsum.photos/id/1024/1920/1080'); filter: hue-rotate(180deg) brightness(0.9); }
+        /* 场景3: 深渊祭坛 */
+        .s2 .bg-layer { background-image: url('https://picsum.photos/id/1039/1920/1080'); filter: hue-rotate(340deg) brightness(0.6); }
 
-        /* 场景2: 花园 */
-        .s1 { background: linear-gradient(to top, #0f3d3e, #386641); }
-        .s1 .landmark { bottom: 80px; left: 50%; transform: translateX(-50%); font-size: 180px; filter: var(--glow) hue-rotate(90deg); }
-
-        /* 场景3: 厨房 */
-        .s2 { background: linear-gradient(to top, #2c1c3c, #6a4c93); }
-        .s2 .landmark { bottom: 60px; left: 10%; font-size: 160px; filter: var(--glow) hue-rotate(270deg); }
-
-        /* --- 魔法猫咪构造 (一眼识别版) --- */
-        .beast-wrapper {
-            position: absolute; width: 140px; height: 140px; cursor: pointer; z-index: 50;
-            transition: all 0.5s ease-out, opacity 0.3s;
+        /* --- 高级魔兽实体 --- */
+        .beast-unit {
+            position: absolute; width: 200px; height: 200px; cursor: pointer; z-index: 50;
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s; /* Q弹的出现效果 */
         }
-        .beast-wrapper.teleporting { transform: scale(0) rotate(360deg) !important; opacity: 0; } /* 传送特效 */
-        .beast-wrapper:hover { transform: scale(1.05); }
-        .animator { position: relative; width: 100%; height: 100%; animation: breathe 3s infinite ease-in-out; }
+        .beast-unit.teleporting { transform: scale(0) rotate(180deg); opacity: 0; filter: blur(10px); }
+        .beast-unit:hover .sprite-container { transform: scale(1.05) translateY(-10px); filter: brightness(1.1) drop-shadow(0 0 15px var(--glow-color)); }
 
-        /* 身体与头部 */
-        .b-body { 
-            position: absolute; width: 90px; height: 70px; bottom: 20px; left: 25px;
-            border-radius: 40px; background: var(--skin);
-            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3);
+        /* 精灵图容器：负责核心动画 */
+        .sprite-container {
+            position: relative; width: 100%; height: 100%;
+            animation: float-breath 4s ease-in-out infinite;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+            transition: 0.3s;
         }
-        .b-head { 
-            position: absolute; width: 80px; height: 75px; top: 10px; left: 30px;
-            border-radius: 50%; background: var(--skin); z-index: 10;
+
+        /* 真正的美术素材 */
+        .sprite-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+
+        /* --- 动画定义 --- */
+        @keyframes rotateRays { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes drift { from { background-position: 0 0; } to { background-position: 100px 50px; } }
+        @keyframes float-breath { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-15px) scale(1.02); } }
+
+        /* --- 现代化 UI --- */
+        #hud { position: absolute; top: 30px; left: 30px; z-index: 100; }
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 12px 24px; border-radius: 16px; color: white; font-weight: 600; 
+            border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 10px;
         }
-        /* 关键特征：猫耳朵 */
-        .b-ear { position: absolute; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 25px solid var(--skin); top: -15px; z-index: 5; }
-        .ear-l { left: 5px; transform: rotate(-20deg); } .ear-r { right: 5px; transform: rotate(20deg); }
 
-        /* 魔法部件 */
-        .b-horn { position: absolute; z-index: 15; font-size: 30px; top: -20px; filter: var(--glow); }
-        .horn-l { left: 15px; transform: rotate(-30deg); } .horn-r { right: 15px; transform: rotate(30deg); }
-        .b-wing { position: absolute; z-index: 1; font-size: 45px; top: 10px; filter: var(--glow); opacity: 0.8; }
-        .wing-l { left: -10px; transform: scaleX(-1) rotate(-15deg); animation: flap 0.8s infinite alternate; }
-        .wing-r { right: -10px; transform: rotate(15deg); animation: flap 0.8s infinite alternate; }
-        
-        /* 大眼睛 */
-        .b-eyes { position: absolute; top: 35px; width: 100%; display: flex; justify-content: space-around; padding: 0 10px; }
-        .eye { width: 18px; height: 18px; background: #333; border-radius: 50%; position: relative; }
-        .eye::after { content: ''; position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; top: 2px; left: 2px; }
-
-        @keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes flap { to { transform: translateY(-5px) rotate(10deg); } }
-
-        /* --- UI 界面 (双层结构) --- */
-        #hud { position: absolute; top: 20px; left: 20px; z-index: 100; }
-        .pill { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); padding: 8px 16px; border-radius: 20px; color: white; font-weight: bold; border: 1px solid rgba(255,255,255,0.3); }
-
-        /* 底部总控制区 */
-        #controls-area { position: absolute; bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px; z-index: 100; pointer-events: none; }
-        
-        /* 上层：场景专属动作栏 */
-        .action-bar { display: flex; gap: 15px; pointer-events: auto; transition: 0.3s; opacity: 0; transform: translateY(20px); position: absolute; bottom: 80px; }
-        .action-bar.active { opacity: 1; transform: translateY(0); }
-        .act-btn { padding: 12px 24px; border-radius: 25px; border: none; background: linear-gradient(135deg, #a8edea, #fed6e3); color: #444; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.2s; }
-        .act-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
-
-        /* 下层：导航栏 */
-        .nav-dock { display: flex; gap: 20px; pointer-events: auto; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 30px; backdrop-filter: blur(10px); }
-        .nav-btn { width: 60px; height: 60px; border-radius: 20px; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; transition: 0.3s; border: 2px solid white; }
-        .nav-btn:hover { transform: scale(1.1); background: white; }
-        .hatch-btn { background: linear-gradient(135deg, #ff9a9e, #fecfef); font-size: 35px; }
-
-        /* 漂浮物特效 */
-        .floater { position: absolute; font-size: 40px; animation: floatUp 2s forwards; z-index: 200; pointer-events: none; }
-        @keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 100% { transform: translateY(-150px) scale(1.2); opacity: 0; } }
+        #controls { position: absolute; bottom: 40px; width: 100%; display: flex; justify-content: center; gap: 25px; z-index: 100; }
+        .nav-btn { 
+            width: 70px; height: 70px; border-radius: 24px; background: rgba(255,255,255,0.9);
+            display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); border: none;
+        }
+        .nav-btn:hover { transform: translateY(-8px) scale(1.1); background: white; box-shadow: 0 15px 35px rgba(108, 92, 231, 0.4); }
+        .hatch-btn { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); color: #fff; font-size: 40px; }
     </style>
 </head>
 <body>
 
-<div id="viewport">
-    <div class="scene-container" id="world">
-        <div class="scene s0">
-            <div class="ambient" style="background: radial-gradient(circle at 80% 20%, #6f5e8f, transparent 60%);"></div>
-            <div class="landmark">🛏️</div>
-        </div>
-        <div class="scene s1">
-            <div class="ambient" style="background: radial-gradient(circle at 50% 80%, #7ed6df, transparent 50%);"></div>
-            <div class="landmark">⛲</div>
-        </div>
-        <div class="scene s2">
-            <div class="ambient" style="background: radial-gradient(circle at 20% 30%, #ffafbd, transparent 60%);"></div>
-            <div class="landmark">🍲</div>
-        </div>
+<div id="stage">
+    <div class="god-rays"></div>
+    <div class="particles"></div>
+
+    <div class="scene-slider" id="world">
+        <div class="scene s0"><div class="bg-layer"></div></div>
+        <div class="scene s1"><div class="bg-layer"></div></div>
+        <div class="scene s2"><div class="bg-layer"></div></div>
     </div>
 
     <div id="hud">
-        <div class="pill">💎 星尘: <span id="coin-txt">50</span></div>
+        <div class="glass-panel">
+            <span style="font-size: 24px">💎</span> 
+            <span style="font-size: 18px">星源: <span id="coin-txt">100</span></span>
+        </div>
     </div>
 
-    <div id="controls-area">
-        <div id="actions-0" class="action-bar active">
-            <button class="act-btn" onclick="doAction('sleep')">🛌 哄睡</button>
-            <button class="act-btn" onclick="doAction('story')">📖 讲故事</button>
-        </div>
-        <div id="actions-1" class="action-bar">
-            <button class="act-btn" onclick="doAction('water')">💦 浇浇花</button>
-            <button class="act-btn" onclick="doAction('butterfly')">🦋 召蝴蝶</button>
-        </div>
-        <div id="actions-2" class="action-bar">
-            <button class="act-btn" onclick="doAction('cookie')">🍪 烤饼干</button>
-            <button class="act-btn" onclick="doAction('milk')">🥛 倒牛奶</button>
-        </div>
-
-        <div class="nav-dock">
-            <div class="nav-btn" onclick="switchScene(-1)">◀️</div>
-            <div class="nav-btn hatch-btn" onclick="hatch()">🥚</div>
-            <div class="nav-btn" onclick="switchScene(1)">▶️</div>
-        </div>
+    <div id="controls">
+        <button class="nav-btn" onclick="switchScene(-1)">◀️</button>
+        <button class="nav-btn hatch-btn" onclick="hatch()">🥚</button>
+        <button class="nav-btn" onclick="switchScene(1)">▶️</button>
     </div>
 </div>
 
 <script>
-    let coins = 50;
+    let coins = 100;
     let beasts = [];
     let currentSceneIdx = 0;
-    const DNA = [
-        { skin: 'linear-gradient(to b, #ff9a9e, #fad0c4)', wing: '🦋', horn: '🌸' },
-        { skin: 'linear-gradient(to b, #a18cd1, #fbc2eb)', wing: '✨', horn: '🦄' },
-        { skin: 'linear-gradient(to b, #84fab0, #8fd3f4)', wing: '🧚', horn: '🌿' },
-        { skin: 'linear-gradient(to b, #f6d365, #fda085)', wing: '🔥', horn: '☀️' }
+
+    // 高级魔兽图鉴 (使用占位符美术资源，实际开发中应替换为付费/自制的高清素材)
+    // 这里使用的是一些开源风格的奇幻生物概念图链接作为演示
+    const BEAST_DATA = [
+        { name: '炽焰狮鹫', src: 'https://cdn-icons-png.flaticon.com/512/2058/2058244.png', glow: '#ff5e57' },
+        { name: '深渊魔龙', src: 'https://cdn-icons-png.flaticon.com/512/2058/2058257.png', glow: '#a55eea' },
+        { name: '森之妖精', src: 'https://cdn-icons-png.flaticon.com/512/2058/2058250.png', glow: '#2bcbba' },
+        { name: '星空水灵', src: 'https://cdn-icons-png.flaticon.com/512/2058/2058197.png', glow: '#45aaf2' }
     ];
 
-    class MagicCat {
+    class HighEndBeast {
         constructor() {
-            this.gene = DNA[Math.floor(Math.random() * DNA.length)];
-            // 初始位置在当前场景内
-            this.sceneLocation = currentSceneIdx; 
-            this.x = Math.random() * (window.innerWidth - 150);
-            this.y = Math.random() * (window.innerHeight - 250) + 150;
+            this.data = BEAST_DATA[Math.floor(Math.random() * BEAST_DATA.length)];
+            this.sceneLocation = currentSceneIdx;
+            // 随机位置，避开边缘
+            this.x = Math.random() * (window.innerWidth - 250) + 25;
+            this.y = Math.random() * (window.innerHeight - 350) + 100;
             this.render();
-            this.startFreeRoamingAI();
+            this.startAI();
         }
 
         render() {
             this.el = document.createElement('div');
-            this.el.className = 'beast-wrapper';
-            this.el.style.setProperty('--skin', this.gene.skin);
+            this.el.className = 'beast-unit';
+            // 设置 CSS 变量用于鼠标悬停发光色
+            this.el.style.setProperty('--glow-color', this.data.glow);
             this.el.innerHTML = `
-                <div class="animator">
-                    <div class="b-wing wing-l">${this.gene.wing}</div>
-                    <div class="b-wing wing-r">${this.gene.wing}</div>
-                    <div class="b-body"></div>
-                    <div class="b-head">
-                        <div class="b-ear ear-l"></div><div class="b-ear ear-r"></div>
-                        <div class="b-horn horn-l">${this.gene.horn}</div><div class="b-horn horn-r">${this.gene.horn}</div>
-                        <div class="b-eyes"><div class="eye"></div><div class="eye"></div></div>
-                    </div>
+                <div class="sprite-container">
+                    <img src="${this.data.src}" class="sprite-img" alt="${this.data.name}">
                 </div>
             `;
             this.el.onclick = () => this.interact();
-            // 初始设置位置，并根据当前场景决定是否显示
-            this.updatePositionAndVisibility();
-            document.getElementById('world').appendChild(this.el);
+            this.updateVisibility();
+            document.getElementById('stage').appendChild(this.el);
+            
+            // 入场动画
+            this.el.style.transform = `translate(${this.x}px, ${this.y}px) scale(0)`;
+            setTimeout(() => {
+                this.el.style.transform = `translate(${this.x}px, ${this.y}px) scale(1)`;
+            }, 50);
         }
 
-        updatePositionAndVisibility() {
-            // 计算在世界地图中的绝对横坐标
-            const absoluteX = this.sceneLocation * window.innerWidth + this.x;
-            this.el.style.left = absoluteX + 'px';
-            this.el.style.top = this.y + 'px';
-            
-            // 只有当猫咪所在的场景是当前显示的场景时，才显示它 (优化性能和视觉)
-            // 这里我们用透明度来控制显示，配合传送动画
-            this.el.style.opacity = (this.sceneLocation === currentSceneIdx) ? 1 : 0;
-            // 如果不在当前场景，禁用点击
-            this.el.style.pointerEvents = (this.sceneLocation === currentSceneIdx) ? 'auto' : 'none';
+        updateVisibility() {
+            this.el.style.left = '0'; // 位置由 transform 控制
+            this.el.style.top = '0';
+            this.el.style.transform = `translate(${this.x}px, ${this.y}px)`;
+
+            const isVisible = (this.sceneLocation === currentSceneIdx);
+            this.el.style.opacity = isVisible ? 1 : 0;
+            this.el.style.pointerEvents = isVisible ? 'auto' : 'none';
+            // 如果不可见，稍微缩小一点，让出现时有弹出的感觉
+            if (!isVisible) this.el.style.transform += ' scale(0.8)';
         }
 
         interact() {
-            coins += 2; updateUI();
-            this.spawnFloater('💖');
-            this.el.querySelector('.animator').style.animation = 'none';
-            setTimeout(() => this.el.querySelector('.animator').style.animation = 'breathe 0.6s', 10);
-            setTimeout(() => this.el.querySelector('.animator').style.animation = 'breathe 3s infinite ease-in-out', 610);
+            coins += 5; updateUI();
+            const sprite = this.el.querySelector('.sprite-container');
+            // 点击反馈动画：剧烈弹跳
+            sprite.style.animation = 'none';
+            setTimeout(() => sprite.style.animation = 'float-breath 0.4s ease-out', 10);
+            setTimeout(() => sprite.style.animation = 'float-breath 4s ease-in-out infinite', 410);
+            this.spawnFX('✨');
         }
 
-        startFreeRoamingAI() {
+        startAI() {
             setInterval(() => {
-                // 30% 的概率决定去另一个房间漫游
-                if (Math.random() > 0.7) {
-                    this.teleportToRandomScene();
-                } else {
-                    // 否则在当前房间内走动
-                    this.walkInsideRoom();
-                }
-            }, 4000);
+                if (Math.random() > 0.65) this.teleport();
+                else this.wander();
+            }, 3500 + Math.random() * 2000);
         }
 
-        walkInsideRoom() {
+        wander() {
             this.x += (Math.random() - 0.5) * 200;
             this.y += (Math.random() - 0.5) * 150;
-            this.x = Math.max(50, Math.min(window.innerWidth - 150, this.x));
-            this.y = Math.max(150, Math.min(window.innerHeight - 250, this.y));
-            this.updatePositionAndVisibility();
+            // 边界限制
+            this.x = Math.max(25, Math.min(window.innerWidth - 225, this.x));
+            this.y = Math.max(100, Math.min(window.innerHeight - 300, this.y));
+            this.updateVisibility();
         }
 
-        teleportToRandomScene() {
-            // 播放传送消失动画
+        teleport() {
             this.el.classList.add('teleporting');
-            this.spawnFloater('💨');
-
+            this.spawnFX('🌀', 100);
             setTimeout(() => {
-                // 随机选择一个不同的场景
                 let newScene = Math.floor(Math.random() * 3);
-                while (newScene === this.sceneLocation) {
-                    newScene = Math.floor(Math.random() * 3);
-                }
+                while(newScene === this.sceneLocation) newScene = Math.floor(Math.random() * 3);
                 this.sceneLocation = newScene;
+                this.x = Math.random() * (window.innerWidth - 250) + 25;
+                this.updateVisibility();
                 
-                // 在新场景随机一个位置
-                this.x = Math.random() * (window.innerWidth - 150);
-                this.updatePositionAndVisibility();
-
-                // 播放传送出现动画
                 setTimeout(() => {
                     this.el.classList.remove('teleporting');
-                    // 如果传送到的场景正好是玩家看着的场景，提示一下
-                    if(this.sceneLocation === currentSceneIdx) this.spawnFloater('✨ 我来啦!');
+                    if(this.sceneLocation === currentSceneIdx) this.spawnFX('⚡', 150);
                 }, 300);
-            }, 500);
+            }, 400);
         }
 
-        spawnFloater(txt) {
-            const f = document.createElement('div'); f.className = 'floater'; f.innerText = txt;
-            f.style.left = this.el.style.left; f.style.top = this.el.style.top;
-            document.getElementById('world').appendChild(f);
-            setTimeout(() => f.remove(), 2000);
+        spawnFX(emoji, offset=0) {
+            const fx = document.createElement('div');
+            fx.innerText = emoji; fx.style.position = 'absolute'; fx.style.fontSize = '50px';
+            fx.style.left = this.x + 75 + 'px'; fx.style.top = this.y - offset + 'px';
+            fx.style.zIndex = 200; fx.style.animation = 'float-breath 1s ease-out forwards';
+            fx.style.opacity = 0.8;
+            document.getElementById('stage').appendChild(fx);
+            setTimeout(() => fx.remove(), 1000);
         }
     }
-
-    beasts.push(new MagicCat()); updateUI();
 
     function updateUI() { document.getElementById('coin-txt').innerText = coins; }
 
     function switchScene(dir) {
-        // 隐藏当前场景的动作栏
-        document.getElementById(`actions-${currentSceneIdx}`).classList.remove('active');
-        
         currentSceneIdx = (currentSceneIdx + dir + 3) % 3;
         document.getElementById('world').style.transform = `translateX(-${currentSceneIdx * 100}vw)`;
         
-        // 显示新场景的动作栏
-        setTimeout(() => {
-            document.getElementById(`actions-${currentSceneIdx}`).classList.add('active');
-        }, 300);
-
-        // 更新所有猫咪的可见性（因为视角变了）
-        beasts.forEach(b => b.updatePositionAndVisibility());
-    }
-
-    function doAction(type) {
-        if(coins < 5) return alert("星尘不够啦 (需要5)");
-        coins -= 5; updateUI();
-        
-        let emoji = '';
-        switch(type) {
-            case 'sleep': emoji = '💤'; break;
-            case 'story': emoji = '📜'; break;
-            case 'water': emoji = '💦'; break;
-            case 'butterfly': emoji = '🦋'; break;
-            case 'cookie': emoji = '🍪'; break;
-            case 'milk': emoji = '🥛'; break;
-        }
-        
-        // 在当前场景的所有猫咪头上冒出对应图标
-        beasts.forEach(b => {
-            if(b.sceneLocation === currentSceneIdx) b.spawnFloater(emoji);
+        // 视差滚动效果：背景层移动速度较慢
+        document.querySelectorAll('.bg-layer').forEach((bg, idx) => {
+            const relativePos = idx - currentSceneIdx;
+            bg.style.transform = `translateX(${relativePos * 10}%) scale(1.1)`;
         });
+
+        beasts.forEach(b => b.updateVisibility());
     }
 
     function hatch() {
-        if(coins >= 20) { coins -= 20; beasts.push(new MagicCat()); updateUI(); }
-        else { alert("孵化需要 20 星尘哦"); }
+        if(coins >= 50) {
+            coins -= 50; updateUI();
+            beasts.push(new HighEndBeast());
+            // 按钮点击反馈
+            const btn = document.querySelector('.hatch-btn');
+            btn.style.transform = 'scale(0.9)';
+            setTimeout(() => btn.style.transform = '', 150);
+        } else {
+            alert("需要 50 星源才能召唤高级魔兽！");
+        }
     }
+
+    // 初始召唤
+    beasts.push(new HighEndBeast());
+    updateUI();
 </script>
 </body>
 </html>
