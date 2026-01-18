@@ -2,154 +2,172 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>梦幻喵灵：魔兽觉醒</title>
+    <title>幻兽起源：动画新世界</title>
     <style>
-        :root { --p-gold: #ffd700; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Segoe UI", sans-serif; }
+        :root {
+            --magic-glow: 0 0 20px rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.2);
+            --primary-color: #6c5ce7;
+        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Segoe UI", cursive; background: #0c0c1d; color: white; }
 
-        /* --- 深度场景设计 --- */
+        /* --- 沉浸式动态场景 --- */
         #viewport { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
         .scene { 
             width: 100%; height: 100%; position: absolute; top: 0; left: 0; 
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 弹跳切换效果 */
             display: flex; justify-content: center; align-items: center;
+            background-size: cover;
+        }
+        /* 背景粒子层 */
+        .particles { position: absolute; width: 100%; height: 100%; background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 50px 50px; animation: drift 20s linear infinite; pointer-events: none; }
+        @keyframes drift { from { background-position: 0 0; } to { background-position: 100px 50px; } }
+
+        /* 场景特色 */
+        .s-magic-room { background: linear-gradient(135deg, #240b36, #c31432); }
+        .s-magic-room::after { content: '🔮'; position: absolute; font-size: 200px; opacity: 0.1; bottom: -50px; left: -50px; }
+        
+        .s-garden { background: linear-gradient(135deg, #134e5e, #71b280); }
+        .s-garden::after { content: '🍄'; position: absolute; font-size: 180px; opacity: 0.2; bottom: 20px; right: 20px; filter: hue-rotate(90deg); }
+
+        .s-sky-temple { background: linear-gradient(135deg, #00b4db, #0083b0); }
+        .s-sky-temple::after { content: '☁️'; position: absolute; font-size: 250px; opacity: 0.3; top: 50px; left: 50%; transform: translateX(-50%); }
+
+        /* --- 高级魔兽构造 --- */
+        .beast-wrapper {
+            position: absolute; width: 200px; height: 200px;
+            cursor: pointer; z-index: 50; transition: all 0.8s ease-out;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+        }
+        .beast-wrapper:hover { transform: scale(1.05); }
+
+        /* 核心动画容器 */
+        .beast-animator { 
+            position: relative; width: 100%; height: 100%; 
+            animation: hover-breath 4s infinite ease-in-out; 
         }
 
-        /* 厨房：瓷砖纹理与灶台 */
-        .kitchen { 
-            background: #ffbe76; 
-            background-image: radial-gradient(rgba(0,0,0,0.05) 2px, transparent 2px);
-            background-size: 30px 30px;
+        /* 身体：复杂的渐变与纹理 */
+        .b-body { 
+            position: absolute; width: 120px; height: 90px; 
+            border-radius: 60px 70px 50px 50px; bottom: 40px; left: 40px;
+            background: var(--skin-gradient, linear-gradient(to bottom right, #a1c4fd, #c2e9fb));
+            box-shadow: var(--magic-glow), inset -5px -5px 15px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
-        .stove-bg { position: absolute; bottom: 0; width: 100%; height: 120px; background: #dfe6e9; border-top: 5px solid #636e72; }
+        /* 纹理覆盖层 */
+        .b-texture { position: absolute; width: 100%; height: 100%; opacity: 0.3; mix-blend-mode: overlay; }
 
-        /* 卧室：地毯与温馨感 */
-        .bedroom { background: #a29bfe; }
-        .carpet { position: absolute; width: 80%; height: 200px; background: rgba(0,0,0,0.1); border-radius: 50%; bottom: 50px; }
-
-        /* 浴室：水雾与瓷砖 */
-        .bathroom { background: #81ecec; }
-        .mist { position: absolute; width: 100%; height: 100%; background: rgba(255,255,255,0.2); filter: blur(20px); }
-
-        /* --- 多样化魔兽构造 --- */
-        .beast-container {
-            position: absolute; width: 180px; height: 180px;
-            cursor: pointer; z-index: 50; transition: filter 0.5s;
-        }
-
-        .beast-body-wrap { position: relative; width: 100%; height: 100%; animation: breathe 3s infinite ease-in-out; }
-
-        /* 核心肢体：带阴影的立体感 */
-        .b-torso { 
-            position: absolute; width: 100px; height: 65px; 
-            border-radius: 50px 60px 40px 40px; bottom: 40px; left: 40px;
-            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2);
-        }
         .b-head { 
-            position: absolute; width: 85px; height: 80px; 
-            border-radius: 50%; top: 10px; left: 45px; z-index: 10;
-            box-shadow: inset 5px 5px 15px rgba(255,255,255,0.4), 0 5px 15px rgba(0,0,0,0.2);
+            position: absolute; width: 90px; height: 85px; 
+            background: var(--skin-gradient);
+            border-radius: 50%; top: 10px; left: 55px; z-index: 10;
+            box-shadow: var(--magic-glow), inset 5px 5px 10px rgba(255,255,255,0.5);
         }
 
-        /* 各种角和翅膀 */
-        .b-horn { position: absolute; font-size: 30px; top: -15px; z-index: 5; }
-        .horn-l { left: 15px; transform: rotate(-20deg); }
-        .horn-r { right: 15px; transform: rotate(20deg) scaleX(-1); }
+        /* 差异化部件 */
+        .b-wing { position: absolute; font-size: 80px; top: -20px; z-index: 1; filter: drop-shadow(0 0 10px currentColor); }
+        .wing-l { left: -10px; transform: scaleX(-1) rotate(-10deg); animation: flap-l 1s infinite alternate; }
+        .wing-r { right: -10px; transform: rotate(10deg); animation: flap-r 1s infinite alternate; }
 
-        .b-wing { position: absolute; font-size: 60px; top: -10px; opacity: 0.8; animation: flap 0.5s infinite alternate; }
-        .wing-l { left: 0; transform: scaleX(-1); }
-        .wing-r { right: 0; }
+        .b-horn { position: absolute; font-size: 40px; top: -15px; z-index: 15; filter: contrast(1.5); }
+        .horn-l { left: 10px; transform: rotate(-20deg); }
+        .horn-r { right: 10px; transform: rotate(20deg) scaleX(-1); }
 
-        .b-tail { position: absolute; font-size: 40px; right: 0; bottom: 50px; transform-origin: left; animation: wag 1s infinite; }
+        .b-face { position: absolute; top: 35px; left: 50%; transform: translateX(-50%); font-size: 24px; }
 
-        /* --- 状态特效 --- */
-        .is-sick { filter: grayscale(0.8) brightness(0.7); animation: shiver 0.2s infinite; }
-        @keyframes shiver { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
-        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes flap { from { transform: translateY(0) rotate(0); } to { transform: translateY(-15px) rotate(-20deg); } }
+        /* --- 动画定义 --- */
+        @keyframes hover-breath { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-15px) scale(1.03); } }
+        @keyframes flap-l { to { transform: scaleX(-1) rotate(10deg) translateY(-10px); } }
+        @keyframes flap-r { to { transform: rotate(-10deg) translateY(-10px); } }
+        @keyframes happy-wiggle { 0%, 100% { transform: rotate(0) scale(1.2); } 25% { transform: rotate(-10deg) scale(1.2); } 75% { transform: rotate(10deg) scale(1.2); } }
 
-        /* --- 互动 UI --- */
-        #hud { position: absolute; top: 20px; left: 20px; z-index: 1000; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        .stat { background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 20px; margin-bottom: 5px; }
+        /* --- UI 设计 --- */
+        #hud { position: absolute; top: 20px; left: 20px; z-index: 100; display: flex; gap: 10px; }
+        .glass-panel { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 
-        .dock { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; z-index: 1000; }
-        .tool { 
-            width: 60px; height: 60px; background: white; border-radius: 15px; 
-            display: flex; align-items: center; justify-content: center; font-size: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s;
+        #dock { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; gap: 20px; z-index: 100; }
+        .big-btn { 
+            width: 70px; height: 70px; border-radius: 25px; background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            display: flex; align-items: center; justify-content: center; font-size: 35px; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none; outline: none;
         }
-        .tool:hover { transform: translateY(-10px) rotate(10deg); background: var(--p-gold); }
+        .big-btn:hover { transform: translateY(-10px) scale(1.1); filter: brightness(1.2); }
+        .big-btn:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
 
 <div id="viewport">
-    <div id="s0" class="scene kitchen" style="transform: translateX(0%)">
-        <div class="stove-bg"></div>
+    <div id="s0" class="scene s-magic-room" style="transform: translateX(0%)">
+        <div class="particles"></div>
     </div>
-    <div id="s1" class="scene bedroom" style="transform: translateX(100%)">
-        <div class="carpet"></div>
+    <div id="s1" class="scene s-garden" style="transform: translateX(100%)">
+        <div class="particles"></div>
     </div>
-    <div id="s2" class="scene bathroom" style="transform: translateX(200%)">
-        <div class="mist"></div>
+    <div id="s2" class="scene s-sky-temple" style="transform: translateX(200%)">
+        <div class="particles"></div>
     </div>
 
     <div id="hud">
-        <div class="stat">✨ 星愿金币: <span id="coin-txt">30</span></div>
-        <div class="stat">🏥 健康喵灵: <span id="health-txt">1</span></div>
+        <div class="glass-panel">💎 魔晶: <span id="coin-txt">50</span></div>
+        <div class="glass-panel">🦄 魔兽数: <span id="beast-txt">1</span></div>
     </div>
 
-    <div class="dock">
-        <div class="tool" onclick="prevScene()">⬅️</div>
-        <div class="tool" onclick="spawnFood()">🐟</div>
-        <div class="tool" onclick="healAll()">🧪</div>
-        <div class="tool" onclick="hatchBeast()">🥚</div>
-        <div class="tool" onclick="nextScene()">➡️</div>
+    <div id="dock">
+        <button class="big-btn" onclick="prevScene()">◀️</button>
+        <button class="big-btn" style="background: linear-gradient(135deg, #00b09b, #96c93d);" onclick="throwTreat()">🥩</button>
+        <button class="big-btn" style="background: linear-gradient(135deg, #ff00cc, #333399); font-size: 45px;" onclick="hatch()">🥚</button>
+        <button class="big-btn" onclick="nextScene()">▶️</button>
     </div>
 </div>
 
 <script>
-    let coins = 30;
+    let coins = 50;
     let beasts = [];
-    let currentIdx = 0;
-    const hornAssets = ['🐂', '🦄', '🎋', '🔥'];
-    const wingAssets = ['🦋', '🦅', '🦇', '🍃'];
-    const tailAssets = ['🦊', '🐍', '🔥', '☁️'];
+    let sceneIdx = 0;
 
-    class MagicalBeast {
+    // 魔兽基因库
+    const DNA = {
+        types: [
+            { name: '龙灵', skin: 'linear-gradient(to br, #434343, #000000)', wing: '🐲', horn: '😈', texture: 'radial-gradient(circle at 50% 50%, transparent 50%, rgba(0,0,0,0.4) 50%)', color: '#ff3f34' },
+            { name: '仙子', skin: 'linear-gradient(to br, #ff9a9e, #fad0c4)', wing: '🦋', horn: '🌸', texture: 'linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0.3) 55%, transparent 55%)', color: '#ff9ff3' },
+            { name: '海妖', skin: 'linear-gradient(to br, #00c6fb, #005bea)', wing: '🦈', horn: '🐚', texture: '', color: '#54a0ff' },
+            { name: '光灵', skin: 'linear-gradient(to br, #f6d365, #fda085)', wing: '🕊️', horn: '✨', texture: '', color: '#feca57' }
+        ],
+        faces: ['⚫‿⚫', '◕‿◕', '>‿<', 'UwU']
+    };
+
+    class Beast {
         constructor() {
-            this.id = Date.now();
-            this.isSick = false;
-            this.x = Math.random() * (window.innerWidth - 200);
-            this.y = Math.random() * (window.innerHeight - 250) + 100;
-            this.hue = Math.random() * 360;
-            this.dna = {
-                horn: hornAssets[Math.floor(Math.random()*hornAssets.length)],
-                wing: wingAssets[Math.floor(Math.random()*wingAssets.length)],
-                tail: tailAssets[Math.floor(Math.random()*tailAssets.length)]
-            };
+            this.x = Math.random() * (window.innerWidth - 250);
+            this.y = Math.random() * (window.innerHeight - 300) + 100;
+            // 随机基因
+            this.gene = DNA.types[Math.floor(Math.random() * DNA.types.length)];
+            this.face = DNA.faces[Math.floor(Math.random() * DNA.faces.length)];
             this.render();
-            this.brain();
+            this.moveAI();
         }
 
         render() {
             this.el = document.createElement('div');
-            this.el.className = 'beast-container';
+            this.el.className = 'beast-wrapper';
+            this.el.style.setProperty('--skin-gradient', this.gene.skin);
+            this.el.style.color = this.gene.color; // 用于翅膀发光颜色
             this.el.innerHTML = `
-                <div class="beast-body-wrap">
-                    <div class="b-wing wing-l">${this.dna.wing}</div>
-                    <div class="b-wing wing-r">${this.dna.wing}</div>
-                    <div class="b-tail">${this.dna.tail}</div>
-                    <div class="b-torso" style="background: hsl(${this.hue}, 80%, 70%)"></div>
-                    <div class="b-head" style="background: hsl(${this.hue}, 80%, 75%)">
-                        <div class="b-horn horn-l">${this.dna.horn}</div>
-                        <div class="b-horn horn-r">${this.dna.horn}</div>
-                        <div style="position:absolute; top:35px; left:20px; font-size:12px;">⚫</div>
-                        <div style="position:absolute; top:35px; right:20px; font-size:12px;">⚫</div>
+                <div class="beast-animator">
+                    <div class="b-wing wing-l">${this.gene.wing}</div>
+                    <div class="b-wing wing-r">${this.gene.wing}</div>
+                    <div class="b-body">
+                        <div class="b-texture" style="background-image: ${this.gene.texture}"></div>
+                    </div>
+                    <div class="b-head">
+                        <div class="b-horn horn-l">${this.gene.horn}</div>
+                        <div class="b-horn horn-r">${this.gene.horn}</div>
+                        <div class="b-face">${this.face}</div>
                     </div>
                 </div>
             `;
-            this.el.onclick = () => this.interact();
+            this.el.onclick = () => this.happy();
             document.getElementById('viewport').appendChild(this.el);
             this.updatePos();
         }
@@ -159,100 +177,74 @@
             this.el.style.top = this.y + 'px';
         }
 
-        interact() {
-            if(this.isSick) {
-                alert("这只喵灵病了，快用药水！");
-                return;
-            }
-            coins += 2;
-            this.el.style.transform = 'scale(1.2) rotate(10deg)';
-            setTimeout(() => this.el.style.transform = '', 300);
-            updateUI();
+        happy() {
+            coins += 5; updateUI();
+            const animator = this.el.querySelector('.beast-animator');
+            animator.style.animation = 'happy-wiggle 0.6s ease-in-out';
+            setTimeout(() => animator.style.animation = 'hover-breath 4s infinite ease-in-out', 600);
+            this.spawnMagic(this.gene.horn);
         }
 
-        brain() {
+        spawnMagic(icon) {
+            const m = document.createElement('div');
+            m.innerText = icon; m.style.position = 'absolute'; m.style.left = this.x+50+'px'; m.style.top = this.y+'px'; m.style.fontSize = '40px'; m.style.animation = 'drift 1s forwards';
+            document.getElementById('viewport').appendChild(m);
+            setTimeout(() => m.remove(), 1000);
+        }
+
+        moveAI() {
             setInterval(() => {
-                if (!this.isSick) {
-                    this.x += (Math.random() - 0.5) * 200;
-                    this.y += (Math.random() - 0.5) * 100;
-                    this.x = Math.max(50, Math.min(window.innerWidth - 200, this.x));
-                    this.y = Math.max(150, Math.min(window.innerHeight - 200, this.y));
-                    this.updatePos();
-                }
-                // 5% 概率生病
-                if(Math.random() > 0.95 && !this.isSick) {
-                    this.isSick = true;
-                    this.el.classList.add('is-sick');
-                }
-            }, 3000);
-        }
-
-        heal() {
-            this.isSick = false;
-            this.el.classList.remove('is-sick');
+                this.x += (Math.random() - 0.5) * 300;
+                this.y += (Math.random() - 0.5) * 150;
+                this.x = Math.max(50, Math.min(window.innerWidth - 250, this.x));
+                this.y = Math.max(100, Math.min(window.innerHeight - 250, this.y));
+                this.updatePos();
+            }, 4000);
         }
     }
 
-    // 初始化一只
-    beasts.push(new MagicalBeast());
+    // 初始召唤
+    beasts.push(new Beast()); updateUI();
 
     function updateUI() {
         document.getElementById('coin-txt').innerText = coins;
-        document.getElementById('health-txt').innerText = beasts.filter(b => !b.isSick).length;
+        document.getElementById('beast-txt').innerText = beasts.length;
     }
 
-    function nextScene() {
-        if(currentIdx < 2) {
-            currentIdx++;
-            slide();
-        }
+    function slide(dir) {
+        sceneIdx = (sceneIdx + dir + 3) % 3;
+        [0,1,2].forEach(i => {
+            document.getElementById('s'+i).style.transform = `translateX(${(i - sceneIdx)*100}%) scale(${i===sceneIdx?1:0.8})`;
+            document.getElementById('s'+i).style.opacity = i===sceneIdx?1:0.5;
+        });
     }
+    function nextScene() { slide(1); }
+    function prevScene() { slide(-1); }
 
-    function prevScene() {
-        if(currentIdx > 0) {
-            currentIdx--;
-            slide();
-        }
-    }
-
-    function slide() {
-        for(let i=0; i<3; i++) {
-            document.getElementById('s'+i).style.transform = `translateX(${(i - currentIdx)*100}%)`;
-        }
-    }
-
-    function hatchBeast() {
-        if(coins >= 12) {
-            coins -= 12;
-            beasts.push(new MagicalBeast());
+    function hatch() {
+        if(coins >= 20) {
+            coins -= 20;
+            beasts.push(new Beast());
             updateUI();
+            document.querySelector('.big-btn[onclick="hatch()"]').style.animation = 'happy-wiggle 0.5s';
+            setTimeout(() => document.querySelector('.big-btn[onclick="hatch()"]').style.animation = '', 500);
         }
     }
 
-    function healAll() {
-        if(coins >= 5) {
-            coins -= 5;
-            beasts.forEach(b => b.heal());
-            updateUI();
-            alert("奇迹药水！所有喵灵恢复了！");
-        }
-    }
-
-    function spawnFood() {
-        const fish = document.createElement('div');
-        fish.innerText = '🐟';
-        fish.style.position = 'absolute';
-        fish.style.fontSize = '40px';
-        const tx = Math.random() * 800;
-        const ty = Math.random() * 500 + 100;
-        fish.style.left = tx + 'px'; fish.style.top = ty + 'px';
-        document.getElementById('viewport').appendChild(fish);
-
-        // 吸引最近的猫
-        if(beasts.length > 0) {
-            beasts[0].x = tx; beasts[0].y = ty;
-            beasts[0].updatePos();
-            setTimeout(() => { fish.remove(); coins += 5; updateUI(); }, 1000);
+    function throwTreat() {
+        if(coins >= 5 && beasts.length > 0) {
+            coins -= 5; updateUI();
+            const meat = document.createElement('div');
+            meat.innerText = '🍖'; meat.style.position='absolute'; meat.style.fontSize='50px'; meat.style.left=window.innerWidth/2+'px'; meat.style.top=window.innerHeight/2+'px'; meat.style.transition='all 0.8s';
+            document.getElementById('viewport').appendChild(meat);
+            
+            const targetBeast = beasts[Math.floor(Math.random()*beasts.length)];
+            setTimeout(() => {
+                meat.style.left = targetBeast.x + 80 + 'px';
+                meat.style.top = targetBeast.y + 80 + 'px';
+                meat.style.transform = 'scale(0.5)';
+                setTimeout(() => { meat.remove(); targetBeast.happy(); }, 800);
+            }, 100);
         }
     }
 </script>
