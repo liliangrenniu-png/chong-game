@@ -2,244 +2,271 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>梦幻喵灵：多猫乐园</title>
+    <title>星愿喵灵：全拟真梦幻乐园</title>
     <style>
-        :root { --main-gold: #ffd700; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Microsoft YaHei"; background: #222; }
+        :root {
+            --sky-blue: #a2d2ff; --soft-purple: #cdb4db; --magic-gold: #ffda08;
+        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: "PingFang SC"; }
 
-        /* --- 梦幻场景设计 --- */
-        #game-world { width: 100vw; height: 100vh; position: relative; transition: 0.8s; overflow: hidden; }
+        /* --- 梦幻多层次场景 --- */
+        #stage { width: 100vw; height: 100vh; position: relative; transition: 1.5s; }
         
-        /* 厨房：带灶台和橱柜 */
-        .kitchen { background: #ffbe76; }
-        .kitchen::before { content: "🍳 灶台 _________ [ 🍴 橱柜 ]"; position: absolute; top: 100px; width: 100%; text-align: center; font-size: 30px; color: rgba(0,0,0,0.1); font-weight: bold; }
-
-        /* 浴室：带浴缸 */
-        .bathroom { background: #81ecec; }
-        .bathroom::before { content: "🛁 ~~~~~ 浴缸 ~~~~~"; position: absolute; bottom: 50px; width: 100%; text-align: center; font-size: 40px; color: rgba(255,255,255,0.4); }
-
-        /* 卧室：带大床 */
-        .bedroom { background: #a29bfe; }
-        .bedroom::before { content: "🛏️ [========= 梦幻大床 =========]"; position: absolute; top: 200px; width: 100%; text-align: center; font-size: 30px; color: rgba(255,255,255,0.3); }
-
-        /* --- 完整的猫咪（魔兽风格） --- */
-        .cat-entity {
-            position: absolute; width: 100px; height: 80px;
-            transition: left 1s ease-out, top 1s ease-out;
-            cursor: pointer; z-index: 10; transform-origin: center;
-        }
-        .cat-body {
-            position: absolute; width: 60px; height: 35px;
-            background: #ffa502; border-radius: 40px; bottom: 10px; left: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s;
-        }
-        .cat-head {
-            position: absolute; font-size: 45px; top: -10px; left: 10px;
-            z-index: 5; transition: 0.3s;
-        }
-        .cat-tail {
-            position: absolute; width: 30px; height: 10px;
-            background: #e67e22; right: 0; bottom: 25px;
-            border-radius: 5px; transform-origin: left;
-            animation: tailWag 1s infinite alternate;
-        }
-        .cat-leg {
-            position: absolute; width: 8px; height: 15px;
-            background: #e67e22; bottom: 0; border-radius: 4px;
-        }
-        .leg-1 { left: 30px; } .leg-2 { left: 50px; }
-
-        @keyframes tailWag { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
-
-        /* --- 梦幻金币与食物 --- */
-        .gold-coin {
-            position: absolute; font-size: 25px; color: var(--main-gold);
-            text-shadow: 0 0 10px white; animation: coinFloat 1s forwards;
-        }
-        @keyframes coinFloat { to { transform: translateY(-100px); opacity: 0; } }
-
-        .fish-food { position: absolute; font-size: 30px; transition: 0.5s; z-index: 5; }
-
-        /* --- UI与孵化器 --- */
-        #ui { position: absolute; top: 20px; left: 20px; z-index: 100; color: white; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; }
+        /* 场景装饰物 */
+        .furniture { position: absolute; pointer-events: none; opacity: 0.6; }
         
-        #hatcher {
-            position: absolute; bottom: 20px; right: 20px; cursor: pointer;
-            width: 100px; height: 100px; background: radial-gradient(#fff, #ff9ff3);
-            border-radius: 50% 50% 10% 10%; border: 4px solid white;
-            display: flex; align-items: center; justify-content: center; font-size: 40px;
-            box-shadow: 0 0 20px #ff9ff3; z-index: 100;
+        /* 厨房场景 */
+        .bg-kitchen { background: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 100%); }
+        .bg-kitchen .stove { bottom: 10%; left: 10%; font-size: 150px; }
+
+        /* 卧室场景 */
+        .bg-bedroom { background: linear-gradient(180deg, #a18cd1 0%, #fbc2eb 100%); }
+        .bg-bedroom .bed { bottom: 20%; right: 10%; font-size: 200px; }
+
+        /* 浴室场景 */
+        .bg-bathroom { background: linear-gradient(180deg, #84fab0 0%, #8fd3f4 100%); }
+        .bg-bathroom .tub { bottom: 5%; left: 50%; transform: translateX(-50%); font-size: 180px; }
+
+        /* --- 立体猫咪构造 --- */
+        .cat {
+            position: absolute; width: 160px; height: 140px;
+            transition: all 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            cursor: pointer; z-index: 50;
         }
 
-        .btn-panel { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
-        button { padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; font-weight: bold; background: white; }
+        .cat-body-wrap { position: relative; width: 100%; height: 100%; animation: float 3s infinite ease-in-out; }
+        
+        /* 身体组件 */
+        .c-body { 
+            position: absolute; width: 90px; height: 60px; background: #fff; 
+            border-radius: 50px 50px 40px 40px; bottom: 30px; left: 35px;
+            box-shadow: inset -8px -8px 15px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .c-head { 
+            position: absolute; width: 80px; height: 75px; background: #fff; 
+            border-radius: 50% 50% 45% 45%; top: 5px; left: 40px; z-index: 10;
+            box-shadow: inset 2px 5px 10px rgba(255,255,255,0.8), 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .c-eye { 
+            position: absolute; width: 10px; height: 10px; background: #333; 
+            border-radius: 50%; top: 35px; transition: 0.3s;
+        }
+        .eye-l { left: 20px; } .eye-r { right: 20px; }
+        
+        .c-wing { 
+            position: absolute; font-size: 50px; top: -10px; opacity: 0.7; 
+            animation: flap 0.4s infinite alternate; filter: drop-shadow(0 0 5px white);
+        }
+        .w-l { left: 10px; transform: scaleX(-1); } .w-r { right: 10px; }
+
+        .c-tail { 
+            position: absolute; width: 40px; height: 15px; background: #fff; 
+            right: 15px; bottom: 45px; border-radius: 20px; 
+            transform-origin: left; animation: wag 0.8s infinite;
+        }
+
+        .c-paw { position: absolute; width: 15px; height: 20px; background: #fff; border-radius: 10px; bottom: 15px; }
+        .p-1 { left: 45px; } .p-2 { left: 75px; }
+
+        /* 装饰品槽位 */
+        .accessory { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 40px; display: none; z-index: 20; }
+
+        /* --- 动画 --- */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes flap { from { transform: rotate(0); } to { transform: rotate(-30deg); } }
+        @keyframes wag { from { transform: rotate(-10deg); } to { transform: rotate(30deg); } }
+        @keyframes eat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1) translateY(5px); } }
+
+        /* --- 交互元素 --- */
+        .food { position: absolute; font-size: 40px; z-index: 5; animation: bounce 0.6s infinite alternate; }
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.2); } }
+
+        /* UI设计 */
+        #gui { position: absolute; top: 25px; left: 25px; z-index: 1000; }
+        .coin-box { background: rgba(255,255,255,0.4); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 2px solid white; font-size: 20px; font-weight: bold; color: #555; }
+        
+        .menu { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; gap: 15px; z-index: 1000; }
+        .btn { padding: 15px 30px; border-radius: 50px; border: none; background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 16px; }
+        .btn:hover { transform: translateY(-5px); background: var(--magic-gold); }
     </style>
 </head>
 <body>
 
-<div id="game-world" class="kitchen">
-    <div id="ui">
-        <div>✨ 梦幻金币: <span id="coin-val">20</span></div>
-        <div id="scene-info">📍 当前：梦幻厨房</div>
+<div id="stage" class="bg-kitchen">
+    <div class="furniture stove" id="deco-item">🍳</div>
+
+    <div id="gui">
+        <div class="coin-box">✨ 星愿币: <span id="coins">20</span></div>
     </div>
 
-    <div id="hatcher" onclick="hatchNewCat()">🌸</div>
-
-    <div class="btn-panel">
-        <button onclick="throwFood()">🐟 扔小鱼干</button>
-        <button onclick="unlockNext()">🔓 解锁新场景 (6金)</button>
-        <button onclick="healCats()">💊 整体治疗</button>
+    <div class="menu">
+        <button class="btn" onclick="throwFood()">🐟 投喂小鱼</button>
+        <button class="btn" onclick="playWand()">🧶 逗猫棒 (2金)</button>
+        <button class="btn" onclick="changeScene()">🚪 换房间 (6金)</button>
+        <button class="btn" onclick="dressUp()">🎩 换装 (6金)</button>
+        <button class="btn" onclick="hatchEgg()">🥚 孵化 (12金)</button>
     </div>
 </div>
 
 <script>
     let coins = 20;
     let cats = [];
-    const world = document.getElementById('game-world');
+    const stage = document.getElementById('stage');
     const scenes = [
-        { name: '梦幻厨房', class: 'kitchen' },
-        { name: '星光浴室', class: 'bathroom' },
-        { name: '云朵卧室', class: 'bedroom' }
+        { name: '厨房', class: 'bg-kitchen', icon: '🍳', decoClass: 'stove' },
+        { name: '卧室', class: 'bg-bedroom', icon: '🛏️', decoClass: 'bed' },
+        { name: '浴室', class: 'bg-bathroom', icon: '🛁', decoClass: 'tub' }
     ];
-    let currentSceneIdx = 0;
+    let sceneIdx = 0;
 
-    class Cat {
-        constructor(id) {
-            this.id = id;
-            this.x = Math.random() * (window.innerWidth - 100);
-            this.y = Math.random() * (window.innerHeight - 150) + 100;
-            this.isSleeping = false;
-            this.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
-            this.createDOM();
-            this.startAI();
+    class MagicalCat {
+        constructor() {
+            this.x = Math.random() * (window.innerWidth - 200);
+            this.y = Math.random() * (window.innerHeight - 250) + 100;
+            this.color = `hsl(${Math.random() * 360}, 100%, 85%)`;
+            this.isEating = false;
+            this.hasHat = false;
+            this.create();
+            this.ai();
         }
 
-        createDOM() {
+        create() {
             this.el = document.createElement('div');
-            this.el.className = 'cat-entity';
+            this.el.className = 'cat';
             this.el.innerHTML = `
-                <div class="cat-head">🐱</div>
-                <div class="cat-body" style="background:${this.color}"></div>
-                <div class="cat-tail" style="background:${this.color}"></div>
-                <div class="cat-leg leg-1" style="background:${this.color}"></div>
-                <div class="cat-leg leg-2" style="background:${this.color}"></div>
+                <div class="cat-body-wrap">
+                    <div class="accessory">🎩</div>
+                    <div class="c-wing w-l">🕊️</div>
+                    <div class="c-wing w-r">🕊️</div>
+                    <div class="c-tail" style="background:${this.color}"></div>
+                    <div class="c-body" style="background:${this.color}"></div>
+                    <div class="c-head" style="background:${this.color}">
+                        <div class="c-eye eye-l"></div>
+                        <div class="c-eye eye-r"></div>
+                    </div>
+                    <div class="c-paw p-1" style="background:${this.color}"></div>
+                    <div class="c-paw p-2" style="background:${this.color}"></div>
+                </div>
             `;
-            this.el.onclick = (e) => this.onClicked(e);
-            world.appendChild(this.el);
-            this.updatePos();
+            this.el.onclick = () => this.meow();
+            stage.appendChild(this.el);
+            this.update();
         }
 
-        updatePos() {
+        update() {
             this.el.style.left = this.x + 'px';
             this.el.style.top = this.y + 'px';
         }
 
-        onClicked(e) {
-            coins += 1;
-            document.getElementById('coin-val').innerText = coins;
-            this.jump();
-            spawnCoinEffect(e.clientX, e.clientY);
-        }
-
-        jump() {
-            this.el.style.transform = 'scale(1.2) translateY(-20px)';
+        meow() {
+            coins++;
+            updateCoins();
+            this.el.style.transform = 'scale(1.2)';
             setTimeout(() => this.el.style.transform = 'scale(1)', 200);
         }
 
-        startAI() {
+        ai() {
             setInterval(() => {
-                if (Math.random() > 0.7 && !this.isSleeping) {
-                    this.x += (Math.random() - 0.5) * 200;
+                if (!this.isEating) {
+                    this.x += (Math.random() - 0.5) * 300;
                     this.y += (Math.random() - 0.5) * 200;
-                    this.x = Math.max(50, Math.min(window.innerWidth - 100, this.x));
-                    this.y = Math.max(150, Math.min(window.innerHeight - 100, this.y));
-                    this.updatePos();
-                }
-                // 偶尔闭眼
-                if (Math.random() > 0.9) {
-                    this.el.querySelector('.cat-head').innerText = "😴";
-                    this.isSleeping = true;
-                    setTimeout(() => {
-                        this.el.querySelector('.cat-head').innerText = "🐱";
-                        this.isSleeping = false;
-                    }, 3000);
+                    this.x = Math.max(50, Math.min(window.innerWidth - 180, this.x));
+                    this.y = Math.max(100, Math.min(window.innerHeight - 200, this.y));
+                    this.update();
                 }
             }, 3000);
         }
 
-        moveTo(tx, ty) {
-            this.x = tx; this.y = ty;
-            this.updatePos();
-            this.el.querySelector('.cat-head').innerText = "😋";
-            setTimeout(() => this.el.querySelector('.cat-head').innerText = "🐱", 2000);
+        async eat(tx, ty) {
+            this.isEating = true;
+            this.x = tx - 50; this.y = ty - 50;
+            this.update();
+            this.el.querySelector('.cat-body-wrap').style.animation = 'eat 0.3s infinite';
+            await new Promise(r => setTimeout(r, 2000));
+            this.el.querySelector('.cat-body-wrap').style.animation = '';
+            this.isEating = false;
+        }
+
+        toggleHat() {
+            this.hasHat = !this.hasHat;
+            this.el.querySelector('.accessory').style.display = this.hasHat ? 'block' : 'none';
+            if(this.hasHat) this.el.style.filter = 'drop-shadow(0 0 10px gold)';
+            else this.el.style.filter = '';
         }
     }
 
-    // 初始生成一只猫
-    cats.push(new Cat(0));
+    // 初始小猫
+    cats.push(new MagicalCat());
 
-    function hatchNewCat() {
-        if (coins >= 12) {
-            coins -= 12;
-            updateUI();
-            const c = new Cat(cats.length);
-            cats.push(c);
-            // 孵化动画
-            document.getElementById('hatcher').style.transform = 'scale(1.5)';
-            setTimeout(() => document.getElementById('hatcher').style.transform = 'scale(1)', 500);
-        }
+    function updateCoins() {
+        document.getElementById('coins').innerText = coins;
     }
 
     function throwFood() {
         const tx = Math.random() * (window.innerWidth - 100);
-        const ty = Math.random() * (window.innerHeight - 200) + 100;
-        const fish = document.createElement('div');
-        fish.className = 'fish-food';
-        fish.innerText = '🐟';
-        fish.style.left = tx + 'px';
-        fish.style.top = ty + 'px';
-        world.appendChild(fish);
-
-        // 让最近的一只猫跑过去吃
-        setTimeout(() => {
-            if(cats.length > 0) {
-                cats[0].moveTo(tx, ty);
-                setTimeout(() => {
-                    fish.remove();
-                    coins += 5;
-                    updateUI();
-                }, 1000);
-            }
-        }, 500);
-    }
-
-    function unlockNext() {
-        if (coins >= 6) {
-            coins -= 6;
-            currentSceneIdx = (currentSceneIdx + 1) % scenes.length;
-            world.className = scenes[currentSceneIdx].class;
-            document.getElementById('scene-info').innerText = "📍 当前：" + scenes[currentSceneIdx].name;
-            updateUI();
+        const ty = Math.random() * (window.innerHeight - 100);
+        const f = document.createElement('div');
+        f.className = 'food'; f.innerText = '🐟';
+        f.style.left = tx + 'px'; f.style.top = ty + 'px';
+        stage.appendChild(f);
+        
+        if(cats.length > 0) {
+            cats[0].eat(tx, ty).then(() => {
+                f.remove();
+                coins += 5;
+                updateCoins();
+            });
         }
     }
 
-    function spawnCoinEffect(x, y) {
-        const c = document.createElement('div');
-        c.className = 'gold-coin';
-        c.innerText = '✨';
-        c.style.left = x + 'px';
-        c.style.top = y + 'px';
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 1000);
+    function changeScene() {
+        if (coins >= 6) {
+            coins -= 6;
+            sceneIdx = (sceneIdx + 1) % scenes.length;
+            const s = scenes[sceneIdx];
+            stage.className = s.class;
+            const deco = document.getElementById('deco-item');
+            deco.innerText = s.icon;
+            deco.className = `furniture ${s.decoClass}`;
+            updateCoins();
+            
+            // 如果是卧室，让猫咪睡觉
+            if(s.name === '卧室') {
+                cats.forEach(c => {
+                    c.el.querySelector('.eye-l').style.height = '2px';
+                    c.el.querySelector('.eye-r').style.height = '2px';
+                });
+            } else {
+                cats.forEach(c => {
+                    c.el.querySelector('.eye-l').style.height = '10px';
+                    c.el.querySelector('.eye-r').style.height = '10px';
+                });
+            }
+        }
     }
 
-    function updateUI() {
-        document.getElementById('coin-val').innerText = coins;
+    function dressUp() {
+        if(coins >= 6 && cats.length > 0) {
+            coins -= 6;
+            cats[0].toggleHat();
+            updateCoins();
+        }
     }
 
-    function healCats() {
-        alert("使用了梦幻药水！所有的喵灵都恢复了健康和饱和度！");
-        cats.forEach(c => c.el.style.filter = 'saturate(1.5)');
+    function hatchEgg() {
+        if(coins >= 12) {
+            coins -= 12;
+            cats.push(new MagicalCat());
+            updateCoins();
+        }
+    }
+
+    function playWand() {
+        if(coins >= 2) {
+            coins -= 2;
+            updateCoins();
+            cats.forEach(c => c.meow()); // 让所有猫咪兴奋跳动
+        }
     }
 </script>
 </body>
