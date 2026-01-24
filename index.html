@@ -2,321 +2,142 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>喵呜的白日梦：百变乐园</title>
+    <title>馋嘴猫咪大作战</title>
     <style>
-        /* --- 1. 全局设置：柔和、可爱 --- */
-        :root {
-            --theme-pink: #FFCDEA;
-            --theme-yellow: #FFF5BA;
-            --theme-blue: #A2D2FF;
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff; /* 淡蓝色背景 */
+            font-family: 'Microsoft YaHei', sans-serif;
+            flex-direction: column;
         }
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-            font-family: "幼圆", "Rounded Mplus 1c", cursive;
-            background-color: var(--theme-pink);
-            user-select: none; cursor: url('https://cdn-icons-png.flaticon.com/32/7459/7459939.png'), auto; /* 肉垫光标 */
+        canvas {
+            border: 4px solid #FFB6C1; /* 粉色边框 */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            background-color: #FFF;
+            cursor: none; /* 隐藏画布上的鼠标指针 */
         }
-
-        /* 激光笔模式光标 */
-        body.laser-mode { cursor: none; }
-        #laser-dot {
-            position: absolute; width: 15px; height: 15px; background: red; border-radius: 50%;
-            box-shadow: 0 0 10px red, 0 0 20px #ff5555; pointer-events: none; z-index: 100; display: none;
-            transform: translate(-50%, -50%); mix-blend-mode: screen;
+        #instructions {
+            margin-top: 10px;
+            color: #666;
         }
-
-        /* --- 2. 多背景切换系统 --- */
-        #bg-layer {
-            position: absolute; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
-            transition: background-image 0.6s ease-in-out, filter 0.6s;
-        }
-        /* 柔光氛围层 */
-        .overlay {
-            position: absolute; width: 100%; height: 100%; pointer-events: none;
-            background: radial-gradient(circle at center, transparent 50%, rgba(255, 245, 230, 0.4) 100%);
-            mix-blend-mode: overlay;
-        }
-
-        /* --- 3. 主角：超动态小奶猫 --- */
-        #cat-container {
-            position: absolute; left: 50%; top: 55%;
-            width: 220px; height: 220px;
-            transform: translate(-50%, -50%); z-index: 20;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 平滑移动 */
-        }
-
-        /* 猫咪本体容器 (负责呼吸和摇头) */
-        .cat-body-wrap {
-            width: 100%; height: 100%; position: relative;
-            animation: breathe 3s ease-in-out infinite; /* 呼吸 */
-            transform-origin: bottom center;
-            transition: transform 0.2s; /* 摇头过渡 */
-        }
-
-        /* 猫咪图片 */
-        #cat-img {
-            width: 100%; height: 100%; object-fit: contain;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
-            /* 眨眼动画 (通过CSS滤镜模拟，简化实现) */
-            animation: blink 4s infinite;
-        }
-
-        /* 动态动画定义 */
-        @keyframes breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.03); } }
-        @keyframes blink { 0%, 48%, 52%, 100% { filter: brightness(1) drop-shadow(0 10px 20px rgba(0,0,0,0.15)); } 50% { filter: brightness(0.8) drop-shadow(0 10px 20px rgba(0,0,0,0.15)); transform: scaleY(0.98); } }
-        /* 面向左侧 */
-        .face-left { transform: scaleX(-1); }
-        /* 扑咬动作 */
-        .pouncing .cat-body-wrap { animation: pounceAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
-        @keyframes pounceAnim { 0% { transform: scale(1); } 40% { transform: scale(1.2, 0.8) translateY(20px); } 80% { transform: scale(0.9, 1.1) translateY(-30px); } 100% { transform: scale(1); } }
-
-        /* --- 4. 丰富的 UI --- */
-        /* 顶部栏 */
-        .top-bar {
-            position: absolute; top: 20px; width: 90%; left: 5%; display: flex; justify-content: space-between; z-index: 100;
-        }
-        .coin-pill {
-            background: #FFF; padding: 8px 20px; border-radius: 30px;
-            box-shadow: 0 5px 0 var(--theme-yellow); color: #F7B731; font-weight: bold; font-size: 20px;
-            border: 3px solid var(--theme-yellow); display: flex; align-items: center;
-        }
-        
-        /* 顶部功能按钮 */
-        .top-btn {
-            background: #FFF; padding: 10px 15px; border-radius: 20px;
-            box-shadow: 0 5px 0 #eee; border: 3px solid #fff;
-            cursor: pointer; font-weight: bold; color: #666; transition: 0.1s;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .top-btn:active { transform: translateY(5px); box-shadow: none; }
-        #gacha-btn.disabled { filter: grayscale(1); opacity: 0.7; cursor: not-allowed; }
-
-        /* 底部超多按键栏 */
-        #dock {
-            position: absolute; bottom: 25px; width: 100%;
-            display: flex; justify-content: center; gap: 12px; z-index: 100;
-        }
-        .dock-btn {
-            width: 65px; height: 65px; border-radius: 22px; background: #fff;
-            display: flex; font-size: 30px; align-items: center; justify-content: center;
-            box-shadow: 0 6px 0 var(--theme-pink), 0 10px 15px rgba(0,0,0,0.1);
-            cursor: pointer; transition: 0.1s; border: 3px solid var(--theme-pink); position: relative;
-        }
-        .dock-btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--theme-pink); }
-        .dock-btn.active-laser { background: #ffadad; border-color: red; box-shadow: 0 6px 0 #c0392b; }
-
-        /* 互动道具浮现 */
-        .toy-pop {
-            position: absolute; font-size: 50px; z-index: 15; pointer-events: none;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn { from { transform: translate(-50%, -50%) scale(0); } to { transform: translate(-50%, -50%) scale(1); } }
-
-        /* 特效文字 */
-        .pop-text {
-            position: absolute; font-weight: bold; color: #fff; font-size: 24px;
-            pointer-events: none; animation: floatUp 1s forwards; z-index: 200;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-        }
-        @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 100% { transform: translateY(-80px) scale(1.2); opacity: 0; } }
-
     </style>
 </head>
 <body>
 
-    <div id="bg-layer"></div>
-    <div class="overlay"></div>
-    <div id="laser-dot"></div>
-
-    <div class="top-bar">
-        <div class="coin-pill">💰 <span id="coin-count">0</span></div>
-        <div style="display: flex; gap: 10px;">
-            <div class="top-btn" onclick="switchBG()" style="background: var(--theme-blue);">🎨 换场景</div>
-            <div class="top-btn disabled" id="gacha-btn" onclick="gachaCat()" style="background: var(--theme-pink); color: white;">🎁 10金币换猫</div>
-        </div>
-    </div>
-
-    <div id="cat-container" onclick="petCat(event)">
-        <div class="cat-body-wrap" id="cat-wrap">
-            <img id="cat-img" src="" alt="Cute Cat">
-        </div>
-    </div>
-
-    <div id="dock">
-        <div class="dock-btn" id="laser-dock-btn" onclick="toggleLaser()">🔴</div>
-        <div class="dock-btn" onclick="interact('🐟', 'yummy')">🐟</div>
-        <div class="dock-btn" onclick="interact('🧶', 'play')">🧶</div>
-        <div class="dock-btn" onclick="interact('🧸', 'hug')">🧸</div>
-        <div class="dock-btn" style="font-size: 36px;" onclick="interact('🛁', 'bath')">🛁</div>
-    </div>
+<canvas id="gameCanvas" width="600" height="400"></canvas>
+<p id="instructions">移动鼠标控制小猫，接住🐟，躲避💣！</p>
 
 <script>
-    let coins = 0;
-    let isLaserMode = false;
-    let isBusy = false;
-    const catContainer = document.getElementById('cat-container');
-    const catWrap = document.getElementById('cat-wrap');
-    const catImg = document.getElementById('cat-img');
-    const bgLayer = document.getElementById('bg-layer');
-    const coinLabel = document.getElementById('coin-count');
-    const gachaBtn = document.getElementById('gacha-btn');
-    const laserDot = document.getElementById('laser-dot');
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-    // --- 1. 素材库 (保证可爱和多样) ---
-    const cats = [
-        'https://cdn-icons-png.flaticon.com/512/10309/10309451.png', // 橘白
-        'https://cdn-icons-png.flaticon.com/512/10309/10309452.png', // 三花
-        'https://cdn-icons-png.flaticon.com/512/10309/10309332.png', // 灰白
-        'https://cdn-icons-png.flaticon.com/512/10309/10309368.png', // 奶牛
-        'https://cdn-icons-png.flaticon.com/512/10309/10309399.png'  // 纯白
-    ];
-    let catIdx = 0;
+    let score = 0;
+    let gameOver = false;
 
-    const bgs = [
-        'https://img.freepik.com/free-vector/hand-drawn-kawaii-room-interior_23-2150654503.jpg', // 阳光房间
-        'https://img.freepik.com/free-vector/hand-drawn-kawaii-sky-background_23-2150633476.jpg', // 云朵城堡
-        'https://img.freepik.com/free-vector/hand-drawn-kawaii-garden-background_23-2150633480.jpg', // 秘密花园
-        'https://img.freepik.com/free-vector/hand-drawn-cozy-winter-background_23-2150658229.jpg' // 暖暖被窝
-    ];
-    let bgIdx = 0;
+    // 小猫对象
+    const cat = {
+        x: canvas.width / 2,
+        y: canvas.height - 50,
+        size: 50,
+        emoji: "🐱"
+    };
 
-    // --- 初始化 ---
-    function init() {
-        catImg.src = cats[catIdx];
-        bgLayer.style.backgroundImage = `url('${bgs[bgIdx]}')`;
-        updateUI();
-    }
+    // 掉落物品数组
+    let items = [];
+    let spawnRate = 60; // 生成速率 (帧数)
+    let frameCount = 0;
 
-    // --- 核心：动态感 (头部跟随鼠标) ---
-    document.addEventListener('mousemove', (e) => {
-        if (isLaserMode) {
-            laserDot.style.left = e.clientX + 'px';
-            laserDot.style.top = e.clientY + 'px';
-            if (!isBusy) chase(e.clientX, e.clientY); // 激光模式下追逐
-        }
+    // 监听鼠标移动
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        cat.x = e.clientX - rect.left - cat.size / 2;
 
-        // 简单的头部跟随效果 (通过轻微旋转身体模拟)
-        if (!isBusy) {
-            const rect = catContainer.getBoundingClientRect();
-            const catX = rect.left + rect.width / 2;
-            // 计算鼠标相对于猫咪的水平位置，产生 -15deg 到 15deg 的旋转
-            let rotate = (e.clientX - catX) / window.innerWidth * 30;
-            rotate = Math.max(-15, Math.min(15, rotate)); // 限制角度
-            catWrap.style.transform = `rotate(${rotate}deg)`;
-            
-            // 面向判断
-            if (e.clientX < catX) catContainer.classList.add('face-left');
-            else catContainer.classList.remove('face-left');
-        }
+        // 限制小猫不要跑出画布边界
+        if (cat.x < 0) cat.x = 0;
+        if (cat.x > canvas.width - cat.size) cat.x = canvas.width - cat.size;
     });
 
-    // --- 玩法1：切换背景 ---
-    function switchBG() {
-        bgIdx = (bgIdx + 1) % bgs.length;
-        bgLayer.style.filter = 'blur(10px) brightness(1.2)'; // 切换时的模糊特效
-        setTimeout(() => {
-            bgLayer.style.backgroundImage = `url('${bgs[bgIdx]}')`;
-            bgLayer.style.filter = '';
-            spawnPopText('🎨 场景切换!', window.innerWidth/2, window.innerHeight/2);
-        }, 300);
+    // 生成新物品
+    function spawnItem() {
+        const isBomb = Math.random() < 0.3; // 30%几率是炸弹
+        items.push({
+            x: Math.random() * (canvas.width - 30),
+            y: -30,
+            size: 30,
+            speed: Math.random() * 3 + 2, // 随机速度
+            type: isBomb ? 'bomb' : 'fish',
+            emoji: isBomb ? "💣" : "🐟"
+        });
     }
 
-    // --- 玩法2：10金币抽猫 ---
-    function gachaCat() {
-        if (coins < 10) return;
-        coins -= 10; updateUI();
-        
-        let newIdx;
-        do { newIdx = Math.floor(Math.random() * cats.length); } while (newIdx === catIdx);
-        catIdx = newIdx;
+    // 游戏主循环
+    function gameLoop() {
+        if (gameOver) return;
 
-        catContainer.style.transform = 'translate(-50%, -50%) scale(0)'; // 缩小消失
-        setTimeout(() => {
-            catImg.src = cats[catIdx];
-            catContainer.style.transform = 'translate(-50%, -50%) scale(1)'; // 放大出现
-            spawnPopText('✨ 新猫咪驾到!', window.innerWidth/2, window.innerHeight/2 + 100);
-        }, 300);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 绘制背景装饰 (简单的草地)
+        ctx.fillStyle = "#90EE90";
+        ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+
+        // 生成物品
+        frameCount++;
+        if (frameCount % spawnRate === 0) {
+            spawnItem();
+            // 随着时间推移加快生成速度，增加难度
+            if (spawnRate > 20) spawnRate--;
+        }
+
+        // 更新和绘制物品
+        for (let i = items.length - 1; i >= 0; i--) {
+            items[i].y += items[i].speed;
+            ctx.font = `${items[i].size}px Arial`;
+            ctx.fillText(items[i].emoji, items[i].x, items[i].y);
+
+            // 碰撞检测 (简单的矩形碰撞)
+            if (
+                items[i].y + items[i].size > cat.y &&
+                items[i].x < cat.x + cat.size &&
+                items[i].x + items[i].size > cat.x
+            ) {
+                if (items[i].type === 'fish') {
+                    score += 10;
+                    // 接到鱼的特效提示 (简单闪烁一下分数颜色)
+                    ctx.fillStyle = "gold";
+                } else {
+                    score -= 20;
+                    ctx.fillStyle = "red";
+                }
+                items.splice(i, 1); // 移除物品
+            }
+            // 移除掉出屏幕的物品
+            else if (items[i].y > canvas.height) {
+                items.splice(i, 1);
+            }
+        }
+
+        // 绘制小猫
+        ctx.font = `${cat.size}px Arial`;
+        ctx.fillText(cat.emoji, cat.x, cat.y + cat.size - 5);
+
+        // 绘制分数
+        ctx.fillStyle = "#333";
+        ctx.font = "24px Arial";
+        ctx.fillText("得分: " + score, 20, 40);
+
+        requestAnimationFrame(gameLoop);
     }
 
-    // --- 玩法3：激光笔模式 (最好玩!) ---
-    function toggleLaser() {
-        isLaserMode = !isLaserMode;
-        document.body.classList.toggle('laser-mode', isLaserMode);
-        laserDot.style.display = isLaserMode ? 'block' : 'none';
-        document.getElementById('laser-dock-btn').classList.toggle('active-laser', isLaserMode);
-        // 激光模式下移动更快
-        catContainer.style.transitionDuration = isLaserMode ? '0.15s' : '0.3s';
-        if (!isLaserMode) resetCatPos();
-    }
+    // 启动游戏
+    gameLoop();
 
-    // --- 玩法4：底部玩具互动 ---
-    function interact(toy, actionType) {
-        if (isBusy || isLaserMode) return;
-        isBusy = true;
-        coins += 5; updateUI();
-
-        // 1. 生成玩具
-        const toyEl = document.createElement('div');
-        toyEl.className = 'toy-pop'; toyEl.innerText = toy;
-        // 在猫咪前方生成
-        const rect = catContainer.getBoundingClientRect();
-        const targetX = rect.left + rect.width/2 + (Math.random()-0.5)*100;
-        const targetY = rect.top + rect.height/2 + 50;
-        toyEl.style.left = targetX + 'px'; toyEl.style.top = targetY + 'px';
-        document.body.appendChild(toyEl);
-
-        // 2. 猫咪移动过去
-        catContainer.style.left = targetX + 'px';
-        catContainer.style.top = targetY - 40 + 'px';
-
-        // 3. 执行动作动画
-        setTimeout(() => {
-            catContainer.classList.add('pouncing'); // 通用扑咬动作
-            let msg = toy === '🐟' ? '😋 吧唧吧唧!' : (toy === '🛁' ? '🫧 好舒服!' : '💖 好玩!');
-            spawnPopText(msg, targetX, targetY - 80);
-            
-            setTimeout(() => {
-                catContainer.classList.remove('pouncing');
-                toyEl.remove();
-                isBusy = false;
-                resetCatPos(); // 回到中心
-            }, 1000);
-        }, 300);
-    }
-    
-    // 普通抚摸
-    function petCat(e) {
-        if (isBusy || isLaserMode) return;
-        coins++; updateUI();
-        spawnPopText('❤️', e.clientX, e.clientY - 50);
-        // Q弹反馈
-        catWrap.style.transform = 'scale(1.1, 0.9)';
-        setTimeout(() => catWrap.style.transform = '', 200);
-    }
-
-    // 辅助函数
-    function chase(x, y) {
-        catContainer.style.left = x + 'px';
-        catContainer.style.top = y + 'px';
-    }
-    function resetCatPos() {
-        catContainer.style.left = '50%';
-        catContainer.style.top = '55%';
-        catWrap.style.transform = '';
-    }
-    function updateUI() {
-        coinLabel.innerText = coins;
-        gachaBtn.classList.toggle('disabled', coins < 10);
-    }
-    function spawnPopText(text, x, y) {
-        const p = document.createElement('div'); p.className = 'pop-text'; p.innerText = text;
-        p.style.left = x + 'px'; p.style.top = y + 'px';
-        document.body.appendChild(p); setTimeout(() => p.remove(), 1000);
-    }
-
-    init();
 </script>
+
 </body>
 </html>
