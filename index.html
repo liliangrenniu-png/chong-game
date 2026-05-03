@@ -3,113 +3,237 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>小青蛙拼音乐园</title>
+  <title>梦幻拼音乐园</title>
   <style>
     * {
       box-sizing: border-box;
     }
 
+    :root {
+      --pink: #ff8fb8;
+      --pink-deep: #ff6392;
+      --blue: #74c9ff;
+      --blue-deep: #4da8ff;
+      --yellow: #ffd86b;
+      --yellow-deep: #ffbc42;
+      --green: #79d98c;
+      --green-deep: #43b96a;
+      --purple: #b998ff;
+      --white: #ffffff;
+      --text: #4b4b4b;
+      --shadow: 0 10px 24px rgba(115, 126, 171, 0.18);
+      --card-border: rgba(255,255,255,0.78);
+    }
+
     body {
       margin: 0;
       font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-      background: linear-gradient(180deg, #fff8d9, #d8f8e7, #d9f1ff);
-      color: #333;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.75), transparent 18%),
+        radial-gradient(circle at 80% 10%, rgba(255,255,255,0.6), transparent 15%),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.5), transparent 16%),
+        linear-gradient(180deg, #dff5ff 0%, #e9ffe8 35%, #fff1f8 68%, #fff9dd 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .floating-bg span {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.65;
+      animation: floatUp 12s linear infinite;
+      font-size: 24px;
+    }
+
+    .floating-bg span:nth-child(1) { left: 6%; top: 85%; animation-delay: 0s; }
+    .floating-bg span:nth-child(2) { left: 18%; top: 95%; animation-delay: 2s; }
+    .floating-bg span:nth-child(3) { left: 30%; top: 90%; animation-delay: 5s; }
+    .floating-bg span:nth-child(4) { left: 50%; top: 96%; animation-delay: 1s; }
+    .floating-bg span:nth-child(5) { left: 65%; top: 88%; animation-delay: 4s; }
+    .floating-bg span:nth-child(6) { left: 82%; top: 97%; animation-delay: 3s; }
+    .floating-bg span:nth-child(7) { left: 92%; top: 92%; animation-delay: 7s; }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      12% {
+        opacity: 0.72;
+      }
+      90% {
+        opacity: 0.72;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.15);
+        opacity: 0;
+      }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
     }
 
     header {
+      position: relative;
+      padding: 28px 18px 24px;
       text-align: center;
-      padding: 28px 15px 24px;
-      background: linear-gradient(135deg, #75d67a, #72c7ff);
-      color: white;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.48), transparent 28%),
+        radial-gradient(circle at top right, rgba(255,255,255,0.38), transparent 26%),
+        linear-gradient(135deg, #8dd8ff, #84f0b2 42%, #ffb8d0 100%);
       border-bottom-left-radius: 36px;
       border-bottom-right-radius: 36px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-      position: relative;
-      overflow: hidden;
+      box-shadow: var(--shadow);
     }
 
     header::before {
-      content: "🐸";
+      content: "🌈";
       position: absolute;
-      left: 20px;
-      top: 20px;
-      font-size: 54px;
-      opacity: 0.9;
+      left: 22px;
+      top: 18px;
+      font-size: 52px;
+      animation: swing 3.2s ease-in-out infinite;
     }
 
     header::after {
-      content: "🎈";
+      content: "⭐";
       position: absolute;
-      right: 25px;
-      top: 20px;
-      font-size: 50px;
-      opacity: 0.9;
+      right: 26px;
+      top: 18px;
+      font-size: 46px;
+      animation: pulse 2.6s ease-in-out infinite;
+    }
+
+    @keyframes swing {
+      0%, 100% { transform: rotate(-6deg) translateY(0); }
+      50% { transform: rotate(6deg) translateY(-3px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    .hero-mascots {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      font-size: 36px;
+      margin-bottom: 10px;
     }
 
     h1 {
       margin: 0;
-      font-size: 40px;
+      font-size: 42px;
+      color: white;
       letter-spacing: 2px;
+      text-shadow: 0 3px 0 rgba(0,0,0,0.08);
     }
 
-    header p {
-      margin: 10px auto 0;
-      max-width: 700px;
+    .subtitle {
+      max-width: 780px;
+      margin: 12px auto 0;
       font-size: 18px;
-      line-height: 1.7;
+      line-height: 1.8;
+      color: white;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.05);
     }
 
-    .score-board {
-      margin-top: 16px;
-      display: inline-flex;
-      gap: 12px;
+    .top-row {
+      max-width: 1100px;
+      margin: 18px auto 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .status-wrap {
+      display: flex;
       flex-wrap: wrap;
+      gap: 12px;
       justify-content: center;
     }
 
-    .score-pill {
-      background: rgba(255,255,255,0.35);
-      padding: 9px 18px;
+    .pill {
+      background: rgba(255,255,255,0.28);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.38);
+      padding: 10px 16px;
       border-radius: 999px;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: bold;
+      backdrop-filter: blur(4px);
+    }
+
+    .voice-box {
+      background: rgba(255,255,255,0.28);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.38);
+      padding: 8px 14px;
+      border-radius: 999px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      backdrop-filter: blur(4px);
+    }
+
+    .voice-box select {
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: #4b4b4b;
+      background: white;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .nav {
+      max-width: 1100px;
+      margin: 18px auto 0;
+      padding: 0 14px 18px;
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 12px;
-      padding: 24px 12px 8px;
     }
 
     .nav button {
       border: none;
-      padding: 14px 20px;
+      cursor: pointer;
       border-radius: 999px;
+      padding: 14px 18px;
       font-size: 17px;
       font-weight: bold;
-      background: white;
-      color: #2f9e44;
-      cursor: pointer;
-      box-shadow: 0 5px 12px rgba(0,0,0,0.13);
-      transition: 0.2s;
+      color: #4a5672;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 8px 16px rgba(98, 109, 155, 0.15);
+      transition: 0.22s;
     }
 
     .nav button:hover {
       transform: translateY(-3px);
-      background: #effff2;
+      background: white;
     }
 
     .nav button.active {
-      background: #34c759;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
       color: white;
     }
 
     main {
-      max-width: 1120px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 20px 16px 38px;
     }
 
     .section {
@@ -132,685 +256,1386 @@
       }
     }
 
-    .intro-card {
-      background: white;
-      border-radius: 28px;
+    .panel {
+      background: rgba(255,255,255,0.86);
+      backdrop-filter: blur(8px);
+      border: 2px solid var(--card-border);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
       padding: 22px;
-      margin-bottom: 20px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      border: 4px solid #d8f8e7;
+      margin-bottom: 18px;
     }
 
-    .intro-card h2 {
+    .panel h2 {
       margin: 0 0 10px;
-      font-size: 28px;
-      color: #2f9e44;
+      font-size: 30px;
+      color: #5c63ff;
     }
 
-    .intro-card p {
-      margin: 8px 0;
-      line-height: 1.8;
+    .panel p {
+      margin: 7px 0;
       font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .teacher-bubble {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: linear-gradient(135deg, #fdf0ff, #eef7ff, #efffec);
+      border: 2px dashed #d5b7ff;
+      border-radius: 24px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+
+    .teacher-bubble .icon {
+      font-size: 46px;
+      flex: 0 0 auto;
+      line-height: 1;
+    }
+
+    .teacher-bubble .text {
+      font-size: 17px;
+      line-height: 1.8;
       color: #555;
     }
 
-    .guide {
+    .btn-row {
       display: flex;
-      gap: 15px;
-      align-items: center;
-      background: #f1fff4;
-      border-radius: 22px;
-      padding: 14px;
-      margin-top: 14px;
-      border: 2px dashed #8ce99a;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
     }
 
-    .guide-face {
-      font-size: 48px;
-      flex: 0 0 auto;
-    }
-
-    .guide-text {
-      font-size: 17px;
-      line-height: 1.7;
-    }
-
-    .big-button {
+    .big-btn {
       border: none;
-      background: #ffb703;
-      color: white;
-      padding: 13px 22px;
-      border-radius: 999px;
-      font-size: 18px;
-      font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 5px 12px rgba(0,0,0,0.13);
-      margin: 8px 6px;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 8px 14px rgba(120, 133, 186, 0.18);
+      transition: 0.22s;
     }
 
-    .big-button:hover {
-      background: #fb9f00;
-      transform: translateY(-2px);
+    .big-btn:hover {
+      transform: translateY(-3px);
     }
 
-    .blue-button {
-      background: #38bdf8;
+    .btn-pink {
+      background: linear-gradient(135deg, var(--pink), var(--pink-deep));
     }
 
-    .blue-button:hover {
-      background: #0ea5e9;
+    .btn-blue {
+      background: linear-gradient(135deg, var(--blue), var(--blue-deep));
     }
 
-    .pink-button {
-      background: #ff7aa2;
+    .btn-green {
+      background: linear-gradient(135deg, var(--green), var(--green-deep));
     }
 
-    .pink-button:hover {
-      background: #ff4f86;
+    .btn-yellow {
+      background: linear-gradient(135deg, var(--yellow), var(--yellow-deep));
+      color: #8a5b00;
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .map-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,251,255,0.95));
+      border: 2px solid rgba(255,255,255,0.88);
+      border-radius: 28px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: 0.22s;
+    }
+
+    .map-card:hover {
+      transform: translateY(-5px) scale(1.01);
+    }
+
+    .map-emoji {
+      font-size: 54px;
+    }
+
+    .map-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #5b63f6;
+      margin: 10px 0 6px;
+    }
+
+    .map-text {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #666;
+    }
+
+    .sub-title {
+      margin: 18px 0 12px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #4d76ff;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
       gap: 16px;
     }
 
-    .frog-card {
-      background: white;
-      border-radius: 25px;
+    .pinyin-card {
+      position: relative;
+      background: linear-gradient(180deg, #ffffff, #f8fcff);
+      border-radius: 28px;
       padding: 18px 12px;
       text-align: center;
+      border: 2px solid rgba(255,255,255,0.92);
+      box-shadow: var(--shadow);
       cursor: pointer;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.13);
-      border: 4px solid transparent;
-      transition: 0.2s;
-      min-height: 178px;
+      transition: 0.22s;
+      overflow: hidden;
+      min-height: 190px;
     }
 
-    .frog-card:hover {
-      transform: scale(1.05);
-      border-color: #8ce99a;
-      background: #f7fff9;
+    .pinyin-card::before {
+      content: "";
+      position: absolute;
+      top: -35px;
+      right: -28px;
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: rgba(116, 201, 255, 0.14);
     }
 
-    .frog-icon {
+    .pinyin-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      background: linear-gradient(180deg, #ffffff, #f6fff7);
+    }
+
+    .pinyin-card .animal {
       font-size: 38px;
+      margin-bottom: 8px;
     }
 
-    .pinyin-big {
+    .pinyin-card .symbol {
       font-size: 34px;
       font-weight: bold;
-      color: #2196f3;
-      margin: 6px 0;
+      color: #ff5b94;
+      margin-bottom: 6px;
     }
 
-    .word {
+    .pinyin-card .reading {
+      font-size: 20px;
+      font-weight: bold;
+      color: #4e7bff;
+      margin-bottom: 6px;
+    }
+
+    .pinyin-card .word {
       font-size: 18px;
       font-weight: bold;
-      color: #444;
+      color: #4f4f4f;
+      margin-bottom: 6px;
     }
 
-    .pinyin-small {
-      color: #777;
-      margin-top: 5px;
-      font-size: 15px;
+    .pinyin-card .word-py {
+      font-size: 14px;
+      color: #7a7a7a;
+      line-height: 1.6;
+      min-height: 38px;
     }
 
-    .tap-tip {
-      margin-top: 10px;
+    .pinyin-card .tap-tip {
       display: inline-block;
-      background: #fff3bf;
-      color: #9c6500;
-      border-radius: 999px;
+      margin-top: 10px;
       padding: 6px 10px;
+      border-radius: 999px;
+      background: #fff6be;
+      color: #936400;
       font-size: 13px;
       font-weight: bold;
     }
 
     .roller-box {
-      background: white;
-      border-radius: 30px;
-      padding: 22px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      overflow: hidden;
-    }
-
-    .roller-title {
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-      color: #ff7aa2;
-      margin-bottom: 12px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(246,250,255,0.95));
+      border-radius: 28px;
+      border: 2px solid rgba(255,255,255,0.86);
+      box-shadow: var(--shadow);
     }
 
     .track-area {
       position: relative;
-      height: 270px;
-      background: linear-gradient(180deg, #e0f7ff, #fff7d6);
-      border-radius: 24px;
-      border: 4px solid #bde0fe;
+      height: 300px;
+      margin: 12px 0 18px;
       overflow: hidden;
-      margin: 14px 0 20px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 85% 18%, rgba(255,255,255,0.95), transparent 9%),
+        linear-gradient(180deg, #dff5ff 0%, #edfbff 35%, #e8ffe6 70%, #fff8d5 100%);
+      border: 3px solid rgba(255,255,255,0.9);
     }
 
-    .sun {
+    .track-area .cloud1,
+    .track-area .cloud2,
+    .track-area .sun {
       position: absolute;
-      right: 25px;
-      top: 20px;
-      font-size: 48px;
+      font-size: 44px;
     }
 
-    .cloud {
+    .track-area .cloud1 { left: 20px; top: 24px; }
+    .track-area .cloud2 { right: 86px; top: 46px; }
+    .track-area .sun { right: 24px; top: 18px; }
+
+    .hill {
       position: absolute;
-      left: 28px;
-      top: 18px;
-      font-size: 42px;
+      bottom: 0;
+      width: 38%;
+      height: 40%;
+      border-radius: 999px 999px 0 0;
+      background: linear-gradient(180deg, #95ec9f, #6fd783);
     }
 
-    .track-line {
+    .hill.left { left: -2%; }
+    .hill.right { right: -4%; height: 36%; }
+
+    .track-svg {
       position: absolute;
-      left: 8%;
-      right: 8%;
-      height: 8px;
-      border-radius: 999px;
-      background: #ffb703;
-      box-shadow: 0 4px 0 #d98200;
-    }
-
-    .track-flat {
-      top: 85px;
-    }
-
-    .track-up {
-      top: 145px;
-      transform: rotate(-13deg);
-    }
-
-    .track-turn {
-      top: 185px;
-      height: 90px;
-      border: 8px solid #ffb703;
-      background: transparent;
-      border-top: none;
-      border-radius: 0 0 100px 100px;
-      box-shadow: none;
-    }
-
-    .track-down {
-      top: 145px;
-      transform: rotate(13deg);
+      left: 4%;
+      top: 10%;
+      width: 92%;
+      height: 72%;
     }
 
     .car {
       position: absolute;
-      left: 42%;
-      top: 55px;
+      left: 10%;
+      top: 160px;
       font-size: 54px;
-      transition: 0.5s;
-      filter: drop-shadow(0 5px 4px rgba(0,0,0,0.25));
+      transition: all 0.55s ease;
+      filter: drop-shadow(0 8px 8px rgba(0,0,0,0.22));
+      z-index: 2;
     }
 
     .tone-display {
       text-align: center;
-      font-size: 76px;
+      font-size: 78px;
       font-weight: bold;
-      color: #ff5d8f;
-      margin: 10px 0 5px;
+      color: #ff5b94;
+      margin-top: 6px;
     }
 
-    .tone-explain {
+    .tone-text {
       text-align: center;
       font-size: 22px;
-      color: #444;
       font-weight: bold;
+      color: #4a68ff;
       min-height: 34px;
+      margin: 10px 0 14px;
     }
 
-    .tone-buttons {
+    .tone-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
-      margin-top: 18px;
     }
 
     .tone-btn {
       border: none;
-      border-radius: 22px;
-      padding: 15px 10px;
+      cursor: pointer;
+      border-radius: 24px;
+      padding: 16px 10px;
       font-size: 18px;
       font-weight: bold;
-      cursor: pointer;
-      background: #e7f5ff;
-      color: #1971c2;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow);
+      background: linear-gradient(135deg, #f6f2ff, #eef7ff);
+      color: #5563ff;
+      transition: 0.22s;
     }
 
     .tone-btn:hover {
-      background: #d0ebff;
-      transform: translateY(-2px);
+      transform: translateY(-4px);
     }
 
     .train-box {
-      background: white;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247,251,255,0.96));
       border-radius: 30px;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: var(--shadow);
       padding: 22px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      text-align: center;
     }
 
     .train-scene {
-      background: linear-gradient(180deg, #d9f1ff, #f6ffd9);
-      border-radius: 25px;
-      padding: 24px 10px;
-      margin: 18px 0;
-      border: 4px solid #bde0fe;
+      position: relative;
+      padding: 20px 18px 24px;
+      border-radius: 28px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255,255,255,0.8), transparent 20%),
+        linear-gradient(180deg, #dff5ff, #eafff1 60%, #fff8d6);
+      border: 3px solid rgba(255,255,255,0.9);
     }
 
-    .train {
-      font-size: 48px;
+    .train-scene::before {
+      content: "☁️";
+      position: absolute;
+      top: 12px;
+      left: 18px;
+      font-size: 36px;
+    }
+
+    .train-scene::after {
+      content: "☀️";
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      font-size: 34px;
+    }
+
+    .train-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #5f61ff;
       margin-bottom: 12px;
+    }
+
+    .train-emoji {
+      text-align: center;
+      font-size: 50px;
+      margin-bottom: 10px;
     }
 
     .train-pieces {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 12px;
       flex-wrap: wrap;
+      gap: 12px;
       margin: 12px 0;
     }
 
     .piece {
+      min-width: 88px;
+      padding: 14px 16px;
+      border-radius: 22px;
+      text-align: center;
+      font-size: 38px;
+      font-weight: bold;
+      box-shadow: var(--shadow);
       background: white;
-      border-radius: 20px;
-      padding: 16px 24px;
-      font-size: 42px;
-      font-weight: bold;
-      color: #228be6;
-      box-shadow: 0 5px 12px rgba(0,0,0,0.12);
-      min-width: 95px;
+      color: #ff5b94;
     }
 
-    .plus, .equal {
-      font-size: 36px;
-      font-weight: bold;
-      color: #ff922b;
+    .piece.result {
+      background: linear-gradient(135deg, #fff4c7, #ffe0ef);
+      color: #ff6a3d;
     }
 
-    .result-piece {
-      background: #fff3bf;
-      color: #f76707;
+    .symbol-op {
+      font-size: 34px;
+      font-weight: bold;
+      color: #5c63ff;
     }
 
     .train-word {
-      font-size: 26px;
+      text-align: center;
+      font-size: 22px;
       font-weight: bold;
-      color: #2f9e44;
-      margin-top: 12px;
+      color: #45a85f;
+      margin: 10px 0 0;
     }
 
     .quiz-box {
-      background: white;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,251,255,0.96));
       border-radius: 30px;
-      padding: 24px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      text-align: center;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: var(--shadow);
+      padding: 20px;
     }
 
     .quiz-scene {
-      background: linear-gradient(180deg, #fff3bf, #ffe8f0);
-      border-radius: 25px;
-      padding: 24px 12px;
-      border: 4px solid #ffd6e7;
+      border-radius: 28px;
+      padding: 22px 14px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.65), transparent 20%),
+        linear-gradient(180deg, #fff1f7, #f2f8ff 55%, #eefeea 100%);
+      border: 3px solid rgba(255,255,255,0.9);
+      text-align: center;
     }
 
-    .quiz-character {
+    .quiz-mascot {
       font-size: 54px;
     }
 
-    .quiz-question {
-      font-size: 26px;
+    .quiz-title {
+      font-size: 24px;
       font-weight: bold;
-      color: #444;
-      margin: 12px 0;
+      color: #5b63ff;
+      margin-top: 8px;
     }
 
     .quiz-big {
-      font-size: 76px;
+      font-size: 84px;
       font-weight: bold;
-      color: #ff5d8f;
-      margin: 10px 0;
+      color: #ff5b94;
+      margin: 12px 0;
+      text-shadow: 0 4px 0 rgba(255,255,255,0.6);
     }
 
     .options {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
       gap: 14px;
       margin-top: 20px;
     }
 
     .option-btn {
       border: none;
-      background: white;
-      border-radius: 22px;
-      padding: 18px 8px;
+      cursor: pointer;
+      border-radius: 24px;
+      padding: 16px 10px;
       font-size: 26px;
       font-weight: bold;
-      cursor: pointer;
-      color: #1971c2;
-      box-shadow: 0 5px 12px rgba(0,0,0,0.12);
-      border: 3px solid #d0ebff;
+      box-shadow: var(--shadow);
+      background: white;
+      color: #5570ff;
+      transition: 0.22s;
     }
 
     .option-btn:hover {
-      background: #e7f5ff;
-      transform: scale(1.04);
+      transform: translateY(-4px) scale(1.02);
+      background: #fbfcff;
     }
 
     .message {
-      margin-top: 18px;
-      min-height: 38px;
+      min-height: 42px;
+      margin-top: 16px;
       font-size: 24px;
       font-weight: bold;
     }
 
     .correct {
-      color: #2f9e44;
+      color: #34a853;
     }
 
     .wrong {
-      color: #e03131;
+      color: #ff4f81;
     }
 
-    .home-card {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .map-card {
-      background: white;
-      border-radius: 28px;
-      padding: 20px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      border: 4px solid #e9fac8;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .map-card:hover {
-      transform: translateY(-5px);
-      background: #fbfff0;
-    }
-
-    .map-emoji {
-      font-size: 58px;
-    }
-
-    .map-title {
-      font-size: 23px;
-      font-weight: bold;
-      color: #2f9e44;
-      margin: 10px 0;
-    }
-
-    .map-text {
+    .hint-bar {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #fffdf0, #f8f3ff);
+      border: 2px dashed #ffd86b;
       font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .voice-note {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.72);
+      font-size: 14px;
+      line-height: 1.8;
       color: #666;
-      line-height: 1.7;
+      border: 1px dashed rgba(124, 136, 205, 0.28);
+    }
+
+    .celebrate {
+      position: fixed;
+      z-index: 999;
+      pointer-events: none;
+      font-size: 24px;
+      animation: celebrateFly 1.2s ease-out forwards;
+    }
+
+    @keyframes celebrateFly {
+      0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-90px) scale(1.3);
+        opacity: 0;
+      }
     }
 
     footer {
       text-align: center;
-      padding: 30px 10px;
-      color: #666;
+      padding: 14px 10px 34px;
+      color: #6a6a6a;
       font-size: 15px;
     }
 
-    @media (max-width: 650px) {
+    @media (max-width: 760px) {
       h1 {
-        font-size: 32px;
+        font-size: 34px;
       }
 
-      header::before,
-      header::after {
-        font-size: 36px;
+      .subtitle {
+        font-size: 16px;
+      }
+
+      .top-row {
+        grid-template-columns: 1fr;
       }
 
       .tone-display,
       .quiz-big {
-        font-size: 60px;
+        font-size: 64px;
       }
 
       .piece {
-        font-size: 34px;
-        padding: 13px 18px;
+        font-size: 32px;
+        min-width: 76px;
       }
 
       .track-area {
-        height: 250px;
+        height: 280px;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>小青蛙拼音乐园</h1>
-    <p>跟着小青蛙老师，一起点读、坐过山车、开小火车、闯关拿星星！</p>
-    <div class="score-board">
-      <div class="score-pill">我的星星：<span id="starCount">0</span> ⭐</div>
-      <div class="score-pill">小勇士等级：<span id="levelName">刚出发</span></div>
-    </div>
-  </header>
-
-  <div class="nav">
-    <button class="active" onclick="showSection('home', this)">乐园地图</button>
-    <button onclick="showSection('frog', this)">小青蛙点读</button>
-    <button onclick="showSection('roller', this)">声调过山车</button>
-    <button onclick="showSection('train', this)">拼读小火车</button>
-    <button onclick="showSection('quiz', this)">拼音闯关</button>
+  <div class="floating-bg">
+    <span>⭐</span>
+    <span>✨</span>
+    <span>🫧</span>
+    <span>🌸</span>
+    <span>☁️</span>
+    <span>💖</span>
+    <span>🌟</span>
   </div>
 
-  <main>
-    <section id="home" class="section active">
-      <div class="intro-card">
-        <h2>欢迎来到拼音乐园！</h2>
-        <p>小朋友你好呀！今天我们不只是“看拼音”，我们要去冒险。</p>
-        <p>你可以点小青蛙，让它读给你听；也可以坐上声调过山车，看看一声、二声、三声、四声怎么跑。</p>
-        <button class="big-button" onclick="speakGuide('home')">听小青蛙老师介绍</button>
+  <div class="page">
+    <header>
+      <div class="hero-mascots">🐸 🎢 🚂 🏰</div>
+      <h1>梦幻拼音乐园</h1>
+      <div class="subtitle">
+        跟着小青蛙老师，一起点一点、听一听、读一读、玩一玩。<br />
+        在游戏里学拼音，让幼儿园小朋友也能看得懂、玩得懂、学得会。
+      </div>
 
-        <div class="guide">
-          <div class="guide-face">🐸</div>
-          <div class="guide-text">
-            小青蛙老师说：不要着急哦。每天玩一会儿，点一点，听一听，跟着读一读，拼音宝宝就会变成你的好朋友。
-          </div>
+      <div class="top-row">
+        <div class="status-wrap">
+          <div class="pill">我的星星：<span id="starCount">0</span> ⭐</div>
+          <div class="pill">我的称号：<span id="levelName">刚出发</span></div>
+        </div>
+
+        <div class="voice-box">
+          <span>🎤 声音模式</span>
+          <select id="voiceMode">
+            <option value="kid">自动童声推荐</option>
+            <option value="soft">温柔老师声</option>
+            <option value="default">默认中文声</option>
+          </select>
         </div>
       </div>
 
-      <div class="home-card">
-        <div class="map-card" onclick="goTo('frog')">
-          <div class="map-emoji">🐸</div>
-          <div class="map-title">小青蛙点读池</div>
-          <div class="map-text">点一下荷叶，小青蛙就会读词语。</div>
-        </div>
-
-        <div class="map-card" onclick="goTo('roller')">
-          <div class="map-emoji">🎢</div>
-          <div class="map-title">声调过山车</div>
-          <div class="map-text">一声平，二声扬，三声拐弯，四声降。</div>
-        </div>
-
-        <div class="map-card" onclick="goTo('train')">
-          <div class="map-emoji">🚂</div>
-          <div class="map-title">拼读小火车</div>
-          <div class="map-text">声母加韵母，坐上火车拼一拼。</div>
-        </div>
-
-        <div class="map-card" onclick="goTo('quiz')">
-          <div class="map-emoji">🏰</div>
-          <div class="map-title">拼音闯关城堡</div>
-          <div class="map-text">答对题目，收集星星，变成拼音小勇士。</div>
-        </div>
+      <div class="voice-note">
+        小提示：不同电脑或浏览器可用的声音不一样。此版本会自动优先选择更温柔、偏儿童感的中文语音；
+        如果设备里没有童声，就会自动用中文女声或默认中文语音。
       </div>
-    </section>
+    </header>
 
-    <section id="frog" class="section">
-      <div class="intro-card">
-        <h2>小青蛙点读池</h2>
-        <p>玩法：点一下小青蛙荷叶，它会读一个词语。小朋友可以跟着读一遍。</p>
-        <p>小秘密：先听，再跟读，记得更快哦。</p>
-        <button class="big-button" onclick="speakGuide('frog')">听玩法解说</button>
-      </div>
+    <div class="nav">
+      <button class="active" onclick="showSection('home', this)">乐园地图</button>
+      <button onclick="showSection('frog', this)">点读池塘</button>
+      <button onclick="showSection('roller', this)">声调过山车</button>
+      <button onclick="showSection('train', this)">拼读小火车</button>
+      <button onclick="showSection('quiz', this)">闯关城堡</button>
+    </div>
 
-      <div class="grid" id="frogGrid"></div>
-    </section>
+    <main>
+      <section id="home" class="section active">
+        <div class="panel">
+          <h2>欢迎来到拼音乐园</h2>
+          <p>这里不是枯燥的拼音表，而是一个可以玩的拼音小世界。</p>
+          <p>如果我是老师，我会让小朋友先觉得“好玩”，再慢慢学会；如果我是小朋友，我会喜欢会说话、会鼓励、会奖励的游戏。</p>
 
-    <section id="roller" class="section">
-      <div class="intro-card">
-        <h2>声调过山车冒险</h2>
-        <p>声调就像小车走路的样子。</p>
-        <p>一声：平平走。二声：往上爬。三声：先下去再上来。四声：快快冲下坡。</p>
-        <button class="big-button" onclick="speakGuide('roller')">听声调口诀</button>
-      </div>
-
-      <div class="roller-box">
-        <div class="roller-title">请选择一辆声调小车</div>
-
-        <div class="track-area">
-          <div class="cloud">☁️</div>
-          <div class="sun">☀️</div>
-          <div class="track-line track-flat"></div>
-          <div class="track-line track-up"></div>
-          <div class="track-line track-turn"></div>
-          <div class="track-line track-down"></div>
-          <div class="car" id="toneCar">🚗</div>
-        </div>
-
-        <div class="tone-display" id="toneDisplay">ā</div>
-        <div class="tone-explain" id="toneExplain">一声：小车平平走。</div>
-
-        <div class="tone-buttons">
-          <button class="tone-btn" onclick="chooseTone(0)">ā 一声 平平走</button>
-          <button class="tone-btn" onclick="chooseTone(1)">á 二声 往上爬</button>
-          <button class="tone-btn" onclick="chooseTone(2)">ǎ 三声 拐个弯</button>
-          <button class="tone-btn" onclick="chooseTone(3)">à 四声 冲下坡</button>
-        </div>
-
-        <div style="text-align:center; margin-top:14px;">
-          <button class="big-button blue-button" onclick="speakTone()">听一听</button>
-          <button class="big-button pink-button" onclick="randomTone()">随机冒险</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="train" class="section">
-      <div class="intro-card">
-        <h2>拼读小火车</h2>
-        <p>声母宝宝坐前面，韵母宝宝坐后面，合在一起就能拼出一个音。</p>
-        <p>比如：b 加 a，变成 ba。</p>
-        <button class="big-button" onclick="speakGuide('train')">听拼读解说</button>
-      </div>
-
-      <div class="train-box">
-        <div class="train-scene">
-          <div class="train">🚂 轰隆隆，拼读小火车来啦！</div>
-
-          <div class="train-pieces">
-            <div class="piece" id="shengmuPiece">b</div>
-            <div class="plus">+</div>
-            <div class="piece" id="yunmuPiece">a</div>
-            <div class="equal">=</div>
-            <div class="piece result-piece" id="resultPiece">ba</div>
+          <div class="teacher-bubble">
+            <div class="icon">🐸</div>
+            <div class="text">
+              小青蛙老师说：别着急，我们先玩起来！点击下面的乐园地图，你可以去池塘点读、去坐声调过山车、去开拼读小火车，还可以去城堡里闯关拿星星。
+            </div>
           </div>
 
-          <div class="train-word" id="trainWord">例子：爸爸 bā ba</div>
+          <div class="btn-row">
+            <button class="big-btn btn-pink" onclick="speakGuide('home')">▶ 听老师介绍</button>
+            <button class="big-btn btn-blue" onclick="resetStars()">↺ 星星清零</button>
+          </div>
         </div>
 
-        <button class="big-button blue-button" onclick="speakTrain()">读一读</button>
-        <button class="big-button pink-button" onclick="nextTrain()">下一列小火车</button>
-      </div>
-    </section>
+        <div class="map-grid">
+          <div class="map-card" onclick="goTo('frog')">
+            <div class="map-emoji">🐸</div>
+            <div class="map-title">点读池塘</div>
+            <div class="map-text">点小卡片，小青蛙老师会读给你听。</div>
+          </div>
 
-    <section id="quiz" class="section">
-      <div class="intro-card">
-        <h2>拼音闯关城堡</h2>
-        <p>小朋友，请帮汉字宝宝找到正确的拼音。答对就能得到星星！</p>
-        <button class="big-button" onclick="speakGuide('quiz')">听闯关玩法</button>
-      </div>
+          <div class="map-card" onclick="goTo('roller')">
+            <div class="map-emoji">🎢</div>
+            <div class="map-title">声调过山车</div>
+            <div class="map-text">一声平，二声扬，三声拐弯，四声降。</div>
+          </div>
 
-      <div class="quiz-box">
-        <div class="quiz-scene">
-          <div class="quiz-character">🧸</div>
-          <div class="quiz-question" id="quizQuestion">请帮这个汉字宝宝找到拼音：</div>
-          <div class="quiz-big" id="quizBig">妈</div>
-          <button class="big-button blue-button" onclick="speakQuizWord()">听汉字</button>
-          <div class="options" id="quizOptions"></div>
-          <div class="message" id="quizMessage"></div>
-          <button class="big-button pink-button" onclick="newQuestion()">换一题</button>
+          <div class="map-card" onclick="goTo('train')">
+            <div class="map-emoji">🚂</div>
+            <div class="map-title">拼读小火车</div>
+            <div class="map-text">声母宝宝和韵母宝宝拼起来，读出新声音。</div>
+          </div>
+
+          <div class="map-card" onclick="goTo('quiz')">
+            <div class="map-emoji">🏰</div>
+            <div class="map-title">闯关城堡</div>
+            <div class="map-text">帮汉字宝宝找到正确拼音，答对就有星星。</div>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
 
-  <footer>
-    🐸 🎢 🚂 ⭐ 每天玩一点，拼音进步一点点。
-  </footer>
+      <section id="frog" class="section">
+        <div class="panel">
+          <h2>点读池塘</h2>
+          <p>这里有声母宝宝、韵母宝宝和整体认读小伙伴。点一下卡片，就能听到老师读。</p>
+          <p>这一部分我特意做成了“听 + 看 + 跟读”的方式，更适合小朋友启蒙。</p>
+
+          <div class="teacher-bubble">
+            <div class="icon">🦄</div>
+            <div class="text">
+              老师小提示：先点一下听读音，再跟着读一遍。不要一次学太多，今天学几个，明天再玩几个，就很棒啦！
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="big-btn btn-pink" onclick="speakGuide('frog')">▶ 听玩法解说</button>
+          </div>
+        </div>
+
+        <div class="sub-title">🐸 声母池塘</div>
+        <div class="grid" id="initialGrid"></div>
+
+        <div class="sub-title">🌼 韵母花园</div>
+        <div class="grid" id="finalGrid"></div>
+
+        <div class="sub-title">🏝 整体认读小岛</div>
+        <div class="grid" id="wholeGrid"></div>
+      </section>
+
+      <section id="roller" class="section">
+        <div class="panel">
+          <h2>声调过山车</h2>
+          <p>声调就像小车走路的样子。小朋友最容易记的办法，就是把声调变成小车冒险。</p>
+          <p>一声平平走，二声往上爬，三声先下再上，四声快速冲下坡。</p>
+
+          <div class="teacher-bubble">
+            <div class="icon">🎈</div>
+            <div class="text">
+              如果我是老师，我不会让孩子只背规则，而是让他看到“样子”。这样更容易记住，也更愿意继续玩。
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="big-btn btn-pink" onclick="speakGuide('roller')">▶ 听声调口诀</button>
+          </div>
+        </div>
+
+        <div class="roller-box">
+          <div class="track-area">
+            <div class="cloud1">☁️</div>
+            <div class="cloud2">☁️</div>
+            <div class="sun">☀️</div>
+
+            <svg class="track-svg" viewBox="0 0 1000 400" preserveAspectRatio="none">
+              <path d="M50 235 L260 235" stroke="#ffbd3c" stroke-width="16" fill="none" stroke-linecap="round"/>
+              <path d="M310 270 L470 140" stroke="#ffbd3c" stroke-width="16" fill="none" stroke-linecap="round"/>
+              <path d="M540 240 Q620 330 700 240 T860 240" stroke="#ffbd3c" stroke-width="16" fill="none" stroke-linecap="round"/>
+              <path d="M840 145 L950 250" stroke="#ffbd3c" stroke-width="16" fill="none" stroke-linecap="round"/>
+            </svg>
+
+            <div class="car" id="toneCar">🎢</div>
+            <div class="hill left"></div>
+            <div class="hill right"></div>
+          </div>
+
+          <div class="tone-display" id="toneDisplay">ā</div>
+          <div class="tone-text" id="toneText">一声：平平走</div>
+
+          <div class="tone-grid">
+            <button class="tone-btn" onclick="chooseTone(0)">ā 一声 平平走</button>
+            <button class="tone-btn" onclick="chooseTone(1)">á 二声 往上爬</button>
+            <button class="tone-btn" onclick="chooseTone(2)">ǎ 三声 拐个弯</button>
+            <button class="tone-btn" onclick="chooseTone(3)">à 四声 冲下坡</button>
+          </div>
+
+          <div class="btn-row" style="justify-content:center;">
+            <button class="big-btn btn-blue" onclick="speakTone()">▶ 听一听</button>
+            <button class="big-btn btn-green" onclick="randomTone()">🎲 随机冒险</button>
+          </div>
+
+          <div class="hint-bar" id="toneHint">
+            小青蛙老师：一声最平，像小车在平路上慢慢开。
+          </div>
+        </div>
+      </section>
+
+      <section id="train" class="section">
+        <div class="panel">
+          <h2>拼读小火车</h2>
+          <p>声母坐前面，韵母坐后面，拼起来，就变成一个新的拼音宝宝。</p>
+          <p>我把它做成火车，就是想让小朋友觉得：拼读不是考试，是一次“出发”。</p>
+
+          <div class="teacher-bubble">
+            <div class="icon">🚂</div>
+            <div class="text">
+              小朋友看到火车，就会更愿意点。每点一次，就是一次拼读练习。会听、会看、会跟读，慢慢就会了。
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="big-btn btn-pink" onclick="speakGuide('train')">▶ 听拼读解说</button>
+          </div>
+        </div>
+
+        <div class="train-box">
+          <div class="train-scene">
+            <div class="train-title">轰隆隆，拼读小火车出发啦！</div>
+            <div class="train-emoji">🚂 🌈</div>
+
+            <div class="train-pieces">
+              <div class="piece" id="trainLeft">b</div>
+              <div class="symbol-op">+</div>
+              <div class="piece" id="trainRight">a</div>
+              <div class="symbol-op">=</div>
+              <div class="piece result" id="trainResult">ba</div>
+            </div>
+
+            <div class="train-word" id="trainWord">例子：爸爸 bā ba</div>
+          </div>
+
+          <div class="btn-row" style="justify-content:center; margin-top: 16px;">
+            <button class="big-btn btn-blue" onclick="speakTrain()">▶ 跟老师读</button>
+            <button class="big-btn btn-green" onclick="nextTrain()">➡ 下一列小火车</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="quiz" class="section">
+        <div class="panel">
+          <h2>闯关城堡</h2>
+          <p>现在到了真正的小游戏环节！请帮汉字宝宝找到正确的拼音。</p>
+          <p>答对一题，就奖励一颗星星。小朋友会在“完成任务”的感觉里更愿意继续学。</p>
+
+          <div class="teacher-bubble">
+            <div class="icon">🏰</div>
+            <div class="text">
+              我会让闯关题目简单、清楚、有奖励。这样孩子不会害怕，而是愿意一题一题玩下去。
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="big-btn btn-pink" onclick="speakGuide('quiz')">▶ 听闯关玩法</button>
+          </div>
+        </div>
+
+        <div class="quiz-box">
+          <div class="quiz-scene">
+            <div class="quiz-mascot">🧸 ✨</div>
+            <div class="quiz-title">请帮这个汉字宝宝找到正确拼音</div>
+            <div class="quiz-big" id="quizWord">妈</div>
+
+            <div class="btn-row" style="justify-content:center; margin-top: 6px;">
+              <button class="big-btn btn-blue" onclick="speakQuizWord()">🔊 听这个字</button>
+            </div>
+
+            <div class="options" id="quizOptions"></div>
+            <div class="message" id="quizMessage"></div>
+
+            <div class="btn-row" style="justify-content:center;">
+              <button class="big-btn btn-green" onclick="newQuestion()">🎲 换一题</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      梦幻拼音乐园 · 每天玩一点，拼音进步一点点 🌈⭐
+    </footer>
+  </div>
 
   <script>
-    let stars = Number(localStorage.getItem("frogPinyinStars")) || 0;
-    let currentTone = 0;
+    /* -------------------------
+       数据区
+    ------------------------- */
+
+    const initialData = [
+      {
+        animal: "🐸",
+        symbol: "b",
+        reading: "玻",
+        word: "爸爸",
+        wordPy: "bà ba",
+        speakText: "声母 b，读 玻。爸爸的 b。跟老师读：玻。再读：爸爸。"
+      },
+      {
+        animal: "🐰",
+        symbol: "p",
+        reading: "坡",
+        word: "苹果",
+        wordPy: "píng guǒ",
+        speakText: "声母 p，读 坡。苹果的 p。跟老师读：坡。再读：苹果。"
+      },
+      {
+        animal: "🐱",
+        symbol: "m",
+        reading: "摸",
+        word: "妈妈",
+        wordPy: "mā ma",
+        speakText: "声母 m，读 摸。妈妈的 m。跟老师读：摸。再读：妈妈。"
+      },
+      {
+        animal: "🦊",
+        symbol: "f",
+        reading: "佛",
+        word: "风车",
+        wordPy: "fēng chē",
+        speakText: "声母 f，读 佛。风车的 f。跟老师读：佛。再读：风车。"
+      },
+      {
+        animal: "🐶",
+        symbol: "d",
+        reading: "得",
+        word: "大象",
+        wordPy: "dà xiàng",
+        speakText: "声母 d，读 得。大象的 d。跟老师读：得。再读：大象。"
+      },
+      {
+        animal: "🐯",
+        symbol: "t",
+        reading: "特",
+        word: "兔子",
+        wordPy: "tù zi",
+        speakText: "声母 t，读 特。兔子的 t。跟老师读：特。再读：兔子。"
+      },
+      {
+        animal: "🦁",
+        symbol: "n",
+        reading: "讷",
+        word: "奶奶",
+        wordPy: "nǎi nai",
+        speakText: "声母 n，读 讷。奶奶的 n。跟老师读：讷。再读：奶奶。"
+      },
+      {
+        animal: "🐼",
+        symbol: "l",
+        reading: "勒",
+        word: "萝卜",
+        wordPy: "luó bo",
+        speakText: "声母 l，读 勒。萝卜的 l。跟老师读：勒。再读：萝卜。"
+      },
+      {
+        animal: "🐧",
+        symbol: "g",
+        reading: "哥",
+        word: "哥哥",
+        wordPy: "gē ge",
+        speakText: "声母 g，读 哥。哥哥的 g。跟老师读：哥。再读：哥哥。"
+      },
+      {
+        animal: "🐨",
+        symbol: "k",
+        reading: "科",
+        word: "开心",
+        wordPy: "kāi xīn",
+        speakText: "声母 k，读 科。开心的 k。跟老师读：科。再读：开心。"
+      },
+      {
+        animal: "🦄",
+        symbol: "h",
+        reading: "喝",
+        word: "花朵",
+        wordPy: "huā duǒ",
+        speakText: "声母 h，读 喝。花朵的 h。跟老师读：喝。再读：花朵。"
+      },
+      {
+        animal: "🐥",
+        symbol: "j",
+        reading: "鸡",
+        word: "积木",
+        wordPy: "jī mù",
+        speakText: "声母 j，读 鸡。积木的 j。跟老师读：鸡。再读：积木。"
+      },
+      {
+        animal: "🐠",
+        symbol: "q",
+        reading: "七",
+        word: "气球",
+        wordPy: "qì qiú",
+        speakText: "声母 q，读 七。气球的 q。跟老师读：七。再读：气球。"
+      },
+      {
+        animal: "🦋",
+        symbol: "x",
+        reading: "西",
+        word: "西瓜",
+        wordPy: "xī guā",
+        speakText: "声母 x，读 西。西瓜的 x。跟老师读：西。再读：西瓜。"
+      }
+    ];
+
+    const finalData = [
+      {
+        animal: "🌼",
+        symbol: "a",
+        reading: "啊",
+        word: "阿姨",
+        wordPy: "ā yí",
+        speakText: "韵母 a，读 啊。张大嘴巴，啊啊啊。阿姨的 a。"
+      },
+      {
+        animal: "🌙",
+        symbol: "o",
+        reading: "喔",
+        word: "喔喔",
+        wordPy: "ō ō",
+        speakText: "韵母 o，读 喔。嘴巴圆圆，喔喔喔。"
+      },
+      {
+        animal: "🦢",
+        symbol: "e",
+        reading: "鹅",
+        word: "白鹅",
+        wordPy: "bái é",
+        speakText: "韵母 e，读 鹅。白鹅的 e。跟老师读：鹅。"
+      },
+      {
+        animal: "👕",
+        symbol: "i",
+        reading: "衣",
+        word: "衣服",
+        wordPy: "yī fu",
+        speakText: "韵母 i，读 衣。衣服的 i。跟老师读：衣。"
+      },
+      {
+        animal: "🦉",
+        symbol: "u",
+        reading: "乌",
+        word: "乌鸦",
+        wordPy: "wū yā",
+        speakText: "韵母 u，读 乌。乌鸦的 u。跟老师读：乌。"
+      },
+      {
+        animal: "🐟",
+        symbol: "ü",
+        reading: "迂",
+        word: "小鱼",
+        wordPy: "xiǎo yú",
+        speakText: "韵母 ü，读 迂。小鱼的鱼里面有 ü。跟老师读：迂。"
+      },
+      {
+        animal: "💖",
+        symbol: "ai",
+        reading: "哎",
+        word: "爱心",
+        wordPy: "ài xīn",
+        speakText: "复韵母 ai，读 哎。爱心的 ai。跟老师读：哎。"
+      },
+      {
+        animal: "🍵",
+        symbol: "ei",
+        reading: "欸",
+        word: "杯子",
+        wordPy: "bēi zi",
+        speakText: "复韵母 ei，读 欸。杯子的 ei。跟老师读：欸。"
+      },
+      {
+        animal: "🐱",
+        symbol: "ao",
+        reading: "凹",
+        word: "小猫",
+        wordPy: "xiǎo māo",
+        speakText: "复韵母 ao，读 凹。小猫的 ao。跟老师读：凹。"
+      },
+      {
+        animal: "🕊️",
+        symbol: "ou",
+        reading: "欧",
+        word: "海鸥",
+        wordPy: "hǎi ōu",
+        speakText: "复韵母 ou，读 欧。海鸥的 ou。跟老师读：欧。"
+      },
+      {
+        animal: "🔒",
+        symbol: "an",
+        reading: "安",
+        word: "安全",
+        wordPy: "ān quán",
+        speakText: "前鼻韵母 an，读 安。安全的 an。跟老师读：安。"
+      },
+      {
+        animal: "🌞",
+        symbol: "ang",
+        reading: "昂",
+        word: "太阳",
+        wordPy: "tài yáng",
+        speakText: "后鼻韵母 ang，读 昂。太阳里的 ang。跟老师读：昂。"
+      }
+    ];
+
+    const wholeData = [
+      {
+        animal: "🏝️",
+        symbol: "zhi",
+        reading: "知",
+        word: "知识",
+        wordPy: "zhī shi",
+        speakText: "整体认读音节 zhi，读 知。知识的 zhi。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "chi",
+        reading: "吃",
+        word: "吃饭",
+        wordPy: "chī fàn",
+        speakText: "整体认读音节 chi，读 吃。吃饭的 chi。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "shi",
+        reading: "诗",
+        word: "狮子",
+        wordPy: "shī zi",
+        speakText: "整体认读音节 shi，读 诗。狮子的 shi。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "ri",
+        reading: "日",
+        word: "日出",
+        wordPy: "rì chū",
+        speakText: "整体认读音节 ri，读 日。日出的 ri。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "zi",
+        reading: "资",
+        word: "自己",
+        wordPy: "zì jǐ",
+        speakText: "整体认读音节 zi，读 资。自己的 zi。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "ci",
+        reading: "雌",
+        word: "词语",
+        wordPy: "cí yǔ",
+        speakText: "整体认读音节 ci，读 雌。词语的 ci。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "si",
+        reading: "思",
+        word: "丝瓜",
+        wordPy: "sī guā",
+        speakText: "整体认读音节 si，读 思。丝瓜的 si。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "yi",
+        reading: "衣",
+        word: "衣服",
+        wordPy: "yī fu",
+        speakText: "整体认读音节 yi，读 衣。衣服的 yi。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "wu",
+        reading: "乌",
+        word: "乌鸦",
+        wordPy: "wū yā",
+        speakText: "整体认读音节 wu，读 乌。乌鸦的 wu。"
+      },
+      {
+        animal: "🏝️",
+        symbol: "yu",
+        reading: "迂",
+        word: "小鱼",
+        wordPy: "xiǎo yú",
+        speakText: "整体认读音节 yu，读 迂。小鱼的 yu。"
+      }
+    ];
+
+    const toneData = [
+      {
+        show: "ā",
+        text: "一声：平平走",
+        hint: "小青蛙老师：一声最平，像小车在平路上慢慢开。",
+        speakText: "一声，啊。平平走。跟老师读：ā。",
+        x: "9%",
+        y: "160px"
+      },
+      {
+        show: "á",
+        text: "二声：往上爬",
+        hint: "小青蛙老师：二声向上扬，像小车爬山坡。",
+        speakText: "二声，啊。往上爬。跟老师读：á。",
+        x: "36%",
+        y: "110px"
+      },
+      {
+        show: "ǎ",
+        text: "三声：拐个弯",
+        hint: "小青蛙老师：三声先下去，再上来，像小车拐了一个弯。",
+        speakText: "三声，啊。拐个弯。跟老师读：ǎ。",
+        x: "64%",
+        y: "190px"
+      },
+      {
+        show: "à",
+        text: "四声：冲下坡",
+        hint: "小青蛙老师：四声往下落，像小车从高处冲下来。",
+        speakText: "四声，啊。冲下坡。跟老师读：à。",
+        x: "87%",
+        y: "150px"
+      }
+    ];
+
+    const trainData = [
+      {
+        left: "b",
+        right: "a",
+        result: "ba",
+        word: "爸爸 bā ba",
+        speakText: "拼读开始。玻和啊，拼起来，ba。像爸爸的 ba。跟老师读：ba。"
+      },
+      {
+        left: "m",
+        right: "a",
+        result: "ma",
+        word: "妈妈 mā ma",
+        speakText: "拼读开始。摸和啊，拼起来，ma。像妈妈的 ma。跟老师读：ma。"
+      },
+      {
+        left: "h",
+        right: "ua",
+        result: "hua",
+        word: "花朵 huā duǒ",
+        speakText: "拼读开始。喝和 ua，拼起来，hua。像花朵的 hua。"
+      },
+      {
+        left: "x",
+        right: "i",
+        result: "xi",
+        word: "西瓜 xī guā",
+        speakText: "拼读开始。西和衣，拼起来，xi。像西瓜的 xi。"
+      },
+      {
+        left: "g",
+        right: "ou",
+        result: "gou",
+        word: "小狗 xiǎo gǒu",
+        speakText: "拼读开始。哥和欧，拼起来，gou。像小狗的 gou。"
+      },
+      {
+        left: "m",
+        right: "ao",
+        result: "mao",
+        word: "小猫 xiǎo māo",
+        speakText: "拼读开始。摸和凹，拼起来，mao。像小猫的 mao。"
+      },
+      {
+        left: "q",
+        right: "iu",
+        result: "qiu",
+        word: "气球 qì qiú",
+        speakText: "拼读开始。七和 iu，拼起来，qiu。像气球的 qiu。"
+      },
+      {
+        left: "l",
+        right: "u",
+        result: "lu",
+        word: "小鹿 xiǎo lù",
+        speakText: "拼读开始。勒和乌，拼起来，lu。像小鹿的 lu。"
+      }
+    ];
+
+    const quizData = [
+      { word: "妈", answer: "mā", options: ["mā", "má", "mǎ", "mà"], speakText: "请听这个字。妈。" },
+      { word: "马", answer: "mǎ", options: ["mā", "má", "mǎ", "mà"], speakText: "请听这个字。马。" },
+      { word: "花", answer: "huā", options: ["huā", "huá", "huǎ", "huà"], speakText: "请听这个字。花。" },
+      { word: "鱼", answer: "yú", options: ["yū", "yú", "yǔ", "yù"], speakText: "请听这个字。鱼。" },
+      { word: "狗", answer: "gǒu", options: ["gōu", "góu", "gǒu", "gòu"], speakText: "请听这个字。狗。" },
+      { word: "猫", answer: "māo", options: ["māo", "máo", "mǎo", "mào"], speakText: "请听这个字。猫。" },
+      { word: "月", answer: "yuè", options: ["yuē", "yué", "yuě", "yuè"], speakText: "请听这个字。月。" },
+      { word: "鸟", answer: "niǎo", options: ["niāo", "niáo", "niǎo", "niào"], speakText: "请听这个字。鸟。" },
+      { word: "水", answer: "shuǐ", options: ["shuī", "shuí", "shuǐ", "shuì"], speakText: "请听这个字。水。" },
+      { word: "书", answer: "shū", options: ["shū", "shú", "shǔ", "shù"], speakText: "请听这个字。书。" }
+    ];
+
+    /* -------------------------
+       状态区
+    ------------------------- */
+
+    let stars = Number(localStorage.getItem("dreamPinyinStars")) || 0;
+    let currentToneIndex = 0;
     let currentTrainIndex = 0;
     let currentQuestion = null;
+    let speechVoices = [];
 
-    const starCount = document.getElementById("starCount");
-    const levelName = document.getElementById("levelName");
+    const starCountEl = document.getElementById("starCount");
+    const levelNameEl = document.getElementById("levelName");
+    const voiceModeEl = document.getElementById("voiceMode");
 
-    function updateScore() {
-      starCount.textContent = stars;
+    /* -------------------------
+       语音区
+    ------------------------- */
 
-      if (stars < 10) {
-        levelName.textContent = "刚出发";
-      } else if (stars < 25) {
-        levelName.textContent = "小青蛙朋友";
-      } else if (stars < 50) {
-        levelName.textContent = "拼音小勇士";
-      } else {
-        levelName.textContent = "拼音小老师";
+    function loadVoices() {
+      speechVoices = window.speechSynthesis.getVoices();
+    }
+
+    loadVoices();
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function pickVoice() {
+      const mode = voiceModeEl.value;
+      const voices = speechVoices.length ? speechVoices : window.speechSynthesis.getVoices();
+      if (!voices.length) return null;
+
+      const chineseVoices = voices.filter(v =>
+        /zh/i.test(v.lang) ||
+        /Chinese|中文|晓|云|xiao|xiaoyi|xiaoxiao|xiaomo|xiaoxuan|huihui/i.test(v.name)
+      );
+
+      if (!chineseVoices.length) return voices[0] || null;
+
+      const findByNames = (nameList) => {
+        for (const keyword of nameList) {
+          const found = chineseVoices.find(v => v.name.toLowerCase().includes(keyword.toLowerCase()));
+          if (found) return found;
+        }
+        return null;
+      };
+
+      if (mode === "kid") {
+        return findByNames([
+          "xiaoxiao", "晓晓", "xiaoyi", "晓伊", "xiaomo", "小墨", "xiaoxuan", "小璇", "huihui", "child", "kid"
+        ]) || chineseVoices[0];
       }
+
+      if (mode === "soft") {
+        return findByNames([
+          "xiaoxiao", "晓晓", "xiaoyi", "晓伊", "female", "woman"
+        ]) || chineseVoices[0];
+      }
+
+      return chineseVoices[0];
     }
 
-    function addStar() {
-      stars++;
-      localStorage.setItem("frogPinyinStars", stars);
-      updateScore();
-    }
-
-    function speak(text) {
+    function speak(text, custom = {}) {
       if (!("speechSynthesis" in window)) {
-        alert("这个浏览器暂时不能发声音哦，可以用 Chrome 浏览器打开试试。");
+        alert("这个浏览器暂时不支持语音播放，建议用 Chrome 或 Edge 打开。");
         return;
       }
 
-      window.speechSynthesis.cancel();
-
       const utterance = new SpeechSynthesisUtterance(text);
+      const mode = voiceModeEl.value;
       utterance.lang = "zh-CN";
-      utterance.rate = 0.82;
-      utterance.pitch = 1.15;
+      utterance.voice = pickVoice();
 
+      if (mode === "kid") {
+        utterance.rate = custom.rate || 0.84;
+        utterance.pitch = custom.pitch || 1.22;
+      } else if (mode === "soft") {
+        utterance.rate = custom.rate || 0.82;
+        utterance.pitch = custom.pitch || 1.06;
+      } else {
+        utterance.rate = custom.rate || 0.86;
+        utterance.pitch = custom.pitch || 1.0;
+      }
+
+      window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utterance);
     }
 
-    function showSection(id, button) {
-      document.querySelectorAll(".section").forEach(section => {
-        section.classList.remove("active");
-      });
+    /* -------------------------
+       工具函数
+    ------------------------- */
 
-      document.querySelectorAll(".nav button").forEach(btn => {
-        btn.classList.remove("active");
-      });
+    function updateStars() {
+      starCountEl.textContent = stars;
+      if (stars < 10) {
+        levelNameEl.textContent = "刚出发";
+      } else if (stars < 25) {
+        levelNameEl.textContent = "拼音小芽芽";
+      } else if (stars < 50) {
+        levelNameEl.textContent = "拼音小勇士";
+      } else if (stars < 80) {
+        levelNameEl.textContent = "拼音小能手";
+      } else {
+        levelNameEl.textContent = "拼音小老师";
+      }
+    }
+
+    function addStar(count = 1) {
+      stars += count;
+      localStorage.setItem("dreamPinyinStars", stars);
+      updateStars();
+    }
+
+    function resetStars() {
+      const ok = confirm("确定要把星星清零吗？");
+      if (!ok) return;
+      stars = 0;
+      localStorage.setItem("dreamPinyinStars", stars);
+      updateStars();
+      speak("星星已经清零啦。我们重新出发吧。");
+    }
+
+    function celebrate() {
+      const icons = ["⭐", "✨", "🌟", "💖"];
+      for (let i = 0; i < 10; i++) {
+        const span = document.createElement("span");
+        span.className = "celebrate";
+        span.textContent = icons[Math.floor(Math.random() * icons.length)];
+        span.style.left = Math.random() * 80 + 10 + "vw";
+        span.style.top = Math.random() * 20 + 55 + "vh";
+        span.style.animationDelay = (Math.random() * 0.15) + "s";
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 1200);
+      }
+    }
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    /* -------------------------
+       页面切换
+    ------------------------- */
+
+    function showSection(id, button) {
+      document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+      document.querySelectorAll(".nav button").forEach(btn => btn.classList.remove("active"));
 
       document.getElementById(id).classList.add("active");
       button.classList.add("active");
@@ -821,130 +1646,84 @@
     }
 
     function goTo(id) {
-      const buttons = document.querySelectorAll(".nav button");
-      const map = {
+      const navButtons = document.querySelectorAll(".nav button");
+      const indexMap = {
         home: 0,
         frog: 1,
         roller: 2,
         train: 3,
         quiz: 4
       };
-
-      showSection(id, buttons[map[id]]);
+      showSection(id, navButtons[indexMap[id]]);
     }
+
+    /* -------------------------
+       解说
+    ------------------------- */
 
     function speakGuide(type) {
       const guides = {
-        home: "欢迎来到小青蛙拼音乐园。你可以点小青蛙读词语，也可以坐声调过山车，还可以开拼读小火车。答对题目会得到星星哦。",
-        frog: "这里是小青蛙点读池。请你点一下荷叶，听小青蛙读词语。听完以后，你也跟着读一遍。",
-        roller: "声调过山车开始啦。一声平平走，二声往上爬，三声先下去再上来，四声快快冲下坡。",
-        train: "拼读小火车来了。声母在前面，韵母在后面，两个拼在一起，就变成一个新的读音。",
-        quiz: "这里是拼音闯关城堡。请你看汉字，选择正确的拼音。答对就能得到一颗星星。"
+        home: "欢迎来到梦幻拼音乐园。这里有点读池塘，声调过山车，拼读小火车，还有闯关城堡。我们边玩边学拼音。",
+        frog: "这里是点读池塘。请你点一张小卡片，老师会读给你听。听完以后，你再跟着读一遍。",
+        roller: "这里是声调过山车。一声平平走，二声往上爬，三声先下去再上来，四声快速冲下坡。",
+        train: "这里是拼读小火车。声母在前，韵母在后，拼起来，就能读出新的拼音。",
+        quiz: "这里是闯关城堡。请你听字音，看字，选出正确的拼音。答对就能得到星星。"
       };
-
       speak(guides[type]);
     }
 
-    const frogData = [
-      { icon: "🐸", pinyin: "m", word: "妈妈", full: "mā ma", say: "妈妈。m，妈妈的 m。" },
-      { icon: "🐸", pinyin: "b", word: "爸爸", full: "bà ba", say: "爸爸。b，爸爸的 b。" },
-      { icon: "🐸", pinyin: "p", word: "苹果", full: "píng guǒ", say: "苹果。p，苹果的 p。" },
-      { icon: "🐸", pinyin: "t", word: "兔子", full: "tù zi", say: "兔子。t，兔子的 t。" },
-      { icon: "🐸", pinyin: "n", word: "奶奶", full: "nǎi nai", say: "奶奶。n，奶奶的 n。" },
-      { icon: "🐸", pinyin: "l", word: "萝卜", full: "luó bo", say: "萝卜。l，萝卜的 l。" },
-      { icon: "🐸", pinyin: "h", word: "花朵", full: "huā duǒ", say: "花朵。h，花朵的 h。" },
-      { icon: "🐸", pinyin: "x", word: "西瓜", full: "xī guā", say: "西瓜。x，西瓜的 x。" },
-      { icon: "🐸", pinyin: "y", word: "月亮", full: "yuè liang", say: "月亮。y，月亮的 y。" },
-      { icon: "🐸", pinyin: "w", word: "娃娃", full: "wá wa", say: "娃娃。w，娃娃的 w。" },
-      { icon: "🐸", pinyin: "zh", word: "蜘蛛", full: "zhī zhū", say: "蜘蛛。zh，蜘蛛的 zh。" },
-      { icon: "🐸", pinyin: "ch", word: "吃饭", full: "chī fàn", say: "吃饭。ch，吃饭的 ch。" },
-      { icon: "🐸", pinyin: "sh", word: "狮子", full: "shī zi", say: "狮子。sh，狮子的 sh。" },
-      { icon: "🐸", pinyin: "r", word: "日出", full: "rì chū", say: "日出。r，日出的 r。" },
-      { icon: "🐸", pinyin: "z", word: "自己", full: "zì jǐ", say: "自己。z，自己的 z。" },
-      { icon: "🐸", pinyin: "s", word: "森林", full: "sēn lín", say: "森林。s，森林的 s。" }
-    ];
+    /* -------------------------
+       点读卡片
+    ------------------------- */
 
-    function createFrogCards() {
-      const box = document.getElementById("frogGrid");
-      box.innerHTML = "";
-
-      frogData.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "frog-card";
-        card.innerHTML = `
-          <div class="frog-icon">${item.icon}</div>
-          <div class="pinyin-big">${item.pinyin}</div>
-          <div class="word">${item.word}</div>
-          <div class="pinyin-small">${item.full}</div>
-          <div class="tap-tip">点我读一读</div>
-        `;
-
-        card.onclick = () => {
-          speak(item.say);
-          addStar();
-        };
-
-        box.appendChild(card);
-      });
+    function createCard(item) {
+      const div = document.createElement("div");
+      div.className = "pinyin-card";
+      div.innerHTML = `
+        <div class="animal">${item.animal}</div>
+        <div class="symbol">${item.symbol}</div>
+        <div class="reading">${item.reading}</div>
+        <div class="word">${item.word}</div>
+        <div class="word-py">${item.wordPy}</div>
+        <div class="tap-tip">点我听读音</div>
+      `;
+      div.onclick = () => {
+        speak(item.speakText);
+        addStar();
+      };
+      return div;
     }
 
-    const toneData = [
-      {
-        show: "ā",
-        name: "一声",
-        text: "一声：小车平平走。",
-        say: "一声，啊。平平走，像小车走在平路上。",
-        carTop: "55px",
-        carLeft: "42%",
-        carRotate: "0deg"
-      },
-      {
-        show: "á",
-        name: "二声",
-        text: "二声：小车往上爬。",
-        say: "二声，啊。往上爬，像小车爬上小山坡。",
-        carTop: "120px",
-        carLeft: "42%",
-        carRotate: "-13deg"
-      },
-      {
-        show: "ǎ",
-        name: "三声",
-        text: "三声：小车下去，又上来。",
-        say: "三声，啊。先下去，再上来，像小车拐了一个弯。",
-        carTop: "180px",
-        carLeft: "42%",
-        carRotate: "0deg"
-      },
-      {
-        show: "à",
-        name: "四声",
-        text: "四声：小车快快冲下坡。",
-        say: "四声，啊。快快冲下坡，声音要有力一点。",
-        carTop: "120px",
-        carLeft: "42%",
-        carRotate: "13deg"
-      }
-    ];
+    function renderCards() {
+      const initialGrid = document.getElementById("initialGrid");
+      const finalGrid = document.getElementById("finalGrid");
+      const wholeGrid = document.getElementById("wholeGrid");
+
+      initialGrid.innerHTML = "";
+      finalGrid.innerHTML = "";
+      wholeGrid.innerHTML = "";
+
+      initialData.forEach(item => initialGrid.appendChild(createCard(item)));
+      finalData.forEach(item => finalGrid.appendChild(createCard(item)));
+      wholeData.forEach(item => wholeGrid.appendChild(createCard(item)));
+    }
+
+    /* -------------------------
+       声调过山车
+    ------------------------- */
 
     function chooseTone(index) {
-      currentTone = index;
-      const tone = toneData[index];
-
-      document.getElementById("toneDisplay").textContent = tone.show;
-      document.getElementById("toneExplain").textContent = tone.text;
+      currentToneIndex = index;
+      const item = toneData[index];
+      document.getElementById("toneDisplay").textContent = item.show;
+      document.getElementById("toneText").textContent = item.text;
+      document.getElementById("toneHint").textContent = item.hint;
 
       const car = document.getElementById("toneCar");
-      car.style.top = tone.carTop;
-      car.style.left = tone.carLeft;
-      car.style.transform = `rotate(${tone.carRotate})`;
+      car.style.left = item.x;
+      car.style.top = item.y;
 
-      speak(tone.say);
-      addStar();
-    }
-
-    function speakTone() {
-      speak(toneData[currentTone].say);
+      speak(item.speakText);
       addStar();
     }
 
@@ -953,27 +1732,27 @@
       chooseTone(index);
     }
 
-    const trainData = [
-      { s: "b", y: "a", result: "ba", word: "爸爸 bā ba", say: "b 加 a，拼成 ba。爸爸。" },
-      { s: "m", y: "a", result: "ma", word: "妈妈 mā ma", say: "m 加 a，拼成 ma。妈妈。" },
-      { s: "p", y: "o", result: "po", word: "山坡 shān pō", say: "p 加 o，拼成 po。山坡。" },
-      { s: "l", y: "u", result: "lu", word: "小鹿 xiǎo lù", say: "l 加 u，拼成 lu。小鹿。" },
-      { s: "h", y: "ua", result: "hua", word: "花朵 huā duǒ", say: "h 加 ua，拼成 hua。花朵。" },
-      { s: "x", y: "ia", result: "xia", word: "夏天 xià tiān", say: "x 加 ia，拼成 xia。夏天。" },
-      { s: "g", y: "ou", result: "gou", word: "小狗 xiǎo gǒu", say: "g 加 ou，拼成 gou。小狗。" },
-      { s: "m", y: "ao", result: "mao", word: "小猫 xiǎo māo", say: "m 加 ao，拼成 mao。小猫。" }
-    ];
+    function speakTone() {
+      const item = toneData[currentToneIndex];
+      speak(item.speakText);
+      addStar();
+    }
+
+    /* -------------------------
+       拼读小火车
+    ------------------------- */
 
     function updateTrain() {
       const item = trainData[currentTrainIndex];
-      document.getElementById("shengmuPiece").textContent = item.s;
-      document.getElementById("yunmuPiece").textContent = item.y;
-      document.getElementById("resultPiece").textContent = item.result;
+      document.getElementById("trainLeft").textContent = item.left;
+      document.getElementById("trainRight").textContent = item.right;
+      document.getElementById("trainResult").textContent = item.result;
       document.getElementById("trainWord").textContent = "例子：" + item.word;
     }
 
     function speakTrain() {
-      speak(trainData[currentTrainIndex].say);
+      const item = trainData[currentTrainIndex];
+      speak(item.speakText);
       addStar();
     }
 
@@ -982,76 +1761,63 @@
       if (currentTrainIndex >= trainData.length) {
         currentTrainIndex = 0;
       }
-
       updateTrain();
       speakTrain();
     }
 
-    const quizData = [
-      { word: "妈", answer: "mā", options: ["mā", "má", "mǎ", "mà"], say: "妈" },
-      { word: "马", answer: "mǎ", options: ["mā", "má", "mǎ", "mà"], say: "马" },
-      { word: "爸", answer: "bà", options: ["bā", "bá", "bǎ", "bà"], say: "爸" },
-      { word: "花", answer: "huā", options: ["huā", "huá", "huǎ", "huà"], say: "花" },
-      { word: "鱼", answer: "yú", options: ["yū", "yú", "yǔ", "yù"], say: "鱼" },
-      { word: "狗", answer: "gǒu", options: ["gōu", "góu", "gǒu", "gòu"], say: "狗" },
-      { word: "猫", answer: "māo", options: ["māo", "máo", "mǎo", "mào"], say: "猫" },
-      { word: "鸟", answer: "niǎo", options: ["niāo", "niáo", "niǎo", "niào"], say: "鸟" },
-      { word: "月", answer: "yuè", options: ["yuē", "yué", "yuě", "yuè"], say: "月" },
-      { word: "水", answer: "shuǐ", options: ["shuī", "shuí", "shuǐ", "shuì"], say: "水" }
-    ];
-
-    function shuffle(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
+    /* -------------------------
+       闯关城堡
+    ------------------------- */
 
     function newQuestion() {
       currentQuestion = quizData[Math.floor(Math.random() * quizData.length)];
+      document.getElementById("quizWord").textContent = currentQuestion.word;
 
-      document.getElementById("quizBig").textContent = currentQuestion.word;
-      document.getElementById("quizMessage").textContent = "";
-      document.getElementById("quizMessage").className = "message";
+      const msg = document.getElementById("quizMessage");
+      msg.textContent = "";
+      msg.className = "message";
 
-      const optionBox = document.getElementById("quizOptions");
-      optionBox.innerHTML = "";
+      const box = document.getElementById("quizOptions");
+      box.innerHTML = "";
 
-      const mixedOptions = shuffle([...currentQuestion.options]);
-
-      mixedOptions.forEach(option => {
-        const button = document.createElement("button");
-        button.className = "option-btn";
-        button.textContent = option;
-        button.onclick = () => checkAnswer(option);
-        optionBox.appendChild(button);
+      const options = shuffle(currentQuestion.options);
+      options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(option);
+        box.appendChild(btn);
       });
     }
 
+    function speakQuizWord() {
+      if (!currentQuestion) return;
+      speak(currentQuestion.speakText);
+    }
+
     function checkAnswer(option) {
-      const message = document.getElementById("quizMessage");
+      const msg = document.getElementById("quizMessage");
 
       if (option === currentQuestion.answer) {
-        message.textContent = "答对啦！送你一颗星星 ⭐";
-        message.className = "message correct";
-        speak("答对啦。你真棒。送你一颗星星。");
+        msg.textContent = "答对啦！送你一颗星星 ⭐";
+        msg.className = "message correct";
         addStar();
-
-        setTimeout(() => {
-          newQuestion();
-        }, 1300);
+        celebrate();
+        speak("答对啦。你真棒。送你一颗小星星。");
+        setTimeout(() => newQuestion(), 1300);
       } else {
-        message.textContent = "再想一想哦，小勇士加油！";
-        message.className = "message wrong";
-        speak("再想一想哦。小勇士加油。");
+        msg.textContent = "再想一想哦，你已经很棒了！";
+        msg.className = "message wrong";
+        speak("再想一想哦。你已经很棒了。");
       }
     }
 
-    function speakQuizWord() {
-      if (currentQuestion) {
-        speak("请听这个字。" + currentQuestion.say);
-      }
-    }
+    /* -------------------------
+       初始化
+    ------------------------- */
 
-    createFrogCards();
-    updateScore();
+    updateStars();
+    renderCards();
     chooseTone(0);
     updateTrain();
     newQuestion();
