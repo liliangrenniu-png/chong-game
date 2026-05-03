@@ -1,143 +1,600 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>馋嘴猫咪大作战</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f8ff; /* 淡蓝色背景 */
-            font-family: 'Microsoft YaHei', sans-serif;
-            flex-direction: column;
-        }
-        canvas {
-            border: 4px solid #FFB6C1; /* 粉色边框 */
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            background-color: #FFF;
-            cursor: none; /* 隐藏画布上的鼠标指针 */
-        }
-        #instructions {
-            margin-top: 10px;
-            color: #666;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>快乐学拼音</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      background: linear-gradient(180deg, #fff7d6, #dff7ff);
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 15px 20px;
+      background: linear-gradient(135deg, #ffcf6e, #ff8fb3);
+      color: white;
+      border-bottom-left-radius: 35px;
+      border-bottom-right-radius: 35px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 40px;
+      letter-spacing: 3px;
+    }
+
+    header p {
+      margin: 10px 0 0;
+      font-size: 18px;
+    }
+
+    .stars {
+      margin-top: 15px;
+      font-size: 22px;
+      background: rgba(255,255,255,0.3);
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 999px;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 25px 15px 10px;
+    }
+
+    .nav button {
+      border: none;
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-size: 18px;
+      background: white;
+      color: #ff6b8f;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.12);
+      transition: 0.2s;
+      font-weight: bold;
+    }
+
+    .nav button:hover {
+      transform: translateY(-3px);
+      background: #fff0f5;
+    }
+
+    .nav button.active {
+      background: #ff6b8f;
+      color: white;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .title-card {
+      background: white;
+      border-radius: 25px;
+      padding: 22px;
+      margin-bottom: 20px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .title-card h2 {
+      margin: 0;
+      font-size: 30px;
+      color: #ff6b8f;
+    }
+
+    .title-card p {
+      font-size: 17px;
+      color: #666;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 18px 10px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.12);
+      transition: 0.2s;
+      border: 4px solid transparent;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      border-color: #ffd166;
+    }
+
+    .big-pinyin {
+      font-size: 38px;
+      font-weight: bold;
+      color: #37a2ff;
+    }
+
+    .small-text {
+      margin-top: 8px;
+      font-size: 15px;
+      color: #666;
+    }
+
+    .speak {
+      margin-top: 10px;
+      display: inline-block;
+      background: #ffcf6e;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 14px;
+    }
+
+    .tone-box {
+      background: white;
+      border-radius: 25px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .tone-display {
+      font-size: 70px;
+      color: #ff6b8f;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .big-button {
+      border: none;
+      background: #37a2ff;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.12);
+      font-weight: bold;
+      margin: 8px;
+    }
+
+    .big-button:hover {
+      background: #168de8;
+    }
+
+    .quiz-box {
+      background: white;
+      border-radius: 28px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+    }
+
+    .quiz-word {
+      font-size: 70px;
+      margin: 20px 0 5px;
+    }
+
+    .quiz-tip {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .option-btn {
+      border: none;
+      background: #fff3b0;
+      padding: 18px;
+      border-radius: 20px;
+      font-size: 26px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #555;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .option-btn:hover {
+      background: #ffe66d;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      min-height: 35px;
+    }
+
+    .correct {
+      color: #28a745;
+    }
+
+    .wrong {
+      color: #ff4d6d;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 10px;
+      color: #777;
+      font-size: 15px;
+    }
+
+    .rainbow {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 32px;
+      }
+
+      .big-pinyin {
+        font-size: 32px;
+      }
+
+      .quiz-word {
+        font-size: 58px;
+      }
+
+      .tone-display {
+        font-size: 58px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<canvas id="gameCanvas" width="600" height="400"></canvas>
-<p id="instructions">移动鼠标控制小猫，接住🐟，躲避💣！</p>
+  <header>
+    <h1>快乐学拼音</h1>
+    <p>点一点，读一读，玩一玩，拼音就学会啦！</p>
+    <div class="stars">我的星星：<span id="starCount">0</span> ⭐</div>
+  </header>
 
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+  <div class="nav">
+    <button class="active" onclick="showSection('shengmu', this)">声母</button>
+    <button onclick="showSection('yunmu', this)">韵母</button>
+    <button onclick="showSection('zhengti', this)">整体认读</button>
+    <button onclick="showSection('tone', this)">声调</button>
+    <button onclick="showSection('quiz', this)">小测验</button>
+  </div>
 
-    let score = 0;
-    let gameOver = false;
+  <main>
+    <section id="shengmu" class="section active">
+      <div class="title-card">
+        <h2>声母小乐园</h2>
+        <p>声母就像拼音宝宝的开头，点卡片可以听例子哦。</p>
+      </div>
+      <div class="grid" id="shengmuGrid"></div>
+    </section>
 
-    // 小猫对象
-    const cat = {
-        x: canvas.width / 2,
-        y: canvas.height - 50,
-        size: 50,
-        emoji: "🐱"
-    };
+    <section id="yunmu" class="section">
+      <div class="title-card">
+        <h2>韵母小花园</h2>
+        <p>韵母常常跟在声母后面，一起组成好听的拼音。</p>
+      </div>
+      <div class="grid" id="yunmuGrid"></div>
+    </section>
 
-    // 掉落物品数组
-    let items = [];
-    let spawnRate = 60; // 生成速率 (帧数)
-    let frameCount = 0;
+    <section id="zhengti" class="section">
+      <div class="title-card">
+        <h2>整体认读音节</h2>
+        <p>这些拼音宝宝可以整体读出来，要多见几次哦。</p>
+      </div>
+      <div class="grid" id="zhengtiGrid"></div>
+    </section>
 
-    // 监听鼠标移动
-    canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        cat.x = e.clientX - rect.left - cat.size / 2;
+    <section id="tone" class="section">
+      <div class="title-card">
+        <h2>声调小火车</h2>
+        <p>一声平，二声扬，三声拐弯，四声降。</p>
+      </div>
 
-        // 限制小猫不要跑出画布边界
-        if (cat.x < 0) cat.x = 0;
-        if (cat.x > canvas.width - cat.size) cat.x = canvas.width - cat.size;
-    });
+      <div class="tone-box">
+        <div>今天练习：</div>
+        <div class="tone-display" id="toneDisplay">ā</div>
+        <button class="big-button" onclick="speakCurrentTone()">听一听</button>
+        <button class="big-button" onclick="nextTone()">下一个</button>
+      </div>
+    </section>
 
-    // 生成新物品
-    function spawnItem() {
-        const isBomb = Math.random() < 0.3; // 30%几率是炸弹
-        items.push({
-            x: Math.random() * (canvas.width - 30),
-            y: -30,
-            size: 30,
-            speed: Math.random() * 3 + 2, // 随机速度
-            type: isBomb ? 'bomb' : 'fish',
-            emoji: isBomb ? "💣" : "🐟"
-        });
+    <section id="quiz" class="section">
+      <div class="title-card">
+        <h2>拼音小测验</h2>
+        <p>看看你能不能帮汉字宝宝找到正确的拼音！</p>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-word" id="quizWord">妈</div>
+        <div class="quiz-tip">请选择正确的拼音</div>
+        <button class="big-button" onclick="speakQuizWord()">听汉字</button>
+        <div class="options" id="quizOptions"></div>
+        <div class="message" id="quizMessage"></div>
+        <button class="big-button" onclick="newQuestion()">换一题</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="rainbow">🌈 🐣 📚 ⭐</div>
+    <div>每天学一点，拼音进步一点点。</div>
+  </footer>
+
+  <script>
+    let stars = Number(localStorage.getItem("pinyinStars")) || 0;
+    document.getElementById("starCount").textContent = stars;
+
+    const shengmu = [
+      { p: "b", word: "爸爸", py: "bà ba" },
+      { p: "p", word: "苹果", py: "píng guǒ" },
+      { p: "m", word: "妈妈", py: "mā ma" },
+      { p: "f", word: "风车", py: "fēng chē" },
+      { p: "d", word: "大象", py: "dà xiàng" },
+      { p: "t", word: "兔子", py: "tù zi" },
+      { p: "n", word: "奶奶", py: "nǎi nai" },
+      { p: "l", word: "萝卜", py: "luó bo" },
+      { p: "g", word: "哥哥", py: "gē ge" },
+      { p: "k", word: "开心", py: "kāi xīn" },
+      { p: "h", word: "花朵", py: "huā duǒ" },
+      { p: "j", word: "积木", py: "jī mù" },
+      { p: "q", word: "气球", py: "qì qiú" },
+      { p: "x", word: "西瓜", py: "xī guā" },
+      { p: "zh", word: "蜘蛛", py: "zhī zhū" },
+      { p: "ch", word: "吃饭", py: "chī fàn" },
+      { p: "sh", word: "狮子", py: "shī zi" },
+      { p: "r", word: "日出", py: "rì chū" },
+      { p: "z", word: "自己", py: "zì jǐ" },
+      { p: "c", word: "草地", py: "cǎo dì" },
+      { p: "s", word: "森林", py: "sēn lín" },
+      { p: "y", word: "月亮", py: "yuè liang" },
+      { p: "w", word: "娃娃", py: "wá wa" }
+    ];
+
+    const yunmu = [
+      { p: "a", word: "阿姨", py: "ā yí" },
+      { p: "o", word: "喔喔", py: "ō ō" },
+      { p: "e", word: "鹅", py: "é" },
+      { p: "i", word: "衣服", py: "yī fu" },
+      { p: "u", word: "乌鸦", py: "wū yā" },
+      { p: "ü", word: "小鱼", py: "xiǎo yú" },
+      { p: "ai", word: "爱心", py: "ài xīn" },
+      { p: "ei", word: "杯子", py: "bēi zi" },
+      { p: "ui", word: "水果", py: "shuǐ guǒ" },
+      { p: "ao", word: "猫", py: "māo" },
+      { p: "ou", word: "海鸥", py: "hǎi ōu" },
+      { p: "iu", word: "牛", py: "niú" },
+      { p: "ie", word: "叶子", py: "yè zi" },
+      { p: "üe", word: "月亮", py: "yuè liang" },
+      { p: "er", word: "耳朵", py: "ěr duo" },
+      { p: "an", word: "安全", py: "ān quán" },
+      { p: "en", word: "森林", py: "sēn lín" },
+      { p: "in", word: "音乐", py: "yīn yuè" },
+      { p: "un", word: "云朵", py: "yún duǒ" },
+      { p: "ün", word: "裙子", py: "qún zi" },
+      { p: "ang", word: "太阳", py: "tài yáng" },
+      { p: "eng", word: "风筝", py: "fēng zheng" },
+      { p: "ing", word: "星星", py: "xīng xing" },
+      { p: "ong", word: "彩虹", py: "cǎi hóng" }
+    ];
+
+    const zhengti = [
+      { p: "zhi", word: "知识", py: "zhī shi" },
+      { p: "chi", word: "吃饭", py: "chī fàn" },
+      { p: "shi", word: "狮子", py: "shī zi" },
+      { p: "ri", word: "日出", py: "rì chū" },
+      { p: "zi", word: "自己", py: "zì jǐ" },
+      { p: "ci", word: "词语", py: "cí yǔ" },
+      { p: "si", word: "丝瓜", py: "sī guā" },
+      { p: "yi", word: "衣服", py: "yī fu" },
+      { p: "wu", word: "乌鸦", py: "wū yā" },
+      { p: "yu", word: "小鱼", py: "xiǎo yú" },
+      { p: "ye", word: "叶子", py: "yè zi" },
+      { p: "yue", word: "月亮", py: "yuè liang" },
+      { p: "yuan", word: "圆形", py: "yuán xíng" },
+      { p: "yin", word: "音乐", py: "yīn yuè" },
+      { p: "yun", word: "云朵", py: "yún duǒ" },
+      { p: "ying", word: "老鹰", py: "lǎo yīng" }
+    ];
+
+    const tones = [
+      { show: "ā", say: "阿" },
+      { show: "á", say: "啊" },
+      { show: "ǎ", say: "啊" },
+      { show: "à", say: "啊" },
+      { show: "ō", say: "喔" },
+      { show: "ó", say: "哦" },
+      { show: "ǒ", say: "哦" },
+      { show: "ò", say: "哦" },
+      { show: "ē", say: "鹅" },
+      { show: "é", say: "鹅" },
+      { show: "ě", say: "鹅" },
+      { show: "è", say: "饿" }
+    ];
+
+    const quizData = [
+      { word: "妈", answer: "mā", options: ["mā", "mǎ", "mà", "má"] },
+      { word: "马", answer: "mǎ", options: ["mā", "mǎ", "mà", "má"] },
+      { word: "爸", answer: "bà", options: ["bā", "bá", "bǎ", "bà"] },
+      { word: "米", answer: "mǐ", options: ["mī", "mí", "mǐ", "mì"] },
+      { word: "花", answer: "huā", options: ["huā", "huá", "huǎ", "huà"] },
+      { word: "鱼", answer: "yú", options: ["yū", "yú", "yǔ", "yù"] },
+      { word: "月", answer: "yuè", options: ["yūe", "yué", "yuě", "yuè"] },
+      { word: "鸟", answer: "niǎo", options: ["niāo", "niáo", "niǎo", "niào"] },
+      { word: "狗", answer: "gǒu", options: ["gōu", "góu", "gǒu", "gòu"] },
+      { word: "猫", answer: "māo", options: ["māo", "máo", "mǎo", "mào"] }
+    ];
+
+    let toneIndex = 0;
+    let currentQuestion = null;
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) {
+        alert("这个浏览器暂时不能发声音哦，可以换 Chrome 浏览器试试。");
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "zh-CN";
+      utterance.rate = 0.75;
+      utterance.pitch = 1.1;
+
+      window.speechSynthesis.speak(utterance);
     }
 
-    // 游戏主循环
-    function gameLoop() {
-        if (gameOver) return;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // 绘制背景装饰 (简单的草地)
-        ctx.fillStyle = "#90EE90";
-        ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
-
-        // 生成物品
-        frameCount++;
-        if (frameCount % spawnRate === 0) {
-            spawnItem();
-            // 随着时间推移加快生成速度，增加难度
-            if (spawnRate > 20) spawnRate--;
-        }
-
-        // 更新和绘制物品
-        for (let i = items.length - 1; i >= 0; i--) {
-            items[i].y += items[i].speed;
-            ctx.font = `${items[i].size}px Arial`;
-            ctx.fillText(items[i].emoji, items[i].x, items[i].y);
-
-            // 碰撞检测 (简单的矩形碰撞)
-            if (
-                items[i].y + items[i].size > cat.y &&
-                items[i].x < cat.x + cat.size &&
-                items[i].x + items[i].size > cat.x
-            ) {
-                if (items[i].type === 'fish') {
-                    score += 10;
-                    // 接到鱼的特效提示 (简单闪烁一下分数颜色)
-                    ctx.fillStyle = "gold";
-                } else {
-                    score -= 20;
-                    ctx.fillStyle = "red";
-                }
-                items.splice(i, 1); // 移除物品
-            }
-            // 移除掉出屏幕的物品
-            else if (items[i].y > canvas.height) {
-                items.splice(i, 1);
-            }
-        }
-
-        // 绘制小猫
-        ctx.font = `${cat.size}px Arial`;
-        ctx.fillText(cat.emoji, cat.x, cat.y + cat.size - 5);
-
-        // 绘制分数
-        ctx.fillStyle = "#333";
-        ctx.font = "24px Arial";
-        ctx.fillText("得分: " + score, 20, 40);
-
-        requestAnimationFrame(gameLoop);
+    function addStar() {
+      stars++;
+      localStorage.setItem("pinyinStars", stars);
+      document.getElementById("starCount").textContent = stars;
     }
 
-    // 启动游戏
-    gameLoop();
+    function createCards(list, boxId) {
+      const box = document.getElementById(boxId);
+      box.innerHTML = "";
 
-</script>
+      list.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <div class="big-pinyin">${item.p}</div>
+          <div class="small-text">${item.word}</div>
+          <div class="small-text">${item.py}</div>
+          <div class="speak">点我听一听</div>
+        `;
+        div.onclick = () => {
+          speak(item.word);
+          addStar();
+        };
+        box.appendChild(div);
+      });
+    }
 
+    function showSection(id, button) {
+      document.querySelectorAll(".section").forEach(sec => {
+        sec.classList.remove("active");
+      });
+
+      document.querySelectorAll(".nav button").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      document.getElementById(id).classList.add("active");
+      button.classList.add("active");
+
+      if (id === "quiz") {
+        newQuestion();
+      }
+    }
+
+    function nextTone() {
+      toneIndex++;
+      if (toneIndex >= tones.length) {
+        toneIndex = 0;
+      }
+      document.getElementById("toneDisplay").textContent = tones[toneIndex].show;
+      addStar();
+    }
+
+    function speakCurrentTone() {
+      speak(tones[toneIndex].say);
+      addStar();
+    }
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function newQuestion() {
+      currentQuestion = quizData[Math.floor(Math.random() * quizData.length)];
+      document.getElementById("quizWord").textContent = currentQuestion.word;
+      document.getElementById("quizMessage").textContent = "";
+
+      const optionBox = document.getElementById("quizOptions");
+      optionBox.innerHTML = "";
+
+      const mixedOptions = shuffle([...currentQuestion.options]);
+
+      mixedOptions.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(option);
+        optionBox.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(option) {
+      const message = document.getElementById("quizMessage");
+
+      if (option === currentQuestion.answer) {
+        message.textContent = "答对啦！你真棒！⭐";
+        message.className = "message correct";
+        speak("答对啦，你真棒");
+        addStar();
+        setTimeout(newQuestion, 1200);
+      } else {
+        message.textContent = "再想一想哦，加油！";
+        message.className = "message wrong";
+        speak("再想一想哦");
+      }
+    }
+
+    function speakQuizWord() {
+      if (currentQuestion) {
+        speak(currentQuestion.word);
+      }
+    }
+
+    createCards(shengmu, "shengmuGrid");
+    createCards(yunmu, "yunmuGrid");
+    createCards(zhengti, "zhengtiGrid");
+    newQuestion();
+  </script>
 </body>
 </html>
