@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>八岁小老师拼音冒险岛</title>
+  <title>标准拼音星球</title>
 
   <style>
     * {
@@ -14,17 +14,16 @@
     :root {
       --pink: #ff7eb6;
       --pink2: #ff4f8f;
-      --blue: #72d6ff;
-      --blue2: #3a9dff;
+      --blue: #70d6ff;
+      --blue2: #3b9cff;
+      --green: #8df0a4;
+      --green2: #35c96b;
       --yellow: #ffe36e;
       --orange: #ffb347;
-      --green: #8df0a4;
-      --green2: #41c96c;
-      --purple: #b997ff;
-      --purple2: #8067ff;
-      --text: #4d4d60;
+      --purple: #9d8cff;
+      --text: #48485d;
       --white: #ffffff;
-      --shadow: 0 14px 30px rgba(93, 103, 156, 0.18);
+      --shadow: 0 14px 30px rgba(86, 98, 150, 0.18);
     }
 
     body {
@@ -33,10 +32,10 @@
       color: var(--text);
       min-height: 100vh;
       background:
-        radial-gradient(circle at 12% 16%, rgba(255,255,255,0.95), transparent 16%),
-        radial-gradient(circle at 82% 10%, rgba(255,255,255,0.76), transparent 18%),
-        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.64), transparent 20%),
-        linear-gradient(180deg, #dff8ff 0%, #ecfff0 38%, #fff1fb 72%, #fff8d8 100%);
+        radial-gradient(circle at 12% 15%, rgba(255,255,255,0.95), transparent 16%),
+        radial-gradient(circle at 85% 12%, rgba(255,255,255,0.72), transparent 18%),
+        radial-gradient(circle at 76% 82%, rgba(255,255,255,0.6), transparent 20%),
+        linear-gradient(180deg, #dcf7ff 0%, #edfff0 38%, #fff2fb 72%, #fff8d9 100%);
       overflow-x: hidden;
     }
 
@@ -49,12 +48,12 @@
       animation: floatUp 12s linear infinite;
     }
 
-    .floating span:nth-child(1) { left: 5%; top: 94%; animation-delay: 0s; }
-    .floating span:nth-child(2) { left: 20%; top: 96%; animation-delay: 2s; }
-    .floating span:nth-child(3) { left: 35%; top: 93%; animation-delay: 5s; }
-    .floating span:nth-child(4) { left: 50%; top: 97%; animation-delay: 1s; }
-    .floating span:nth-child(5) { left: 65%; top: 95%; animation-delay: 4s; }
-    .floating span:nth-child(6) { left: 80%; top: 98%; animation-delay: 3s; }
+    .floating span:nth-child(1) { left: 6%; top: 94%; animation-delay: 0s; }
+    .floating span:nth-child(2) { left: 18%; top: 97%; animation-delay: 2s; }
+    .floating span:nth-child(3) { left: 34%; top: 93%; animation-delay: 5s; }
+    .floating span:nth-child(4) { left: 50%; top: 98%; animation-delay: 1s; }
+    .floating span:nth-child(5) { left: 66%; top: 95%; animation-delay: 4s; }
+    .floating span:nth-child(6) { left: 82%; top: 99%; animation-delay: 3s; }
     .floating span:nth-child(7) { left: 92%; top: 94%; animation-delay: 6s; }
 
     @keyframes floatUp {
@@ -83,7 +82,7 @@
       position: relative;
       overflow: hidden;
       text-align: center;
-      padding: 32px 16px 26px;
+      padding: 32px 16px 27px;
       border-bottom-left-radius: 46px;
       border-bottom-right-radius: 46px;
       background:
@@ -135,7 +134,7 @@
     }
 
     .subtitle {
-      max-width: 830px;
+      max-width: 850px;
       margin: 13px auto 0;
       color: white;
       font-size: 18px;
@@ -163,13 +162,13 @@
     }
 
     .note {
-      max-width: 900px;
+      max-width: 920px;
       margin: 14px auto 0;
       padding: 12px 15px;
       border-radius: 22px;
       background: rgba(255,255,255,0.34);
       color: white;
-      line-height: 1.7;
+      line-height: 1.8;
       font-size: 14px;
       border: 1px dashed rgba(255,255,255,0.58);
     }
@@ -204,7 +203,7 @@
 
     .nav button.active {
       color: white;
-      background: linear-gradient(135deg, var(--pink), var(--purple2));
+      background: linear-gradient(135deg, var(--pink), var(--purple));
     }
 
     main {
@@ -453,10 +452,10 @@
       border: 2px solid rgba(255,255,255,0.92);
     }
 
-    .magic-scene {
+    .tone-scene {
       position: relative;
       overflow: hidden;
-      min-height: 320px;
+      min-height: 330px;
       border-radius: 32px;
       padding: 22px;
       background:
@@ -465,44 +464,26 @@
       border: 3px solid rgba(255,255,255,0.95);
     }
 
-    .magic-scene .cloud {
+    .tone-scene .cloud {
       position: absolute;
       font-size: 42px;
       top: 22px;
     }
 
-    .magic-scene .cloud.one {
+    .tone-scene .cloud.one {
       left: 28px;
     }
 
-    .magic-scene .cloud.two {
+    .tone-scene .cloud.two {
       right: 70px;
       top: 44px;
     }
 
-    .magic-scene .sun {
+    .tone-scene .sun {
       position: absolute;
       right: 24px;
       top: 18px;
       font-size: 44px;
-    }
-
-    .magic-scene .hill {
-      position: absolute;
-      bottom: -30px;
-      width: 45%;
-      height: 120px;
-      border-radius: 100% 100% 0 0;
-      background: linear-gradient(180deg, #98f0a5, #71d985);
-    }
-
-    .magic-scene .hill.left {
-      left: -5%;
-    }
-
-    .magic-scene .hill.right {
-      right: -8%;
-      height: 100px;
     }
 
     .track-svg {
@@ -524,11 +505,29 @@
       filter: drop-shadow(0 8px 7px rgba(0,0,0,0.24));
     }
 
+    .hill {
+      position: absolute;
+      bottom: -30px;
+      width: 45%;
+      height: 120px;
+      border-radius: 100% 100% 0 0;
+      background: linear-gradient(180deg, #98f0a5, #71d985);
+    }
+
+    .hill.left {
+      left: -5%;
+    }
+
+    .hill.right {
+      right: -8%;
+      height: 100px;
+    }
+
     .tone-display {
       position: relative;
       z-index: 4;
       text-align: center;
-      font-size: 84px;
+      font-size: 72px;
       font-weight: bold;
       color: #ff5f98;
       margin-top: 198px;
@@ -543,6 +542,31 @@
       color: #4f73ff;
       font-weight: bold;
       min-height: 34px;
+    }
+
+    .tone-groups {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .tone-group-btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 25px;
+      padding: 16px 12px;
+      font-size: 17px;
+      font-weight: bold;
+      color: #5c63e8;
+      background: linear-gradient(135deg, #f7f1ff, #eef8ff);
+      box-shadow: var(--shadow);
+      transition: 0.22s;
+      line-height: 1.7;
+    }
+
+    .tone-group-btn:hover {
+      transform: translateY(-4px);
     }
 
     .tone-grid {
@@ -560,13 +584,15 @@
       font-size: 18px;
       font-weight: bold;
       color: #5c63e8;
-      background: linear-gradient(135deg, #f7f1ff, #eef8ff);
+      background: white;
       box-shadow: var(--shadow);
       transition: 0.22s;
+      line-height: 1.7;
     }
 
     .tone-btn:hover {
       transform: translateY(-4px);
+      background: #fbfdff;
     }
 
     .hint-bar {
@@ -749,7 +775,7 @@
       }
 
       h1 {
-        font-size: 33px;
+        font-size: 32px;
       }
 
       .subtitle {
@@ -766,7 +792,7 @@
 
       .tone-display,
       .quiz-word {
-        font-size: 66px;
+        font-size: 60px;
       }
 
       .piece {
@@ -774,8 +800,8 @@
         font-size: 32px;
       }
 
-      .magic-scene {
-        min-height: 300px;
+      .tone-scene {
+        min-height: 310px;
       }
 
       .tone-display {
@@ -799,27 +825,28 @@
   <div class="page">
     <header>
       <div class="hero-icons">🐣 🐸 🎢 🚀 🏰 ⭐</div>
-      <h1>八岁小老师拼音冒险岛</h1>
+      <h1>标准拼音星球</h1>
+
       <div class="subtitle">
-        你好呀，我是八岁小老师小星。<br>
-        我会用普通话带你玩拼音，不读英文字母，专门读汉语拼音的声音。
+        你好呀，我是小星同学。<br>
+        我们用普通话学拼音：不读英文字母，不把四声读成一样。
       </div>
 
       <div class="status-row">
         <div class="status-pill">我的星星：<span id="starCount">0</span> ⭐</div>
         <div class="status-pill">我的称号：<span id="levelName">刚刚出发</span></div>
-        <div class="status-pill">声音：八岁小老师清亮声 🎤</div>
+        <div class="status-pill">发音重点：标准四声 🎤</div>
       </div>
 
       <div class="note">
-        朗读说明：屏幕上会显示拼音字母，但发声时只读中文音节和例词。比如 b 发声读“玻”，p 发声读“坡”，m 发声读“摸”。声调练习用“妈、麻、马、骂”来区分四声。
+        重要提示：网页语音由浏览器提供，不同电脑声音会不一样。这个版本已经尽量只读中文例字，比如“妈、麻、马、骂”和“波、伯、跛、簸”，避免把拼音字母读成英文。如果某台设备读音不清楚，请以老师或正版教材录音为准。
       </div>
     </header>
 
     <div class="nav">
-      <button class="active" onclick="showSection('home', this)">冒险地图</button>
-      <button onclick="showSection('listen', this)">拼音精灵</button>
-      <button onclick="showSection('tone', this)">声调过山车</button>
+      <button class="active" onclick="showSection('home', this)">学习地图</button>
+      <button onclick="showSection('listen', this)">标准点读</button>
+      <button onclick="showSection('tone', this)">四声过山车</button>
       <button onclick="showSection('train', this)">拼读飞船</button>
       <button onclick="showSection('quiz', this)">星星闯关</button>
     </div>
@@ -827,14 +854,14 @@
     <main>
       <section id="home" class="section active">
         <div class="panel">
-          <h2>欢迎来到拼音冒险岛</h2>
-          <p>这里不是死板的拼音表，而是一个会说话、会鼓励、会奖励星星的拼音游戏。</p>
-          <p>你可以听拼音精灵说话，可以坐声调过山车，也可以开拼读飞船，还能去城堡里闯关。</p>
+          <h2>欢迎来到标准拼音星球</h2>
+          <p>这一次，我们把最重要的事情放在第一位：读音要标准，声调要分清。</p>
+          <p>四个声调不能听起来都一样，所以我们不用单独的“啊啊啊”来教，而是用真实汉字例字来听。</p>
 
           <div class="teacher-box">
             <div class="teacher-face">🐸</div>
             <div class="teacher-text">
-              小星老师说：如果我是小朋友，我也不喜欢僵硬的声音。我喜欢像小伙伴一样跟我说话的声音。所以我会慢慢说、清楚说、开心说。
+              小星同学说：一声、二声、三声、四声一定要分开。比如“妈、麻、马、骂”，每个字的声音都不一样。
             </div>
           </div>
 
@@ -846,41 +873,41 @@
 
         <div class="map-grid">
           <div class="map-card" onclick="goTo('listen')">
-            <div class="map-emoji">🧚</div>
-            <div class="map-title">拼音精灵森林</div>
-            <div class="map-text">点一下精灵卡片，它会用普通话读给你听。</div>
+            <div class="map-emoji">📚</div>
+            <div class="map-title">标准点读</div>
+            <div class="map-text">点声母、韵母、整体认读音节，听中文标准发音。</div>
           </div>
 
           <div class="map-card" onclick="goTo('tone')">
             <div class="map-emoji">🎢</div>
-            <div class="map-title">声调过山车</div>
-            <div class="map-text">用“妈、麻、马、骂”听清一声、二声、三声、四声。</div>
+            <div class="map-title">四声过山车</div>
+            <div class="map-text">用“妈、麻、马、骂”和“波、伯、跛、簸”区分四声。</div>
           </div>
 
           <div class="map-card" onclick="goTo('train')">
             <div class="map-emoji">🚀</div>
             <div class="map-title">拼读飞船</div>
-            <div class="map-text">声母和韵母坐上飞船，合起来变成一个新读音。</div>
+            <div class="map-text">声母和韵母合起来，读出新的拼音。</div>
           </div>
 
           <div class="map-card" onclick="goTo('quiz')">
             <div class="map-emoji">🏰</div>
-            <div class="map-title">星星闯关城堡</div>
-            <div class="map-text">听汉字，选拼音，答对就会掉下星星。</div>
+            <div class="map-title">星星闯关</div>
+            <div class="map-text">听汉字，选拼音，答对就拿星星。</div>
           </div>
         </div>
       </section>
 
       <section id="listen" class="section">
         <div class="panel">
-          <h2>拼音精灵森林</h2>
-          <p>点一下卡片，小星老师会读给你听。它不会把字母读成英文，只会读汉语拼音的声音。</p>
-          <p>你可以先听，再跟读。每点一次，就得到一颗练习星星。</p>
+          <h2>标准点读</h2>
+          <p>这里屏幕上显示拼音字母，但声音不会读英文。</p>
+          <p>比如看到 b，发声会读“玻”；看到 p，发声会读“坡”；看到 m，发声会读“摸”。</p>
 
           <div class="teacher-box">
             <div class="teacher-face">🧚</div>
             <div class="teacher-text">
-              小星老师说：我会先读拼音声音，再读例词。你跟着我读一遍，就像和小伙伴一起玩一样。
+              小星同学说：点卡片以后，先听，再跟读。不要急，读准比读快更重要。
             </div>
           </div>
 
@@ -889,36 +916,36 @@
           </div>
         </div>
 
-        <div class="sub-title">🐣 声母精灵</div>
+        <div class="sub-title">🐣 声母</div>
         <div class="cards-grid" id="initialGrid"></div>
 
-        <div class="sub-title">🌼 韵母精灵</div>
+        <div class="sub-title">🌼 韵母</div>
         <div class="cards-grid" id="finalGrid"></div>
 
-        <div class="sub-title">🏝 整体认读精灵</div>
+        <div class="sub-title">🏝 整体认读音节</div>
         <div class="cards-grid" id="wholeGrid"></div>
       </section>
 
       <section id="tone" class="section">
         <div class="panel">
-          <h2>声调过山车</h2>
-          <p>四个声调不能读成一个样子。我们用四个汉字来听清楚：</p>
-          <p>一声：妈。二声：麻。三声：马。四声：骂。</p>
+          <h2>四声过山车</h2>
+          <p>这部分最重要：四个声调不能一样。</p>
+          <p>我们用真实汉字来听：一声“妈”，二声“麻”，三声“马”，四声“骂”。</p>
 
           <div class="teacher-box">
             <div class="teacher-face">🎢</div>
             <div class="teacher-text">
-              小星老师说：一声平平的，二声往上扬，三声先低再起来，四声很快落下去。你看小车怎么跑，声音就怎么跑。
+              小星同学说：一声平，二声扬，三声拐弯，四声降。听不出来时，多听“妈、麻、马、骂”。
             </div>
           </div>
 
           <div class="btn-row">
-            <button class="big-btn pink-btn" onclick="speakGuide('tone')">▶ 听声调口诀</button>
+            <button class="big-btn pink-btn" onclick="speakGuide('tone')">▶ 听声调说明</button>
           </div>
         </div>
 
         <div class="game-box">
-          <div class="magic-scene">
+          <div class="tone-scene">
             <div class="cloud one">☁️</div>
             <div class="cloud two">☁️</div>
             <div class="sun">☀️</div>
@@ -935,24 +962,26 @@
             <div class="hill right"></div>
 
             <div class="tone-display" id="toneDisplay">mā 妈</div>
-            <div class="tone-text" id="toneText">一声：平平走</div>
+            <div class="tone-text" id="toneText">一声：平平的</div>
           </div>
 
-          <div class="tone-grid">
-            <button class="tone-btn" onclick="chooseTone(0)">mā 妈<br>一声 平平走</button>
-            <button class="tone-btn" onclick="chooseTone(1)">má 麻<br>二声 往上扬</button>
-            <button class="tone-btn" onclick="chooseTone(2)">mǎ 马<br>三声 拐个弯</button>
-            <button class="tone-btn" onclick="chooseTone(3)">mà 骂<br>四声 落下去</button>
+          <div class="tone-groups">
+            <button class="tone-group-btn" onclick="setToneGroup(0)">听 ma 四声<br>妈 麻 马 骂</button>
+            <button class="tone-group-btn" onclick="setToneGroup(1)">听 bo 四声<br>波 伯 跛 簸</button>
+            <button class="tone-group-btn" onclick="setToneGroup(2)">听 yi 四声<br>衣 姨 椅 意</button>
+            <button class="tone-group-btn" onclick="setToneGroup(3)">听 shu 四声<br>书 熟 暑 树</button>
           </div>
+
+          <div class="tone-grid" id="toneButtons"></div>
 
           <div class="btn-row" style="justify-content:center;">
-            <button class="big-btn blue-btn" onclick="speakTone()">▶ 听这个声调</button>
-            <button class="big-btn green-btn" onclick="randomTone()">🎲 随机坐车</button>
-            <button class="big-btn yellow-btn" onclick="speakAllTones()">🌈 连续听四声</button>
+            <button class="big-btn blue-btn" onclick="speakTone()">▶ 听当前声调</button>
+            <button class="big-btn green-btn" onclick="speakCurrentGroup()">🌈 连续听四声</button>
+            <button class="big-btn yellow-btn" onclick="randomTone()">🎲 随机坐车</button>
           </div>
 
           <div class="hint-bar" id="toneHint">
-            小星老师：一声像小车在平路上开，声音平平的：妈。
+            小星同学：一声要平，像小车在平路上走。例字：妈。
           </div>
         </div>
       </section>
@@ -960,13 +989,13 @@
       <section id="train" class="section">
         <div class="panel">
           <h2>拼读飞船</h2>
-          <p>声母精灵和韵母精灵坐上飞船，合起来，就变成新的拼音声音。</p>
-          <p>朗读的时候不会说英文字母，会说“声母玻、韵母啊，合起来是巴”。</p>
+          <p>声母和韵母合起来，就能读出新的拼音。</p>
+          <p>这里也不会读英文字母，会用中文读法来讲：声母“玻”遇到韵母“啊”，合起来是“巴”。</p>
 
           <div class="teacher-box">
             <div class="teacher-face">🚀</div>
             <div class="teacher-text">
-              小星老师说：拼读就像两个小朋友一起出发。一个在前面，一个在后面，牵起手就能读出来。
+              小星同学说：拼读的时候，先把声母和韵母分清，再合起来读。
             </div>
           </div>
 
@@ -992,7 +1021,7 @@
           </div>
 
           <div class="btn-row" style="justify-content:center;">
-            <button class="big-btn blue-btn" onclick="speakTrain()">▶ 跟小星读</button>
+            <button class="big-btn blue-btn" onclick="speakTrain()">▶ 听标准拼读</button>
             <button class="big-btn green-btn" onclick="nextTrain()">➡ 下一艘飞船</button>
           </div>
         </div>
@@ -1000,14 +1029,14 @@
 
       <section id="quiz" class="section">
         <div class="panel">
-          <h2>星星闯关城堡</h2>
-          <p>听小星老师读一个汉字宝宝，然后帮它找到正确的拼音。</p>
-          <p>答错也没关系，说明大脑正在练习；答对就会获得星星奖励。</p>
+          <h2>星星闯关</h2>
+          <p>听一个汉字，然后选择正确的拼音。</p>
+          <p>这里重点练四声，所以会出现“妈、麻、马、骂”“波、伯、跛、簸”等题目。</p>
 
           <div class="teacher-box">
             <div class="teacher-face">🧸</div>
             <div class="teacher-text">
-              小星老师说：真正厉害的小朋友，不是一次就全会，而是愿意再试一次。
+              小星同学说：答错没关系，说明耳朵正在练习。多听几遍，就会越来越准。
             </div>
           </div>
 
@@ -1038,215 +1067,164 @@
     </main>
 
     <footer>
-      八岁小老师拼音冒险岛 · 普通话拼音启蒙小游戏 🌈⭐
+      标准拼音星球 · 读准声调很重要 🌈⭐
     </footer>
   </div>
 
   <script>
     /*
-      朗读原则：
-      1. 发声内容尽量只使用中文汉字，不把 b、p、m、f 读成英文。
-      2. 声母用汉语拼音启蒙读法：玻、坡、摸、佛、得、特、讷、勒……
-      3. 声调用真实汉字区分：妈、麻、马、骂。
-      4. 语音参数偏清亮、自然，模拟八岁小老师的感觉。
+      核心规则：
+      1. 屏幕可以显示拼音字母，但朗读时不读英文字母。
+      2. 声母用中文启蒙读法：玻、坡、摸、佛……
+      3. 四声不用“啊啊啊”硬读，而用真实汉字例字：妈、麻、马、骂。
+      4. 浏览器语音不是专业教材录音，所以网页内加入提示，不误导孩子。
     */
 
     const initialData = [
-      { emoji: "🐣", symbol: "b", sound: "玻", word: "爸爸", py: "bà ba", say: "这是声母玻。爸爸的第一个声音，就是玻。请跟我读，玻，爸爸。" },
-      { emoji: "🐰", symbol: "p", sound: "坡", word: "苹果", py: "píng guǒ", say: "这是声母坡。苹果的第一个声音，就是坡。请跟我读，坡，苹果。" },
-      { emoji: "🐱", symbol: "m", sound: "摸", word: "妈妈", py: "mā ma", say: "这是声母摸。妈妈的第一个声音，就是摸。请跟我读，摸，妈妈。" },
-      { emoji: "🦊", symbol: "f", sound: "佛", word: "风车", py: "fēng chē", say: "这是声母佛。风车的第一个声音，就是佛。请跟我读，佛，风车。" },
-      { emoji: "🐶", symbol: "d", sound: "得", word: "大象", py: "dà xiàng", say: "这是声母得。大象的第一个声音，就是得。请跟我读，得，大象。" },
-      { emoji: "🐯", symbol: "t", sound: "特", word: "兔子", py: "tù zi", say: "这是声母特。兔子的第一个声音，就是特。请跟我读，特，兔子。" },
-      { emoji: "🦁", symbol: "n", sound: "讷", word: "奶奶", py: "nǎi nai", say: "这是声母讷。奶奶的第一个声音，就是讷。请跟我读，讷，奶奶。" },
-      { emoji: "🐼", symbol: "l", sound: "勒", word: "萝卜", py: "luó bo", say: "这是声母勒。萝卜的第一个声音，就是勒。请跟我读，勒，萝卜。" },
-      { emoji: "🐧", symbol: "g", sound: "哥", word: "哥哥", py: "gē ge", say: "这是声母哥。哥哥的第一个声音，就是哥。请跟我读，哥，哥哥。" },
-      { emoji: "🐨", symbol: "k", sound: "科", word: "开心", py: "kāi xīn", say: "这是声母科。开心的第一个声音，就是科。请跟我读，科，开心。" },
-      { emoji: "🦄", symbol: "h", sound: "喝", word: "花朵", py: "huā duǒ", say: "这是声母喝。花朵的第一个声音，就是喝。请跟我读，喝，花朵。" },
-      { emoji: "🐥", symbol: "j", sound: "基", word: "积木", py: "jī mù", say: "这是声母基。积木的第一个声音，就是基。请跟我读，基，积木。" },
-      { emoji: "🐠", symbol: "q", sound: "欺", word: "气球", py: "qì qiú", say: "这是声母欺。气球的第一个声音，就是欺。请跟我读，欺，气球。" },
-      { emoji: "🦋", symbol: "x", sound: "希", word: "西瓜", py: "xī guā", say: "这是声母希。西瓜的第一个声音，就是希。请跟我读，希，西瓜。" },
-      { emoji: "🐲", symbol: "zh", sound: "知", word: "蜘蛛", py: "zhī zhū", say: "这是声母知。蜘蛛的第一个声音，就是知。请跟我读，知，蜘蛛。" },
-      { emoji: "🐹", symbol: "ch", sound: "吃", word: "吃饭", py: "chī fàn", say: "这是声母吃。吃饭的第一个声音，就是吃。请跟我读，吃，吃饭。" },
-      { emoji: "🦁", symbol: "sh", sound: "诗", word: "狮子", py: "shī zi", say: "这是声母诗。狮子的第一个声音，就是诗。请跟我读，诗，狮子。" },
-      { emoji: "🌞", symbol: "r", sound: "日", word: "日出", py: "rì chū", say: "这是声母日。日出的第一个声音，就是日。请跟我读，日，日出。" },
-      { emoji: "🧸", symbol: "z", sound: "资", word: "自己", py: "zì jǐ", say: "这是声母资。自己的第一个声音，就是资。请跟我读，资，自己。" },
-      { emoji: "🌿", symbol: "c", sound: "雌", word: "草地", py: "cǎo dì", say: "这是声母雌。草地的第一个声音，就是雌。请跟我读，雌，草地。" },
-      { emoji: "🌲", symbol: "s", sound: "思", word: "森林", py: "sēn lín", say: "这是声母思。森林的第一个声音，就是思。请跟我读，思，森林。" },
-      { emoji: "🌙", symbol: "y", sound: "衣", word: "月亮", py: "yuè liang", say: "这是声母衣。月亮里面有衣这个开头的感觉。请跟我读，衣，月亮。" },
-      { emoji: "🧸", symbol: "w", sound: "乌", word: "娃娃", py: "wá wa", say: "这是声母乌。娃娃的第一个声音，有乌的开头。请跟我读，乌，娃娃。" }
+      { emoji: "🐣", symbol: "b", sound: "玻", word: "爸爸", py: "bà ba", say: "这是声母，玻。请看我的口型，先闭住嘴巴，再轻轻打开，玻。例词，爸爸。" },
+      { emoji: "🐰", symbol: "p", sound: "坡", word: "苹果", py: "píng guǒ", say: "这是声母，坡。读的时候有一股小气流出来，坡。例词，苹果。" },
+      { emoji: "🐱", symbol: "m", sound: "摸", word: "妈妈", py: "mā ma", say: "这是声母，摸。嘴巴先闭住，声音从鼻子出来，摸。例词，妈妈。" },
+      { emoji: "🦊", symbol: "f", sound: "佛", word: "风车", py: "fēng chē", say: "这是声母，佛。上牙轻轻碰下嘴唇，佛。例词，风车。" },
+      { emoji: "🐶", symbol: "d", sound: "得", word: "大象", py: "dà xiàng", say: "这是声母，得。舌尖轻轻碰上面，得。例词，大象。" },
+      { emoji: "🐯", symbol: "t", sound: "特", word: "兔子", py: "tù zi", say: "这是声母，特。读的时候有一股小气流，特。例词，兔子。" },
+      { emoji: "🦁", symbol: "n", sound: "讷", word: "奶奶", py: "nǎi nai", say: "这是声母，讷。声音从鼻子出来，讷。例词，奶奶。" },
+      { emoji: "🐼", symbol: "l", sound: "勒", word: "萝卜", py: "luó bo", say: "这是声母，勒。舌尖轻轻抬起来，勒。例词，萝卜。" },
+      { emoji: "🐧", symbol: "g", sound: "哥", word: "哥哥", py: "gē ge", say: "这是声母，哥。例词，哥哥。" },
+      { emoji: "🐨", symbol: "k", sound: "科", word: "开心", py: "kāi xīn", say: "这是声母，科。读的时候有一股小气流，科。例词，开心。" },
+      { emoji: "🦄", symbol: "h", sound: "喝", word: "花朵", py: "huā duǒ", say: "这是声母，喝。例词，花朵。" },
+      { emoji: "🐥", symbol: "j", sound: "基", word: "积木", py: "jī mù", say: "这是声母，基。例词，积木。" },
+      { emoji: "🐠", symbol: "q", sound: "欺", word: "气球", py: "qì qiú", say: "这是声母，欺。读的时候有小气流，欺。例词，气球。" },
+      { emoji: "🦋", symbol: "x", sound: "希", word: "西瓜", py: "xī guā", say: "这是声母，希。例词，西瓜。" },
+      { emoji: "🐲", symbol: "zh", sound: "知", word: "蜘蛛", py: "zhī zhū", say: "这是声母，知。舌头稍微翘起来，知。例词，蜘蛛。" },
+      { emoji: "🐹", symbol: "ch", sound: "吃", word: "吃饭", py: "chī fàn", say: "这是声母，吃。舌头稍微翘起来，还有小气流，吃。例词，吃饭。" },
+      { emoji: "🦁", symbol: "sh", sound: "诗", word: "狮子", py: "shī zi", say: "这是声母，诗。舌头稍微翘起来，诗。例词，狮子。" },
+      { emoji: "🌞", symbol: "r", sound: "日", word: "日出", py: "rì chū", say: "这是声母，日。舌头稍微翘起来，日。例词，日出。" },
+      { emoji: "🧸", symbol: "z", sound: "资", word: "自己", py: "zì jǐ", say: "这是声母，资。舌头放平，资。例词，自己。" },
+      { emoji: "🌿", symbol: "c", sound: "雌", word: "草地", py: "cǎo dì", say: "这是声母，雌。舌头放平，还有小气流，雌。例词，草地。" },
+      { emoji: "🌲", symbol: "s", sound: "思", word: "森林", py: "sēn lín", say: "这是声母，思。舌头放平，思。例词，森林。" },
+      { emoji: "🌙", symbol: "y", sound: "衣", word: "月亮", py: "yuè liang", say: "这是声母，衣。例词，月亮。" },
+      { emoji: "🧸", symbol: "w", sound: "乌", word: "娃娃", py: "wá wa", say: "这是声母，乌。例词，娃娃。" }
     ];
 
     const finalData = [
-      { emoji: "🌼", symbol: "a", sound: "啊", word: "阿姨", py: "ā yí", say: "这是韵母啊。张大嘴巴，啊。请跟我读，啊，阿姨。" },
-      { emoji: "🌙", symbol: "o", sound: "喔", word: "喔喔", py: "ō ō", say: "这是韵母喔。嘴巴圆圆，喔。请跟我读，喔。" },
-      { emoji: "🦢", symbol: "e", sound: "鹅", word: "白鹅", py: "bái é", say: "这是韵母鹅。白鹅的鹅。请跟我读，鹅，白鹅。" },
-      { emoji: "👕", symbol: "i", sound: "衣", word: "衣服", py: "yī fu", say: "这是韵母衣。衣服的衣。请跟我读，衣，衣服。" },
-      { emoji: "🦉", symbol: "u", sound: "乌", word: "乌鸦", py: "wū yā", say: "这是韵母乌。乌鸦的乌。请跟我读，乌，乌鸦。" },
-      { emoji: "🐟", symbol: "ü", sound: "迂", word: "小鱼", py: "xiǎo yú", say: "这是韵母迂。小鱼的鱼，里面有这个声音。请跟我读，迂，小鱼。" },
-      { emoji: "💖", symbol: "ai", sound: "哎", word: "爱心", py: "ài xīn", say: "这是复韵母哎。爱心的爱。请跟我读，哎，爱心。" },
-      { emoji: "🍵", symbol: "ei", sound: "欸", word: "杯子", py: "bēi zi", say: "这是复韵母欸。杯子的杯里面有这个声音。请跟我读，欸，杯子。" },
-      { emoji: "🧃", symbol: "ui", sound: "威", word: "水果", py: "shuǐ guǒ", say: "这是复韵母威。水果的水里面有这个声音。请跟我读，威，水果。" },
-      { emoji: "🐱", symbol: "ao", sound: "凹", word: "小猫", py: "xiǎo māo", say: "这是复韵母凹。小猫的猫里面有这个声音。请跟我读，凹，小猫。" },
-      { emoji: "🕊️", symbol: "ou", sound: "欧", word: "海鸥", py: "hǎi ōu", say: "这是复韵母欧。海鸥的鸥。请跟我读，欧，海鸥。" },
-      { emoji: "🐮", symbol: "iu", sound: "优", word: "小牛", py: "xiǎo niú", say: "这是复韵母优。小牛的牛里面有这个声音。请跟我读，优，小牛。" },
-      { emoji: "🍃", symbol: "ie", sound: "耶", word: "叶子", py: "yè zi", say: "这是复韵母耶。叶子的叶里面有这个声音。请跟我读，耶，叶子。" },
-      { emoji: "🌕", symbol: "üe", sound: "约", word: "月亮", py: "yuè liang", say: "这是复韵母约。月亮的月里面有这个声音。请跟我读，约，月亮。" },
-      { emoji: "👂", symbol: "er", sound: "儿", word: "耳朵", py: "ěr duo", say: "这是特殊韵母儿。耳朵的耳。请跟我读，儿，耳朵。" },
-      { emoji: "🔒", symbol: "an", sound: "安", word: "安全", py: "ān quán", say: "这是前鼻韵母安。安全的安。请跟我读，安，安全。" },
-      { emoji: "🌳", symbol: "en", sound: "恩", word: "森林", py: "sēn lín", say: "这是前鼻韵母恩。森林的森里面有这个声音。请跟我读，恩，森林。" },
-      { emoji: "🎵", symbol: "in", sound: "因", word: "音乐", py: "yīn yuè", say: "这是前鼻韵母因。音乐的音。请跟我读，因，音乐。" },
-      { emoji: "☁️", symbol: "un", sound: "温", word: "云朵", py: "yún duǒ", say: "这是前鼻韵母温。云朵的云里面有这个声音。请跟我读，温，云朵。" },
-      { emoji: "👗", symbol: "ün", sound: "晕", word: "裙子", py: "qún zi", say: "这是前鼻韵母晕。裙子的裙里面有这个声音。请跟我读，晕，裙子。" },
-      { emoji: "☀️", symbol: "ang", sound: "昂", word: "太阳", py: "tài yáng", say: "这是后鼻韵母昂。太阳的阳里面有这个声音。请跟我读，昂，太阳。" },
-      { emoji: "🪁", symbol: "eng", sound: "鞥", word: "风筝", py: "fēng zheng", say: "这是后鼻韵母鞥。风筝里面有这个声音。请跟我读，鞥，风筝。" },
-      { emoji: "⭐", symbol: "ing", sound: "英", word: "星星", py: "xīng xing", say: "这是后鼻韵母英。星星的星里面有这个声音。请跟我读，英，星星。" },
-      { emoji: "🌈", symbol: "ong", sound: "翁", word: "彩虹", py: "cǎi hóng", say: "这是后鼻韵母翁。彩虹的虹里面有这个声音。请跟我读，翁，彩虹。" }
+      { emoji: "🌼", symbol: "a", sound: "啊", word: "阿姨", py: "ā yí", say: "这是韵母，啊。张大嘴巴，啊。例词，阿姨。" },
+      { emoji: "🌙", symbol: "o", sound: "喔", word: "喔喔", py: "ō ō", say: "这是韵母，喔。嘴巴圆圆，喔。" },
+      { emoji: "🦢", symbol: "e", sound: "鹅", word: "白鹅", py: "bái é", say: "这是韵母，鹅。例词，白鹅。" },
+      { emoji: "👕", symbol: "i", sound: "衣", word: "衣服", py: "yī fu", say: "这是韵母，衣。例词，衣服。" },
+      { emoji: "🦉", symbol: "u", sound: "乌", word: "乌鸦", py: "wū yā", say: "这是韵母，乌。例词，乌鸦。" },
+      { emoji: "🐟", symbol: "ü", sound: "迂", word: "小鱼", py: "xiǎo yú", say: "这是韵母，迂。嘴巴圆圆，声音像小鱼的鱼。例词，小鱼。" },
+      { emoji: "💖", symbol: "ai", sound: "哎", word: "爱心", py: "ài xīn", say: "这是复韵母，哎。例词，爱心。" },
+      { emoji: "🍵", symbol: "ei", sound: "欸", word: "杯子", py: "bēi zi", say: "这是复韵母，欸。例词，杯子。" },
+      { emoji: "🧃", symbol: "ui", sound: "威", word: "水果", py: "shuǐ guǒ", say: "这是复韵母，威。例词，水果。" },
+      { emoji: "🐱", symbol: "ao", sound: "凹", word: "小猫", py: "xiǎo māo", say: "这是复韵母，凹。例词，小猫。" },
+      { emoji: "🕊️", symbol: "ou", sound: "欧", word: "海鸥", py: "hǎi ōu", say: "这是复韵母，欧。例词，海鸥。" },
+      { emoji: "🐮", symbol: "iu", sound: "优", word: "小牛", py: "xiǎo niú", say: "这是复韵母，优。例词，小牛。" },
+      { emoji: "🍃", symbol: "ie", sound: "耶", word: "叶子", py: "yè zi", say: "这是复韵母，耶。例词，叶子。" },
+      { emoji: "🌕", symbol: "üe", sound: "约", word: "月亮", py: "yuè liang", say: "这是复韵母，约。例词，月亮。" },
+      { emoji: "👂", symbol: "er", sound: "儿", word: "耳朵", py: "ěr duo", say: "这是特殊韵母，儿。例词，耳朵。" },
+      { emoji: "🔒", symbol: "an", sound: "安", word: "安全", py: "ān quán", say: "这是前鼻韵母，安。例词，安全。" },
+      { emoji: "🌳", symbol: "en", sound: "恩", word: "森林", py: "sēn lín", say: "这是前鼻韵母，恩。例词，森林。" },
+      { emoji: "🎵", symbol: "in", sound: "因", word: "音乐", py: "yīn yuè", say: "这是前鼻韵母，因。例词，音乐。" },
+      { emoji: "☁️", symbol: "un", sound: "温", word: "云朵", py: "yún duǒ", say: "这是前鼻韵母，温。例词，云朵。" },
+      { emoji: "👗", symbol: "ün", sound: "晕", word: "裙子", py: "qún zi", say: "这是前鼻韵母，晕。例词，裙子。" },
+      { emoji: "☀️", symbol: "ang", sound: "昂", word: "太阳", py: "tài yáng", say: "这是后鼻韵母，昂。例词，太阳。" },
+      { emoji: "🪁", symbol: "eng", sound: "鞥", word: "风筝", py: "fēng zheng", say: "这是后鼻韵母，鞥。例词，风筝。" },
+      { emoji: "⭐", symbol: "ing", sound: "英", word: "星星", py: "xīng xing", say: "这是后鼻韵母，英。例词，星星。" },
+      { emoji: "🌈", symbol: "ong", sound: "翁", word: "彩虹", py: "cǎi hóng", say: "这是后鼻韵母，翁。例词，彩虹。" }
     ];
 
     const wholeData = [
-      { emoji: "🏝️", symbol: "zhi", sound: "知", word: "知识", py: "zhī shi", say: "这是整体认读音节知。它可以直接读，知。请跟我读，知，知识。" },
-      { emoji: "🏝️", symbol: "chi", sound: "吃", word: "吃饭", py: "chī fàn", say: "这是整体认读音节吃。它可以直接读，吃。请跟我读，吃，吃饭。" },
-      { emoji: "🏝️", symbol: "shi", sound: "诗", word: "狮子", py: "shī zi", say: "这是整体认读音节诗。它可以直接读，诗。请跟我读，诗，狮子。" },
-      { emoji: "🏝️", symbol: "ri", sound: "日", word: "日出", py: "rì chū", say: "这是整体认读音节日。它可以直接读，日。请跟我读，日，日出。" },
-      { emoji: "🏝️", symbol: "zi", sound: "资", word: "自己", py: "zì jǐ", say: "这是整体认读音节资。它可以直接读，资。请跟我读，资，自己。" },
-      { emoji: "🏝️", symbol: "ci", sound: "雌", word: "词语", py: "cí yǔ", say: "这是整体认读音节雌。它可以直接读，雌。请跟我读，雌，词语。" },
-      { emoji: "🏝️", symbol: "si", sound: "思", word: "丝瓜", py: "sī guā", say: "这是整体认读音节思。它可以直接读，思。请跟我读，思，丝瓜。" },
-      { emoji: "🏝️", symbol: "yi", sound: "衣", word: "衣服", py: "yī fu", say: "这是整体认读音节衣。它可以直接读，衣。请跟我读，衣，衣服。" },
-      { emoji: "🏝️", symbol: "wu", sound: "乌", word: "乌鸦", py: "wū yā", say: "这是整体认读音节乌。它可以直接读，乌。请跟我读，乌，乌鸦。" },
-      { emoji: "🏝️", symbol: "yu", sound: "迂", word: "小鱼", py: "xiǎo yú", say: "这是整体认读音节迂。它可以直接读，迂。请跟我读，迂，小鱼。" },
-      { emoji: "🏝️", symbol: "ye", sound: "耶", word: "叶子", py: "yè zi", say: "这是整体认读音节耶。它可以直接读，耶。请跟我读，耶，叶子。" },
-      { emoji: "🏝️", symbol: "yue", sound: "月", word: "月亮", py: "yuè liang", say: "这是整体认读音节月。它可以直接读，月。请跟我读，月，月亮。" },
-      { emoji: "🏝️", symbol: "yuan", sound: "冤", word: "圆形", py: "yuán xíng", say: "这是整体认读音节冤。它可以直接读，冤。请跟我读，冤，圆形。" },
-      { emoji: "🏝️", symbol: "yin", sound: "因", word: "音乐", py: "yīn yuè", say: "这是整体认读音节因。它可以直接读，因。请跟我读，因，音乐。" },
-      { emoji: "🏝️", symbol: "yun", sound: "晕", word: "云朵", py: "yún duǒ", say: "这是整体认读音节晕。它可以直接读，晕。请跟我读，晕，云朵。" },
-      { emoji: "🏝️", symbol: "ying", sound: "英", word: "老鹰", py: "lǎo yīng", say: "这是整体认读音节英。它可以直接读，英。请跟我读，英，老鹰。" }
+      { emoji: "🏝️", symbol: "zhi", sound: "知", word: "知识", py: "zhī shi", say: "这是整体认读音节，知。例词，知识。" },
+      { emoji: "🏝️", symbol: "chi", sound: "吃", word: "吃饭", py: "chī fàn", say: "这是整体认读音节，吃。例词，吃饭。" },
+      { emoji: "🏝️", symbol: "shi", sound: "诗", word: "狮子", py: "shī zi", say: "这是整体认读音节，诗。例词，狮子。" },
+      { emoji: "🏝️", symbol: "ri", sound: "日", word: "日出", py: "rì chū", say: "这是整体认读音节，日。例词，日出。" },
+      { emoji: "🏝️", symbol: "zi", sound: "资", word: "自己", py: "zì jǐ", say: "这是整体认读音节，资。例词，自己。" },
+      { emoji: "🏝️", symbol: "ci", sound: "雌", word: "词语", py: "cí yǔ", say: "这是整体认读音节，雌。例词，词语。" },
+      { emoji: "🏝️", symbol: "si", sound: "思", word: "丝瓜", py: "sī guā", say: "这是整体认读音节，思。例词，丝瓜。" },
+      { emoji: "🏝️", symbol: "yi", sound: "衣", word: "衣服", py: "yī fu", say: "这是整体认读音节，衣。例词，衣服。" },
+      { emoji: "🏝️", symbol: "wu", sound: "乌", word: "乌鸦", py: "wū yā", say: "这是整体认读音节，乌。例词，乌鸦。" },
+      { emoji: "🏝️", symbol: "yu", sound: "迂", word: "小鱼", py: "xiǎo yú", say: "这是整体认读音节，迂。例词，小鱼。" },
+      { emoji: "🏝️", symbol: "ye", sound: "耶", word: "叶子", py: "yè zi", say: "这是整体认读音节，耶。例词，叶子。" },
+      { emoji: "🏝️", symbol: "yue", sound: "月", word: "月亮", py: "yuè liang", say: "这是整体认读音节，月。例词，月亮。" },
+      { emoji: "🏝️", symbol: "yuan", sound: "冤", word: "圆形", py: "yuán xíng", say: "这是整体认读音节，冤。例词，圆形。" },
+      { emoji: "🏝️", symbol: "yin", sound: "因", word: "音乐", py: "yīn yuè", say: "这是整体认读音节，因。例词，音乐。" },
+      { emoji: "🏝️", symbol: "yun", sound: "晕", word: "云朵", py: "yún duǒ", say: "这是整体认读音节，晕。例词，云朵。" },
+      { emoji: "🏝️", symbol: "ying", sound: "英", word: "老鹰", py: "lǎo yīng", say: "这是整体认读音节，英。例词，老鹰。" }
     ];
 
-    const toneData = [
+    const toneGroups = [
       {
-        show: "mā 妈",
-        text: "一声：平平走",
-        hint: "小星老师：一声像小车在平路上开，声音平平的。例子：妈，妈妈的妈。",
-        say: "一声，妈。妈妈的妈。声音平平的。请跟我读，妈。",
-        left: "9%",
-        top: "158px"
+        name: "ma",
+        title: "ma 四声",
+        items: [
+          { show: "mā 妈", text: "一声：平平的", word: "妈", example: "妈妈的妈", say: "第一声，妈，妈妈的妈。声音平平的。", left: "9%", top: "158px", hint: "一声要平，像小车在平路上走。例字：妈。" },
+          { show: "má 麻", text: "二声：往上扬", word: "麻", example: "芝麻的麻", say: "第二声，麻，芝麻的麻。声音往上扬。", left: "35%", top: "105px", hint: "二声往上扬，像小车爬上坡。例字：麻。" },
+          { show: "mǎ 马", text: "三声：拐个弯", word: "马", example: "小马的马", say: "第三声，马，小马的马。声音先低再起来。", left: "63%", top: "190px", hint: "三声先低再起来，像小车拐弯。例字：马。" },
+          { show: "mà 骂", text: "四声：落下去", word: "骂", example: "不能骂人的骂", say: "第四声，骂，不能骂人的骂。声音快快落下去。", left: "86%", top: "146px", hint: "四声往下降，像小车冲下坡。例字：骂。" }
+        ]
       },
       {
-        show: "má 麻",
-        text: "二声：往上扬",
-        hint: "小星老师：二声像小车爬上坡，声音往上扬。例子：麻，芝麻的麻。",
-        say: "二声，麻。芝麻的麻。声音往上扬。请跟我读，麻。",
-        left: "35%",
-        top: "105px"
+        name: "bo",
+        title: "bo 四声",
+        items: [
+          { show: "bō 波", text: "一声：平平的", word: "波", example: "水波的波", say: "第一声，波，水波的波。声音平平的。", left: "9%", top: "158px", hint: "第一声波，声音平平的。" },
+          { show: "bó 伯", text: "二声：往上扬", word: "伯", example: "伯伯的伯", say: "第二声，伯，伯伯的伯。声音往上扬。", left: "35%", top: "105px", hint: "第二声伯，声音往上扬。" },
+          { show: "bǒ 跛", text: "三声：拐个弯", word: "跛", example: "跛脚的跛", say: "第三声，跛，跛脚的跛。声音先低再起来。", left: "63%", top: "190px", hint: "第三声跛，声音先低再起来。" },
+          { show: "bò 簸", text: "四声：落下去", word: "簸", example: "簸箕的簸", say: "第四声，簸，簸箕的簸。声音快快落下去。", left: "86%", top: "146px", hint: "第四声簸，声音往下降。" }
+        ]
       },
       {
-        show: "mǎ 马",
-        text: "三声：拐个弯",
-        hint: "小星老师：三声像小车先下去，再上来。例子：马，小马的马。",
-        say: "三声，马。小马的马。声音先低一点，再起来。请跟我读，马。",
-        left: "63%",
-        top: "190px"
+        name: "yi",
+        title: "yi 四声",
+        items: [
+          { show: "yī 衣", text: "一声：平平的", word: "衣", example: "衣服的衣", say: "第一声，衣，衣服的衣。声音平平的。", left: "9%", top: "158px", hint: "第一声衣，声音平平的。" },
+          { show: "yí 姨", text: "二声：往上扬", word: "姨", example: "阿姨的姨", say: "第二声，姨，阿姨的姨。声音往上扬。", left: "35%", top: "105px", hint: "第二声姨，声音往上扬。" },
+          { show: "yǐ 椅", text: "三声：拐个弯", word: "椅", example: "椅子的椅", say: "第三声，椅，椅子的椅。声音先低再起来。", left: "63%", top: "190px", hint: "第三声椅，声音先低再起来。" },
+          { show: "yì 意", text: "四声：落下去", word: "意", example: "意思的意", say: "第四声，意，意思的意。声音快快落下去。", left: "86%", top: "146px", hint: "第四声意，声音往下降。" }
+        ]
       },
       {
-        show: "mà 骂",
-        text: "四声：落下去",
-        hint: "小星老师：四声像小车冲下坡，声音很快落下去。例子：骂，不能骂人的骂。",
-        say: "四声，骂。不能骂人的骂。声音快快落下去。请跟我读，骂。",
-        left: "86%",
-        top: "146px"
+        name: "shu",
+        title: "shu 四声",
+        items: [
+          { show: "shū 书", text: "一声：平平的", word: "书", example: "看书的书", say: "第一声，书，看书的书。声音平平的。", left: "9%", top: "158px", hint: "第一声书，声音平平的。" },
+          { show: "shú 熟", text: "二声：往上扬", word: "熟", example: "成熟的熟", say: "第二声，熟，成熟的熟。声音往上扬。", left: "35%", top: "105px", hint: "第二声熟，声音往上扬。" },
+          { show: "shǔ 暑", text: "三声：拐个弯", word: "暑", example: "暑假的暑", say: "第三声，暑，暑假的暑。声音先低再起来。", left: "63%", top: "190px", hint: "第三声暑，声音先低再起来。" },
+          { show: "shù 树", text: "四声：落下去", word: "树", example: "大树的树", say: "第四声，树，大树的树。声音快快落下去。", left: "86%", top: "146px", hint: "第四声树，声音往下降。" }
+        ]
       }
     ];
 
     const trainData = [
-      {
-        left: "b",
-        right: "a",
-        result: "ba",
-        word: "爸爸 bā ba",
-        say: "声母玻，遇到韵母啊，合起来是巴。爸爸的爸，里面有这个声音。请跟我读，巴。"
-      },
-      {
-        left: "m",
-        right: "a",
-        result: "ma",
-        word: "妈妈 mā ma",
-        say: "声母摸，遇到韵母啊，合起来是妈。妈妈的妈，里面有这个声音。请跟我读，妈。"
-      },
-      {
-        left: "p",
-        right: "o",
-        result: "po",
-        word: "山坡 shān pō",
-        say: "声母坡，遇到韵母喔，合起来是坡。山坡的坡，里面有这个声音。请跟我读，坡。"
-      },
-      {
-        left: "h",
-        right: "ua",
-        result: "hua",
-        word: "花朵 huā duǒ",
-        say: "声母喝，遇到韵母哇，合起来是花。花朵的花，里面有这个声音。请跟我读，花。"
-      },
-      {
-        left: "x",
-        right: "i",
-        result: "xi",
-        word: "西瓜 xī guā",
-        say: "声母希，遇到韵母衣，合起来是西。西瓜的西，里面有这个声音。请跟我读，西。"
-      },
-      {
-        left: "g",
-        right: "ou",
-        result: "gou",
-        word: "小狗 xiǎo gǒu",
-        say: "声母哥，遇到韵母欧，合起来是狗。小狗的狗，里面有这个声音。请跟我读，狗。"
-      },
-      {
-        left: "m",
-        right: "ao",
-        result: "mao",
-        word: "小猫 xiǎo māo",
-        say: "声母摸，遇到韵母凹，合起来是猫。小猫的猫，里面有这个声音。请跟我读，猫。"
-      },
-      {
-        left: "q",
-        right: "iu",
-        result: "qiu",
-        word: "气球 qì qiú",
-        say: "声母欺，遇到韵母优，合起来是球。气球的球，里面有这个声音。请跟我读，球。"
-      },
-      {
-        left: "l",
-        right: "u",
-        result: "lu",
-        word: "小鹿 xiǎo lù",
-        say: "声母勒，遇到韵母乌，合起来是鹿。小鹿的鹿，里面有这个声音。请跟我读，鹿。"
-      },
-      {
-        left: "sh",
-        right: "u",
-        result: "shu",
-        word: "小树 xiǎo shù",
-        say: "声母诗，遇到韵母乌，合起来是树。小树的树，里面有这个声音。请跟我读，树。"
-      }
+      { left: "b", right: "a", result: "ba", word: "爸爸 bā ba", say: "声母玻，遇到韵母啊，合起来读，巴。例词，爸爸。" },
+      { left: "m", right: "a", result: "ma", word: "妈妈 mā ma", say: "声母摸，遇到韵母啊，合起来读，妈。例词，妈妈。" },
+      { left: "p", right: "o", result: "po", word: "山坡 shān pō", say: "声母坡，遇到韵母喔，合起来读，坡。例词，山坡。" },
+      { left: "h", right: "ua", result: "hua", word: "花朵 huā duǒ", say: "声母喝，遇到韵母哇，合起来读，花。例词，花朵。" },
+      { left: "x", right: "i", result: "xi", word: "西瓜 xī guā", say: "声母希，遇到韵母衣，合起来读，西。例词，西瓜。" },
+      { left: "g", right: "ou", result: "gou", word: "小狗 xiǎo gǒu", say: "声母哥，遇到韵母欧，合起来读，狗。例词，小狗。" },
+      { left: "m", right: "ao", result: "mao", word: "小猫 xiǎo māo", say: "声母摸，遇到韵母凹，合起来读，猫。例词，小猫。" },
+      { left: "q", right: "iu", result: "qiu", word: "气球 qì qiú", say: "声母欺，遇到韵母优，合起来读，球。例词，气球。" },
+      { left: "l", right: "u", result: "lu", word: "小鹿 xiǎo lù", say: "声母勒，遇到韵母乌，合起来读，鹿。例词，小鹿。" },
+      { left: "sh", right: "u", result: "shu", word: "小树 xiǎo shù", say: "声母诗，遇到韵母乌，合起来读，树。例词，小树。" }
     ];
 
     const quizData = [
-      { word: "妈", answer: "mā", options: ["mā", "má", "mǎ", "mà"], say: "请听这个汉字。妈。妈妈的妈。" },
-      { word: "麻", answer: "má", options: ["mā", "má", "mǎ", "mà"], say: "请听这个汉字。麻。芝麻的麻。" },
-      { word: "马", answer: "mǎ", options: ["mā", "má", "mǎ", "mà"], say: "请听这个汉字。马。小马的马。" },
-      { word: "骂", answer: "mà", options: ["mā", "má", "mǎ", "mà"], say: "请听这个汉字。骂。不能骂人的骂。" },
-      { word: "爸", answer: "bà", options: ["bā", "bá", "bǎ", "bà"], say: "请听这个汉字。爸。爸爸的爸。" },
-      { word: "花", answer: "huā", options: ["huā", "huá", "huǎ", "huà"], say: "请听这个汉字。花。花朵的花。" },
-      { word: "鱼", answer: "yú", options: ["yū", "yú", "yǔ", "yù"], say: "请听这个汉字。鱼。小鱼的鱼。" },
-      { word: "狗", answer: "gǒu", options: ["gōu", "góu", "gǒu", "gòu"], say: "请听这个汉字。狗。小狗的狗。" },
-      { word: "猫", answer: "māo", options: ["māo", "máo", "mǎo", "mào"], say: "请听这个汉字。猫。小猫的猫。" },
-      { word: "鸟", answer: "niǎo", options: ["niāo", "niáo", "niǎo", "niào"], say: "请听这个汉字。鸟。小鸟的鸟。" },
-      { word: "月", answer: "yuè", options: ["yuē", "yué", "yuě", "yuè"], say: "请听这个汉字。月。月亮的月。" },
-      { word: "水", answer: "shuǐ", options: ["shuī", "shuí", "shuǐ", "shuì"], say: "请听这个汉字。水。喝水的水。" }
+      { word: "妈", answer: "mā", options: ["mā", "má", "mǎ", "mà"], say: "请听，妈，妈妈的妈。" },
+      { word: "麻", answer: "má", options: ["mā", "má", "mǎ", "mà"], say: "请听，麻，芝麻的麻。" },
+      { word: "马", answer: "mǎ", options: ["mā", "má", "mǎ", "mà"], say: "请听，马，小马的马。" },
+      { word: "骂", answer: "mà", options: ["mā", "má", "mǎ", "mà"], say: "请听，骂，不能骂人的骂。" },
+      { word: "波", answer: "bō", options: ["bō", "bó", "bǒ", "bò"], say: "请听，波，水波的波。" },
+      { word: "伯", answer: "bó", options: ["bō", "bó", "bǒ", "bò"], say: "请听，伯，伯伯的伯。" },
+      { word: "跛", answer: "bǒ", options: ["bō", "bó", "bǒ", "bò"], say: "请听，跛，跛脚的跛。" },
+      { word: "簸", answer: "bò", options: ["bō", "bó", "bǒ", "bò"], say: "请听，簸，簸箕的簸。" },
+      { word: "书", answer: "shū", options: ["shū", "shú", "shǔ", "shù"], say: "请听，书，看书的书。" },
+      { word: "熟", answer: "shú", options: ["shū", "shú", "shǔ", "shù"], say: "请听，熟，成熟的熟。" },
+      { word: "暑", answer: "shǔ", options: ["shū", "shú", "shǔ", "shù"], say: "请听，暑，暑假的暑。" },
+      { word: "树", answer: "shù", options: ["shū", "shú", "shǔ", "shù"], say: "请听，树，大树的树。" }
     ];
 
-    let stars = Number(localStorage.getItem("eightYearPinyinStars")) || 0;
+    let stars = Number(localStorage.getItem("standardPinyinStars")) || 0;
+    let currentToneGroupIndex = 0;
     let currentToneIndex = 0;
     let currentTrainIndex = 0;
     let currentQuestion = null;
@@ -1271,7 +1249,6 @@
       if (!("speechSynthesis" in window)) return null;
 
       const allVoices = voices.length ? voices : window.speechSynthesis.getVoices();
-
       if (!allVoices.length) return null;
 
       const chineseVoices = allVoices.filter(voice => {
@@ -1282,14 +1259,11 @@
                voice.name.includes("晓") ||
                voice.name.includes("云") ||
                voice.name.includes("慧") ||
-               voice.name.includes("婷婷") ||
-               voice.name.includes("美佳") ||
                name.includes("chinese") ||
                name.includes("mandarin") ||
                name.includes("xiaoxiao") ||
                name.includes("xiaoyi") ||
-               name.includes("huihui") ||
-               name.includes("tingting");
+               name.includes("huihui");
       });
 
       const preferredNames = [
@@ -1315,7 +1289,7 @@
       return chineseVoices[0] || allVoices[0];
     }
 
-    function speak(text) {
+    function speak(text, slow = false) {
       if (!("speechSynthesis" in window)) {
         alert("这个浏览器暂时不能播放声音，可以用 Chrome 或 Edge 打开试试。");
         return;
@@ -1326,21 +1300,14 @@
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "zh-CN";
       utterance.voice = chooseChineseVoice();
-
-      /*
-        八岁小老师清亮声：
-        语速比幼儿版快一点，不拖；
-        音调稍微高一点，但不要太尖；
-        尽量自然，不像机器人。
-      */
-      utterance.rate = 0.86;
-      utterance.pitch = 1.16;
+      utterance.rate = slow ? 0.78 : 0.86;
+      utterance.pitch = 1.08;
       utterance.volume = 1;
 
       window.speechSynthesis.speak(utterance);
     }
 
-    function speakSlow(text) {
+    function speakQueue(textList) {
       if (!("speechSynthesis" in window)) {
         alert("这个浏览器暂时不能播放声音，可以用 Chrome 或 Edge 打开试试。");
         return;
@@ -1348,14 +1315,15 @@
 
       window.speechSynthesis.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "zh-CN";
-      utterance.voice = chooseChineseVoice();
-      utterance.rate = 0.78;
-      utterance.pitch = 1.12;
-      utterance.volume = 1;
-
-      window.speechSynthesis.speak(utterance);
+      textList.forEach(text => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "zh-CN";
+        utterance.voice = chooseChineseVoice();
+        utterance.rate = 0.78;
+        utterance.pitch = 1.08;
+        utterance.volume = 1;
+        window.speechSynthesis.speak(utterance);
+      });
     }
 
     function updateScore() {
@@ -1364,19 +1332,19 @@
       if (stars < 10) {
         levelNameEl.textContent = "刚刚出发";
       } else if (stars < 25) {
-        levelNameEl.textContent = "拼音新手";
+        levelNameEl.textContent = "认真听音";
       } else if (stars < 50) {
-        levelNameEl.textContent = "拼音小勇士";
+        levelNameEl.textContent = "四声小勇士";
       } else if (stars < 80) {
-        levelNameEl.textContent = "拼音冒险家";
+        levelNameEl.textContent = "拼音小能手";
       } else {
-        levelNameEl.textContent = "小星老师同学";
+        levelNameEl.textContent = "标准发音小老师";
       }
     }
 
     function addStar(count = 1) {
       stars += count;
-      localStorage.setItem("eightYearPinyinStars", stars);
+      localStorage.setItem("standardPinyinStars", stars);
       updateScore();
     }
 
@@ -1385,9 +1353,9 @@
       if (!ok) return;
 
       stars = 0;
-      localStorage.setItem("eightYearPinyinStars", stars);
+      localStorage.setItem("standardPinyinStars", stars);
       updateScore();
-      speak("星星已经重新开始啦。没关系，我们再次出发。");
+      speak("星星已经重新开始。我们继续认真听，认真读。");
     }
 
     function showReward() {
@@ -1440,14 +1408,14 @@
 
     function speakGuide(type) {
       const guides = {
-        home: "你好呀，我是八岁小老师小星。这里是拼音冒险岛。我们不读英文字母，只读汉语拼音的声音。一起去冒险吧。",
-        listen: "这里是拼音精灵森林。你点一张卡片，我就读给你听。先听我读，再跟着读一遍。",
-        tone: "这里是声调过山车。四个声调不能读成一样。一声妈，二声麻，三声马，四声骂。你听，小车怎么跑，声音就怎么走。",
-        train: "这里是拼读飞船。声母在前面，韵母在后面，两个声音合起来，就能读出一个新的拼音。",
-        quiz: "这里是星星闯关城堡。请你听汉字，选正确的拼音。答对了，星星就会飞出来。"
+        home: "欢迎来到标准拼音星球。我们今天重点练标准声调。四声不能都读一样。比如，妈，麻，马，骂，四个声音都不一样。",
+        listen: "这里是标准点读。屏幕上显示拼音字母，但发声时读中文拼音声音，不读英文字母。",
+        tone: "这里是四声过山车。一声平，二声扬，三声拐弯，四声降。请认真听，妈，麻，马，骂。",
+        train: "这里是拼读飞船。声母和韵母合起来，就能读出新的拼音。读准以后，再加声调。",
+        quiz: "这里是星星闯关。请听汉字，选择正确拼音。答错没关系，再听一遍。"
       };
 
-      speak(guides[type]);
+      speak(guides[type], true);
     }
 
     function makeCard(item) {
@@ -1464,7 +1432,7 @@
       `;
 
       card.onclick = () => {
-        speak(item.say);
+        speak(item.say, true);
         addStar();
       };
 
@@ -1493,9 +1461,32 @@
       });
     }
 
+    function renderToneButtons() {
+      const box = document.getElementById("toneButtons");
+      box.innerHTML = "";
+
+      const group = toneGroups[currentToneGroupIndex];
+
+      group.items.forEach((item, index) => {
+        const btn = document.createElement("button");
+        btn.className = "tone-btn";
+        btn.innerHTML = `${item.show}<br>${item.text}`;
+        btn.onclick = () => chooseTone(index);
+        box.appendChild(btn);
+      });
+    }
+
+    function setToneGroup(groupIndex) {
+      currentToneGroupIndex = groupIndex;
+      currentToneIndex = 0;
+      renderToneButtons();
+      chooseTone(0);
+    }
+
     function chooseTone(index) {
       currentToneIndex = index;
-      const item = toneData[index];
+
+      const item = toneGroups[currentToneGroupIndex].items[index];
 
       document.getElementById("toneDisplay").textContent = item.show;
       document.getElementById("toneText").textContent = item.text;
@@ -1505,23 +1496,29 @@
       car.style.left = item.left;
       car.style.top = item.top;
 
-      speakSlow(item.say);
+      speak(item.say, true);
       addStar();
     }
 
     function speakTone() {
-      speakSlow(toneData[currentToneIndex].say);
+      const item = toneGroups[currentToneGroupIndex].items[currentToneIndex];
+      speak(item.say, true);
+      addStar();
+    }
+
+    function speakCurrentGroup() {
+      const group = toneGroups[currentToneGroupIndex];
+
+      const list = group.items.map(item => item.say);
+      list.unshift("请认真听四个声调，它们不能读成一样。");
+
+      speakQueue(list);
       addStar();
     }
 
     function randomTone() {
-      const index = Math.floor(Math.random() * toneData.length);
+      const index = Math.floor(Math.random() * 4);
       chooseTone(index);
-    }
-
-    function speakAllTones() {
-      speakSlow("我们连续听四个声调。第一声，妈。第二声，麻。第三声，马。第四声，骂。它们的声音是不一样的。");
-      addStar();
     }
 
     function updateTrain() {
@@ -1534,7 +1531,7 @@
     }
 
     function speakTrain() {
-      speak(trainData[currentTrainIndex].say);
+      speak(trainData[currentTrainIndex].say, true);
       addStar();
     }
 
@@ -1574,32 +1571,33 @@
 
     function speakQuizWord() {
       if (!currentQuestion) return;
-      speakSlow(currentQuestion.say);
+      speak(currentQuestion.say, true);
     }
 
     function checkAnswer(option) {
       const message = document.getElementById("quizMessage");
 
       if (option === currentQuestion.answer) {
-        message.textContent = "答对啦！星星飞出来啦 ⭐";
+        message.textContent = "答对啦！你听得很准 ⭐";
         message.className = "message correct";
 
         addStar();
         showReward();
-        speak("答对啦。你听得很认真，星星送给你。");
+        speak("答对啦。你听得很准，继续保持。");
 
         setTimeout(() => {
           newQuestion();
         }, 1500);
       } else {
-        message.textContent = "再听一次，你马上就能分出来！";
+        message.textContent = "再听一遍，注意声调的高低变化。";
         message.className = "message wrong";
-        speak("再听一次。你马上就能分出来。");
+        speak("再听一遍。注意声调的高低变化。");
       }
     }
 
     updateScore();
     renderCards();
+    renderToneButtons();
     chooseTone(0);
     updateTrain();
     newQuestion();
